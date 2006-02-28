@@ -6,12 +6,41 @@ if (!deathCheck($user) && $userShip['location'] != 1) {
 	print_page('Not in Sol', '<p>You are not in Star System #1</p>');
 }
 
+$shipWorth = floor($userShip['max_hull'] + ($userShip['max_shields'] >> 1) + 
+ ($userShip['fighters'] * $gameOpt['fighter_cost_earth'] / 10) +
+ ($userShip['mining_rate'] * 10) + $userShip['max_fighters'] + 
+ ($userShip['upgrades'] * 20));
+
+
+if (isset($_REQUEST['action'])) {
+	if ($_REQUEST['action'] === 'sell' && $userShip !== NULL) {
+		$loc = get_star();
+		$newId = closestShip($user['login_id'], $loc['x'], $loc['y']);
+
+		if ($newId === false) {
+			print_page('Sell ship', 'You have no other ships!');
+		}
+
+		$db->query('DELETE FROM [game]_ships WHERE ship_id = %u', 
+		 array($user['ship_id']));
+		$db->query('UPDATE [game]_users SET ship_id = %u WHERE login_id = %u', 
+		 array($newId, $user['login_id']));
+
+		giveMoneyPlayer($shipWorth);
+
+		print_page('Sell ship', "<p>Your ship has been sold for " .
+		 "<em>$shipWorth credits</em></p>\n");
+	}
+}
 
 $out = <<<END
 <h1>Spacecraft Emporium</h1>
 <p>All the finest ships at bargain prices: 
 <a href="help.php?ship_info=1&amp;shipno=-1">information about ships</a>.  
 Return to <a href="earth.php">earth</a> after making your purchase.</p>
+<p>We will <a href="shop_ship.php?action=sell" 
+ onclick="return confirm('Are you sure?');">buy your ship</a> from you for 
+<em>$shipWorth credits</em>.</p>
 
 END;
 
