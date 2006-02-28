@@ -172,7 +172,7 @@ END;
 			print_header("Choose Username");
 ?>
 <h1>Join <?php echo esc($gameInfo['name']); ?></h1>
-<form action="<?php echo esc(URI_SELF); ?>" method="post">
+<form action="<?php echo esc(URL_SELF); ?>" method="post">
 	<p><input name="in_game_name" value="<?php echo esc($p_user['login_name']); ?>" size="10" class="text" />
 	Name you would like to play under</p>
 	<p><input name="ship_name" size="10" class="text" /> First ship title</p>
@@ -329,7 +329,7 @@ if (!empty($joined)) {
 <?php
 	foreach ($joined as $game) {
 ?>
-	<li><a href="<?php echo esc(URI_SELF . '?game_selected=' . $game[1])
+	<li><a href="<?php echo esc(URL_SELF . '?game_selected=' . $game[1])
 	?>"><?php echo esc($game[0]); ?></a> <?php
 		if ($game[2] == 1) {
 				?> (paused)<?php
@@ -354,7 +354,7 @@ if (!empty($unjoined)) {
 <?php
 	foreach ($unjoined as $game) {
 ?>
-	<li><a href="<?php echo esc(URI_SELF . '?game_selected=' . $game[1])
+	<li><a href="<?php echo esc(URL_SELF . '?game_selected=' . $game[1])
 	?>"><?php echo esc($game[0]); ?></a> <?php
 		if ($game[2] == 1) {
 			?> (paused)<?php
