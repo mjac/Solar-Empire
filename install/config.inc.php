@@ -6,7 +6,7 @@ define('MCDB_PATH', dirname(__FILE__) . '/external/mcdb/mcdb.class.php');
 // DSN String - type://user:pass@host/database
 define('DB_DSN', 'mysql://USER:PASSWORD@localhost/DATABASE');
 
-define('SE_VERSION', '0.9.10');
+define('SE_VERSION', '0.9.11');
 header('X-Powered-By: System Wars ' . SE_VERSION);
 
 define('SESSION_TIME_LIMIT', 3600);
@@ -21,12 +21,11 @@ define('OWNER_ID', 1);
 defined('E_STRICT') || define('E_STRICT', 0x800);
 error_reporting(E_ALL & ~E_STRICT);
 
-if (isset($_SERVER['HTTP_HOST'])) {
 	//the part of the URL that you have to type in to get to SE should go here.
-	$dir = dirname($_SERVER['SCRIPT_NAME']);
-	define('URI_SHORT', rtrim($dir, '\\/'));
-	define('URI_FULL', 'http://' . $_SERVER['HTTP_HOST'] . URI_SHORT);
-	define('URI_SELF', $_SERVER['SCRIPT_NAME']);
-}
+$dir = dirname($_SERVER['SCRIPT_NAME']);
+define('URL_SHORT', rtrim($dir, '\\/'));
+define('URL_FULL', isset($_SERVER['HTTP_HOST']) ? ('http://' . 
+ $_SERVER['HTTP_HOST'] . URL_SHORT) : URL_SHORT);
+define('URL_SELF', $_SERVER['SCRIPT_NAME']);
 
 ?>
