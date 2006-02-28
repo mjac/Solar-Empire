@@ -1083,4 +1083,17 @@ function moveUserTo($sys)
 	return $amount;
 }
 
+function closestShip($playerId, $x, $y)
+{
+	global $db;
+	$new = $db->query('SELECT s.ship_id FROM [game]_ships AS s ' .
+	 'INNER JOIN [game]_stars AS l ON s.location = l.star_id ' .
+	 'INNER JOIN [game]_users AS u ON s.login_id = u.login_id ' .
+	 'WHERE s.login_id = %u && u.ship_id != s.ship_id ORDER BY ' .
+	 '(POWER(l.x - %u, 2) + POWER(l.y - %u, 2)) ASC, RAND() LIMIT 1',
+	 array($playerId, $x, $y));
+
+	return $db->numRows($new) > 0 ? (int)current($db->fetchRow($new)) : false;
+}
+
 ?>
