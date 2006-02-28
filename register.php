@@ -122,7 +122,7 @@ $db->query('INSERT INTO user_accounts (login_id, login_name, passwd, ' .
  $db->escape(sha256::hash($password)), time(), $db->escape($_POST['name']),
  $db->escape($_POST['email'])));
 
-$location = URI_FULL;
+$location = URL_FULL;
 $message = <<<END
 SYSTEM WARS REGISTRATION
 $location
