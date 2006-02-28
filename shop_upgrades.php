@@ -2,12 +2,8 @@
 
 require_once('inc/user.inc.php');
 
-deathCheck($user);
-
-if($userShip['location'] != 1) {
-	print_page("Error", "Upgrades cannot be purchased in this system.");
-} elseif ($user['ship_id'] === NULL) {
-	print_page("Error", "You are unable to buy Accessories & Upgrades here, as you do not have a real ship.");
+if (deathCheck($user) || $userShip === NULL || $userShip['location'] != 1) {
+	print_page("Error", "You are unable to buy upgrades here.");
 }
 
 //increases in capacity:

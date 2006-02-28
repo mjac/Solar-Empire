@@ -2,13 +2,13 @@
 
 require_once('inc/user.inc.php');
 
-$filename = "shop_port.php";
-
-if (!isset($port_id)) {
-	print_page("Port","Dock at which port?'");
+if (deathCheck($user) || $userShip === NULL) {
+	print_page('Port', 'You do not have a ship!');
 }
 
-deathCheck($user);
+if (!isset($port_id)) {
+	print_page('Port', 'Dock at which port?');
+}
 
 $pInfo = $db->query('SELECT * FROM [game]_ports WHERE location = %u AND ' .
  'port_id = %u', array($userShip['location'], $port_id));
@@ -65,7 +65,7 @@ if(isset($deal)) {
 	if($buy_sell == 3) {
 
 		$max = "(cargo_bays-metal-fuel-elect-organ-colon)";
-		$error_str .= fill_fleet($resource_deal, $max, $resource_str, $buy_cost, $filename, 1)."<p>";
+		$error_str .= fill_fleet($resource_deal, $max, $resource_str, $buy_cost, $self, 1)."<p>";
 
 
 	#find out how much of the material the user wants to deal in.
@@ -79,13 +79,13 @@ if(isset($deal)) {
 
 			#not allowed to buy.
 			if ($userShip['empty_bays'] > 0) {
-				get_var("Buy $resource_str",$filename,"How much $resource_str do you want to buy?",'amount',$def);
+				get_var("Buy $resource_str",$self,"How much $resource_str do you want to buy?",'amount',$def);
 			} else { #no cargo cap
 				$error_str .= "You have no cargo capacity left on this ship. As such you cannot buy anything.<p>";
 			}
 
 		} elseif ($userShip[$resource_deal]) {#sell commodity
-			get_var("Sell $resource_str",$filename,"How much $resource_str do you want to sell?",'amount',$userShip[$resource_deal]);
+			get_var("Sell $resource_str",$self,"How much $resource_str do you want to sell?",'amount',$userShip[$resource_deal]);
 		} else { #no commodity to sell
 			$error_str .= "You have no $resource_str to sell.<p>";
 		}
@@ -147,7 +147,7 @@ if(isset($sell_all)) {
 		} elseif ($user['turns'] < 5) {
 			print_page("Port","You do not have enough turns to trade using this method. You will have to sell everything manually.");
 		} elseif(!isset($sure)) {
-			get_var('Sell all cargo',$filename,"Are you sure you want to sell all cargo from all your ships currently in this star system with cargo (<b>$ship_count</b> of them)?<p>This will cost you <b>5</b> turns and will generate revenues of about <b>$sold_worth</b> Credits.",'sure','yes');
+			get_var('Sell all cargo',$self,"Are you sure you want to sell all cargo from all your ships currently in this star system with cargo (<b>$ship_count</b> of them)?<p>This will cost you <b>5</b> turns and will generate revenues of about <b>$sold_worth</b> Credits.",'sure','yes');
 		} else {
 			$db->query("update [game]_ships set elect = 0, metal = 0, fuel = 0, organ = 0 where location = '$userShip[location]' AND login_id = '$user[login_id]' AND cargo_bays > 0");
 			giveTurnsPlayer(-5);
@@ -168,9 +168,9 @@ if(isset($sell_all)) {
 			print_page("Port","This ship has no cargo that can be sold. Try a selling from a different ship.");
 		} elseif(!isset($sure)) {
 			if(isset($changed)){
-				get_var('Sell all cargo',$filename,"As you only have one ship in this system with cargo to sell you have been re-directed to the <b class=b1>sell from one ship</b> facility.<br />This will save you <b>4</b> turns. <p>Are you sure you want to sell all cargo from this ship?<p>This will cost you <b>1</b> turn, and add <b>$sold_worth</b> Credits to your funds.",'sure','yes');
+				get_var('Sell all cargo',$self,"As you only have one ship in this system with cargo to sell you have been re-directed to the <b class=b1>sell from one ship</b> facility.<br />This will save you <b>4</b> turns. <p>Are you sure you want to sell all cargo from this ship?<p>This will cost you <b>1</b> turn, and add <b>$sold_worth</b> Credits to your funds.",'sure','yes');
 			} else {
-				get_var('Sell all cargo',$filename,"Are you sure you want to sell all cargo from this ship?<p>This will cost you <b>1</b> turn, and add <b>$sold_worth</b> Credits to your funds.",'sure','yes');
+				get_var('Sell all cargo',$self,"Are you sure you want to sell all cargo from this ship?<p>This will cost you <b>1</b> turn, and add <b>$sold_worth</b> Credits to your funds.",'sure','yes');
 			}
 		} else {
 			dbn("update [game]_ships set elect = 0, metal = 0, fuel = 0, organ = 0 where ship_id = '$user[ship_id]'");
@@ -208,7 +208,7 @@ empty_bays($userShip);
 $error_str .= <<<END
 <h1>Galactic port $port[port_id], system #$port[location]</h1>
 <p><img src="img/places/port.jpg" alt="Galactic port" /></p>
-<p>Teleconference to the galactic <a href="auction_house.php">auction house</a></p>
+<p>Teleconference to the galactic <a href="shop_auction_house.php">auction house</a></p>
 
 <h2>All cargo</h2>
 <p><a href="shop_port.php?sell_all=1&amp;port_id=$port_id">Sell everything</a>

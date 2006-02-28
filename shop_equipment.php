@@ -2,9 +2,7 @@
 
 require_once('inc/user.inc.php');
 
-deathCheck($user);
-
-if ($userShip['location'] != 1) {
+if (deathCheck($user) || $userShip === NULL || $userShip['location'] != 1) {
 	print_page("Error", "You are unable to buy equipment here.");
 }
 
