@@ -253,10 +253,6 @@ END;
 	$error_str .= "</dl>\n";
 }
 
-/*if (($transwarp_cost) || ($user[login_id] ==1)) {
-	$error_str .= "<br /><a href=$self?buy=7>Transwarp Drive</a>: $transwarp_cost";
-}*/
-
-
 print_page("Equipment Shop",$error_str);
+
 ?>
