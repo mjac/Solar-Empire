@@ -77,7 +77,7 @@ function getAutowarp()
 
 function locationBar()
 {
-	global $db, $user, $userOpt, $userShip, $gameInfo;
+	global $db, $user, $userOpt, $userShip, $gameInfo, $self;
 
 	$bar = <<<END
 <div id="locBar">
