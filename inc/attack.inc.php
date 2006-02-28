@@ -55,14 +55,7 @@ function deadShip($ship)
 
 	$pos = $db->fetchRow($location, ROW_NUMERIC);
 
-	$new = $db->query('SELECT s.ship_id FROM [game]_ships AS s ' .
-	 'LEFT JOIN [game]_stars AS l ON s.location = l.star_id ' .
-	 'WHERE login_id = %u ORDER BY (POWER(l.x - %u, 2) + ' .
-	 'POWER(l.y - %u, 2)) ASC, RAND() LIMIT 1', array($ship['login_id'],
-	 $pos[0], $pos[1]));
-
-	$newId = $db->numRows($new) > 0 ? (int)current($db->fetchRow($new)) : 
-	 false;
+	$newId = closestShip($ship['login_id'], $pos[0], $pos[1]);
 	if ($newId === false && $ship['auxiliary_ship'] === NULL) {
 		$db->query('UPDATE [game]_users SET ship_id = NULL WHERE ' .
 		 'login_id = %u', array($ship['login_id']));
