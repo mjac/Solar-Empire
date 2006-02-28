@@ -11,13 +11,13 @@ $error_str = "";
 
 #fighter cost is now based upon the admin var.
 #$fighter_cost = 100;
-$fighter_cost = $fighter_cost_earth;
+$fighter_cost = $gameOpt['fighter_cost_earth'];
 if($fighter_cost <= 0){
 	$fighter_cost = 1;
 }
 
 $shield_cost = 50;
-$sn_cost = $bomb_cost * 5;
+$sn_cost = $gameOpt['bomb_cost'] * 5;
 $amount = isset($amount) ? round($amount) : 0;
 
 //function that allows for quick and simple purchase of basic items.
