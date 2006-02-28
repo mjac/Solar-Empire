@@ -2,19 +2,17 @@
 
 require_once('inc/user.inc.php');
 
-deathCheck($user);
+if (!deathCheck($user) && $userShip['location'] != 1) {
+	print_page('Not in Sol', '<p>You are not in Star System #1</p>');
+}
 
 $cQuery = $db->query('SELECT COUNT(*) FROM [game]_ships WHERE login_id = %u',
  $user['login_id']);
 $numships = (int)current($db->fetchRow($cQuery));
 
 
-if($user['ship_id'] !== NULL && $userShip['location'] != 1) {
-	print_page("Error","You are unable to buy ships from here. Ships can only be brought from Earth (System #1).");
-}
-
 $rs = "<p><a href=earth.php>Back to Earth</a>";
-$rs .= "<br /><a href=earth.php?ship_shop=1>Return to Ship Shop</a>";
+$rs .= "<br /><a href=\"shop_ship.php\">Return to Ship Shop</a>";
 $error_str = "";
 
 $ship_types = load_ship_types();
@@ -55,7 +53,7 @@ END;
 		$error_str = "You already own <b>$numships</b> ship(s). The Admin has set the max number of ships players may have to <b>$max_ships</b>.";
 	} elseif(!isset($ship_name)) { #confirm purchase.
 		$rs = "<p><a href=earth.php>Back to Earth.</a>";
-		$rs .= "<br /><a href=earth.php?ship_shop=1>Return to Ship Shop</a>";
+		$rs .= "<br /><a href=\"shop_ship.php\">Return to Ship Shop</a>";
 		get_var('Name your new ships','ship_build.php',"Your fleet presently consists of <b>$numships</b> ship(s).<br />When naming your new ships they will be given a number after the name you have entered. (3-25 Characters)",'ship_name','');
 	} elseif (strlen($ship_name) < 3) {
 		$rs .= "<p><a href=javascript:history.back()>Try Again</a>";
@@ -105,7 +103,7 @@ if ($numships >= $gameOpt['max_ships']) {
 } elseif ($got_a_brob == 1 && shipHas($ship_stats, 'oo')) {
 	$error_str .= "You are already the proud owner of a flagship.<br />Due to galactic conventions, to keep the universe fairly safe you're only allowed one at a time.<br />Also, when you do loose this present one, your next one will cost twice the amount it of the last one.";
 } elseif(!isset($ship_name)) {
-	$rs = "<p><a href=earth.php?ship_shop=1>Return to Ship Shop</a>";
+	$rs = "<p><a href=\"shop_ship.php\">Return to Ship Shop</a>";
 	get_var('Name your new ship','ship_build.php',"Your fleet presently consists of <b>$numships</b> ships.<br />Please enter a name for your new <b class=b1>$ship_stats[name]</b>:(30 Char Max)",'ship_name','');
 } elseif (strlen($ship_name) < 3) {
 		$rs .= "<p><a href=javascript:history.back()>Try Again</a>";
