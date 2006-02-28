@@ -644,7 +644,8 @@ if ($user['show_user_ships'] == 1) {
 		</optgroup>
 	</select>
 	<input type="submit" name="action" value="Assign" class="button" /> -
-	<input type="submit" name="action" value="Destroy" class="button" /></p>
+	<input type="submit" name="action" value="Destroy" class="button"
+	 onclick="return confirm('Are you sure?');" /></p>
 
 	<table class="shipListing">
 		<tr>
