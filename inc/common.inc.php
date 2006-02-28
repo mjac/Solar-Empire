@@ -32,10 +32,10 @@ function print_header($title)
 {
 	global $user_options, $directories;
 
-	$style = esc(URI_SHORT . '/css/style' . (isset($user_options['color_scheme']) ?
+	$style = esc(URL_SHORT . '/css/style' . (isset($user_options['color_scheme']) ?
 	 $user_options['color_scheme'] : 1) . '.css');
 	$title = esc($title);
-	$js = esc(URI_SHORT . '/js/common.js');
+	$js = esc(URL_SHORT . '/js/common.js');
 
 	echo <<<END
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
