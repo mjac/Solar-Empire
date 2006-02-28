@@ -46,24 +46,36 @@ if ($userOpt['show_pics']) {
 
 	$out .= <<<END
 <h2>Places to visit</h2>
-<ul>
-	<li><a href="shop_ship.php">Spacecraft Emporium</a></li>
+<dl>
+	<dt><a href="shop_ship.php">Spacecraft emporium</a></dt>
+	<dd>Buy and sell intergalactic vessels</dd>
 
 END;
 
 
 if ($user['ship_id'] !== NULL) {
 	$out .= <<<END
-	<li><a href="shop_equipment.php?planet_id=$planet_id">Equipment Shop</a></li>
-	<li><a href="shop_upgrades.php">Accessories/Upgrades Store</a></li>
-	<li><a href="earth.php?colonist=1">Colonist Recruitment Center</a> - <a href=earth.php?all_colon=1>Fill Fleet</a></li>
+	<dt><a href="shop_equipment.php?planet_id=$planet_id">Equipment 
+	shop</a></dt>
+	<dd>For that competitive advantage</dd>
+
+	<dt><a href="shop_upgrades.php">Ship upgrade Store</a></dt>
+	<dd>A variety of upgrades for ships including cargo and fighter 
+	capacity</dd>
+
+	<dt><a href="earth.php?colonist=1">Colonist recruitment centre</a> &#8212; 
+	<a href=earth.php?all_colon=1>fill fleet</a></dt>
+	<dd>These servants populate your planets and power your empire</dd>
 
 END;
 }
 
 $out .= <<<END
-	<li><a href="shop_auction_house.php">Auction House</a></li>
-	<li><a href="bounty.php">Charity Shop</a> (illegal)</li>
+	<dt><a href="shop_auction_house.php">Auction house</a></dt>
+	<dd>Buy and sell a variety of goods unavailable elsewhere</dd>
+
+	<dt><a href="bounty.php">&#8216;Charity shop&#8217;</a></dt>
+	<dd>Place a bounty on a player&#8217;s head</dd>
 </ul>
 <h2><a href="system.php">Back into space</a></h2>
 END;
