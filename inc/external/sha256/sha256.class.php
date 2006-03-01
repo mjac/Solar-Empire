@@ -146,7 +146,7 @@ class sha256_data
 		$str .= chr(0x80) . str_repeat(chr(0), $k) . $l;
 
 		// break the binary string into 512-bit blocks
-		preg_match_all('#.{64}#', $str, $this->chunks);
+		preg_match_all( '#.{64}#', $str, $this->chunks);
 		$this->chunks = $this->chunks[0];
 
 		$this->hash = array(
