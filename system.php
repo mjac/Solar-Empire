@@ -327,7 +327,7 @@ if (!empty($transburst)) {
 }
 
 // Transwarp
-if (!empty($transwarp) && $userShip['ship_id'] !== NULL) {
+if (!empty($transwarp) && $userShip !== NULL) {
 	$num_towed = towedByShip($userShip);
 
 	$tw_distance = 100;
@@ -335,13 +335,13 @@ if (!empty($transwarp) && $userShip['ship_id'] !== NULL) {
 
 	$turn = floor(get_star_dist($userShip['location'], $transwarp) >> 4);
 	if(!shipHas($userShip, 'tw')) {
-		print_page("Transwarp","Your ship is not equipped with a transwarp drive.");
+		print_page("Transwarp", "Your ship is not equipped with a transwarp drive.");
 	} elseif($transwarp == $userShip['location']) {
 		$out .= "<p>You're already there!</p>";
 	} elseif(!starExists($transwarp)) {
-		print_page("Transwarp","System does not exist.");
+		print_page("Transwarp", "System does not exist.");
 	} elseif(get_star_dist($userShip['location'], $transwarp) > $tw_distance) {
-		print_page("Transwarp","Your Transwarp drive cannot warp that far. Maximum Transwarp distance of $tw_distance Light Years.");
+		print_page("Transwarp", "Your Transwarp drive cannot warp that far. Maximum Transwarp distance of $tw_distance Light Years.");
 	} elseif(!giveTurnsPlayer(-$turn)) {
 		print_page("Transwarp", "You need <b>$turn</b> turns to warp that far.");
 	} else {
