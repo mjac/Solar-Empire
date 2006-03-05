@@ -4,8 +4,6 @@ require_once('inc/user.inc.php');
 
 if (!IS_ADMIN) {
 	print_page("Admin","Admin access only.");
-} elseif ($target == $gameInfo['admin']) {
-	print_page("Admin", "The admin cannot retire.");
 }
 
 #get users clan info and player info.
