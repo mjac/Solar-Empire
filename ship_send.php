@@ -3,15 +3,15 @@
 require_once('inc/user.inc.php');
 
 deathCheck($user);
+
 $cost_per_transfer = 0;
 $text = "";
-$min_b4_trans = $min_before_transfer;
 $rs = "<p><br /><a href=player_info.php?target=$target>Back to Player Info</a>";
 
-if ($user['joined_game'] > (time() - ($min_b4_trans * 86400)) && !IS_ADMIN) {
-	print_page("Transfer Ship Registration","You cannot sign over a ship in the first $min_b4_trans days of having your account");
+if ($user['joined_game'] > (time() - ($gameOpt['min_before_transfer'] * 86400)) && !IS_ADMIN) {
+	print_page("Transfer Ship Registration", "You cannot sign over a ship in the first $gameOpt[min_before_transfer] days of having your account");
 } elseif(!isset($target)) { #ensure target has been selected
-	print_page("Transfer Ship Registration","Target player required. Leave the URL alone");
+	print_page("Transfer Ship Registration", "Target player required.");
 }
 
 #get information from DB about target player.
@@ -34,7 +34,7 @@ if(isset($do_ship)) { //user has selected stuff to transfer
 	$num_ships = count($do_ship);
 	$estimated_cost = $num_ships * $cost_per_transfer;
 	$loop_txt = "";
-	$rs .= "<p><a href=send_ship.php?target=$target[login_id]>Transfer Another Ship</a><br />";
+	$rs .= "<p><a href=ship_send.php?target=$target[login_id]>Transfer Another Ship</a><br />";
 
 	db("select count(ship_id) from [game]_ships where login_id = '$target[login_id]'");
 	$ship_count = dbr();
@@ -96,7 +96,7 @@ if(isset($do_ship)) { //user has selected stuff to transfer
 
 $text .= "Select ships to sign over to <b class='b1'>$target[login_name]</b>, then click the <b class=b1>Send Ships</b> button.<br />Alternatively, to easily send one ship, simply click it's <b class=b1>Sign Over</b> link.<br /><br />";
 $text .= "<b class=b1>Note</b>: All cargo will be jettisoned from any ships getting transfered.<br />";
-$text .= "<form action=send_ship.php method=post id=transfer_ships><table>";
+$text .= "<form action=ship_send.php method=post id=transfer_ships><table>";
 
 db("select ship_name, class_name, location, fighters, max_fighters, shields, max_shields, config, ship_id from [game]_ships where login_id = '$user[login_id]' AND ship_id != '$user[ship_id]' order by class_name");
 $ships = dbr(1);
@@ -113,15 +113,21 @@ if(!isset($ships)){	#ensure there are some ships to display
 		unset ($ships['max_fighters']);
 		unset ($ships['max_shields']);
 
-		$ships['ship_id'] = "<input type=checkbox name=do_ship[$ships[ship_id]] value=$ships[ship_id]> - <a href=send_ship.php?target=$target[login_id]&do_ship[$ships[ship_id]]=$ships[ship_id]>Sign Over</a>";
+		$ships['ship_id'] = "<input type=checkbox name=do_ship[$ships[ship_id]] value=$ships[ship_id]> - <a href=ship_send.php?target=$target[login_id]&do_ship[$ships[ship_id]]=$ships[ship_id]>Sign Over</a>";
 		$text .= make_row($ships);
 		$ships = dbr(1);
 	}
 }
 
-$text .= "</table><br /><input type=hidden name=target value=$target[login_id]><input type=submit name=submit value='Send Ships'> - <a href=javascript:TickAll(\"transfer_ships\")>Invert Ship Selection</a><br /></form>";
-
-$text .= "<br /><a href=\"$self?target=$target[login_id]\">Reload ship list</a>";
+$text .= <<<END
+</table>
+<p><input type="hidden" name="target" value="$target[login_id]" />
+<input type="submit" name="submit" value="Send Ships" class="button" /> - 
+<a href="#" onclick="tickInvert(&quot;transfer_ships&quot;);">Invert 
+Ship Selection</a></p>
+</form>
+<p><a href="$self?target=$target[login_id]">Reload ship list</a></p>
+END;
 
 print_page("Transfer Ship Registration",$text);
 
