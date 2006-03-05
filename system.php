@@ -625,7 +625,7 @@ $out .= "<h2 class=\"ship\">" . ($user['show_user_ships'] == 1 ?
 if ($user['show_user_ships'] == 1) {
 	$out .= <<<END
 <form method="get" action="$self" id="ship_towing">
-	<p><input type="button" onclick="TickAll('ship_towing'); return false;" value="Invert" class="button" /> -
+	<p><input type="button" onclick="tickInvert('ship_towing'); return false;" value="Invert" class="button" /> -
 	<input type="submit" name="action" value="Tow" class="button" />
 	<input type="submit" name="action" value="Release" class="button" /> -
 	<select name="task">

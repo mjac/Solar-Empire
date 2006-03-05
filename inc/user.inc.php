@@ -608,7 +608,7 @@ END;
 <p><a href="$page.php?killallmsg=1">Delete All Messages</a></p>
 <form method="post" action="$page.php" id="messag_form">
 $msgStr
-	<p><a href="#" onclick="TickAll('messag_form');">Invert Message Selection</a> -
+	<p><a href="#" onclick="tickInvert('messag_form');">Invert Message Selection</a> -
 	<input type="submit" value="Delete selected" class="button" />
 	<input type="hidden" name="clear_messages" value="1">$clan</p>
 </form>

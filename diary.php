@@ -151,7 +151,7 @@ if(!$entryAmount){//no entries in diary
 }
 
 if ($entryAmount > 1){//show the big delete options
-	$text .= "<br /><INPUT type=submit value=\"Delete Selected Entries\">  - <a href=javascript:TickAll(\"quick_del\")>Invert Entry Selection</a></form><br />";
+	$text .= "<br /><INPUT type=submit value=\"Delete Selected Entries\">  - <a href=javascript:tickInvert(\"quick_del\")>Invert Entry Selection</a></form><br />";
 	$text .= "<br /><a href=$filename?delete_all=1>Delete All</a> entries in diary.";
 }
 $rs = "<p><a href=\"system.php\">Back to Star System</a>";
