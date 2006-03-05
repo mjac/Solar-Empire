@@ -1,4 +1,4 @@
-function TickAll(form_name)
+function tickInvert(form_name)
 {
 	var alpha = document.getElementById(form_name);
 	var len = alpha.elements.length;
