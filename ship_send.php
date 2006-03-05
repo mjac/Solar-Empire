@@ -5,7 +5,7 @@ require_once('inc/user.inc.php');
 deathCheck($user);
 
 $cost_per_transfer = 0;
-$text = "";
+$text = '';
 $rs = "<p><br /><a href=player_info.php?target=$target>Back to Player Info</a>";
 
 if ($user['joined_game'] > (time() - ($gameOpt['min_before_transfer'] * 86400)) && !IS_ADMIN) {
@@ -33,7 +33,7 @@ if($sudden_death == 1 && !IS_ADMIN) { //SD check
 if(isset($do_ship)) { //user has selected stuff to transfer
 	$num_ships = count($do_ship);
 	$estimated_cost = $num_ships * $cost_per_transfer;
-	$loop_txt = "";
+	$loop_txt = '';
 	$rs .= "<p><a href=ship_send.php?target=$target[login_id]>Transfer Another Ship</a><br />";
 
 	db("select count(ship_id) from [game]_ships where login_id = '$target[login_id]'");
@@ -45,10 +45,9 @@ if(isset($do_ship)) { //user has selected stuff to transfer
 		$text .= "No ships Selected for Transfer!";
 	} elseif($ship_count[0] >= $max_ships){
 		$text .= "<b class=b1>$target[login_name]</b> already has the maximum number of ships.";
-	} else { //can transfer ships.
-
+	} else {
+		//can transfer ships.
 		$transfer_counter = 0;
-
 
 		//loops through the ships.
 		foreach($do_ship as $ship_id) {
@@ -94,9 +93,15 @@ if(isset($do_ship)) { //user has selected stuff to transfer
 
 }
 
-$text .= "Select ships to sign over to <b class='b1'>$target[login_name]</b>, then click the <b class=b1>Send Ships</b> button.<br />Alternatively, to easily send one ship, simply click it's <b class=b1>Sign Over</b> link.<br /><br />";
-$text .= "<b class=b1>Note</b>: All cargo will be jettisoned from any ships getting transfered.<br />";
-$text .= "<form action=ship_send.php method=post id=transfer_ships><table>";
+$text .= <<<END
+<p>Select ships to sign over to <em>$target[login_name]</em>, then click the 
+<em>Send Ships</em> button.  Alternatively, to easily send one ship, simply 
+click the <em>Sign Over</em> link.</p>
+<p>Note: All cargo will be jettisoned from any ships getting transfered.</p>
+<form action="ship_send.php" method="post" id="transfer_ships">
+<table>
+
+END;
 
 db("select ship_name, class_name, location, fighters, max_fighters, shields, max_shields, config, ship_id from [game]_ships where login_id = '$user[login_id]' AND ship_id != '$user[ship_id]' order by class_name");
 $ships = dbr(1);
@@ -110,8 +115,7 @@ if(!isset($ships)){	#ensure there are some ships to display
 		$ships['shields'] = $ships['shields']." / ".$ships['max_shields'];
 
 		#remove the un-necassaries from the array. As well as their numerical counterparts (it's a multi-indexed array).
-		unset ($ships['max_fighters']);
-		unset ($ships['max_shields']);
+		unset($ships['max_fighters'], $ships['max_shields']);
 
 		$ships['ship_id'] = "<input type=checkbox name=do_ship[$ships[ship_id]] value=$ships[ship_id]> - <a href=ship_send.php?target=$target[login_id]&do_ship[$ships[ship_id]]=$ships[ship_id]>Sign Over</a>";
 		$text .= make_row($ships);
