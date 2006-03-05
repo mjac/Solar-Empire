@@ -108,8 +108,14 @@ if (isset($transfer)) {
 	}
 }
 
-db("select u.*, pu.*, pu.login_name as generic_l_name, u.login_name as login_name from [game]_users u, user_accounts pu where u.login_id = '$target' AND pu.login_id = '$target'");
-$player = dbr();
+$pInfo = $db->query('SELECT u.*, p.*, p.login_name AS generic_l_name, ' .
+ 'u.login_name AS login_name FROM [game]_users AS u INNER JOIN user_accounts ' .
+ 'AS p ON u.login_id = p.login_id WHERE u.login_id = %u', array($target));
+if ($db->numRows($pInfo) < 1) {
+	print_page('No information', 'That player does not exist.');
+}
+
+$player = $db->fetchRow($pInfo);
 
 #used to calculate percentages
 db("select sum(cash) as cash, sum(fighters_killed) as fighters_killed, sum(fighters_lost) as fighters_lost, sum(score) as score, sum(ships_killed) as ships_killed, sum(ships_lost) as ships_lost, sum(ships_killed_points) as ships_killed_points, sum(ships_lost_points) as ships_lost_points, sum(turns_run) as turns_run, sum(turns) as turns, sum(game_login_count) as game_login_count from [game]_users where login_id > '5'");
