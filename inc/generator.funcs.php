@@ -22,19 +22,17 @@ function add_starports(&$ports)
 {
 	global $UNI;
 
-	$amount = $UNI['num_ports'];
+	$amount = $UNI['num_ports'] - count($ports);
 
 	// Stop infinite recursion if ports > stars
-	if ($UNI['num_ports'] < $UNI['numsystems']) {
-		while (--$amount >= 0) {
-			// Ensure no more than one port per system
-			while (in_array($new_port = mt_rand(1, $UNI['numsystems']), $ports));
-			$ports[] = $new_port;
-		}
-	} else {
-		while (--$amount >= 0) {
-			$ports[] = mt_rand(1, $UNI['numsystems']);
-		}
+	if ($amount < $UNI['numsystems']) {
+		$amount = $UNI['numsystems'];
+	}
+
+	while (--$amount >= 0) {
+		// Ensure no more than one port per system
+		while (in_array($new_port = mt_rand(1, $UNI['numsystems']), $ports));
+		$ports[] = $new_port;
 	}
 }
 
