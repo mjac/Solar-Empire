@@ -101,7 +101,7 @@ if (isset($transfer)) {
 			print_page("Transfer Error","You don't have that much cash<br /><a href=javascript:back()>Go back</a><br />");
 		} else {
 			giveMoney($trans_target_id, $trans_amount);
-			send_message($trans_target_id, "<b class=b1>$user[login_name]</b> has sent you <b>$trans_amount</b> Credits.");
+			msgSendSys($trans_target_id, "<b class=b1>$user[login_name]</b> has sent you <b>$trans_amount</b> Credits.");
 			insert_history($user['login_id'], "Transfered $trans_amount to $trans_target");
 			print_page("Transfer Complete", "You sent <b>$trans_amount</b> Credits to <b class=b1>$trans_target</b>.");
 		}

@@ -85,7 +85,7 @@ if(isset($do_ship)) { //user has selected stuff to transfer
 			giveMoneyPlayer(-$total_cost);
 
 			post_news("$user[login_name] transferred $transfer_counter ship(s) to $target[login_name]");
-			send_message($target['login_id'],"<b>$transfer_counter</b> ship(s) have been transfered to you from <b class=b1>$user[login_name]</b>.");
+			msgSendSys($target['login_id'],"<b>$transfer_counter</b> ship(s) have been transfered to you from <b class=b1>$user[login_name]</b>.");
 			insert_history($user['login_id'],"Transfered <b>$transfer_counter</b> ship(s) to <b class=b1>$target[login_name]</b>.");
 		}
 	}

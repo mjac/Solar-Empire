@@ -164,12 +164,12 @@ if ($planet['login_id'] !== $user['login_id']) {
 				$out .= "<p>Damage report ends;";
 				dbn("update [game]_planets set fighters = fighters - '$damage_done', colon=colon-'$colon_killed', alloc_fight=alloc_fight-'$fight_killed', alloc_elect=alloc_elect-'$elect_killed', alloc_organ=alloc_organ-'$organ_killed' where planet_id = '$destination'");
 
-				send_message($target_planet['login_id'],"<b class=b1>$user[login_name]</b> launched an Omega Missile at your planet <b class=b1>$target_planet[planet_name]</b> (system #<b>$target_planet[location]</b>) taking out <b>$damage_done</b> fighters, and <b>$colon_killed</b> colonists.");
+				msgSendSys($target_planet['login_id'],"<b class=b1>$user[login_name]</b> launched an Omega Missile at your planet <b class=b1>$target_planet[planet_name]</b> (system #<b>$target_planet[location]</b>) taking out <b>$damage_done</b> fighters, and <b>$colon_killed</b> colonists.");
 
 			} else {
 				$db->query('DELETE FROM [game]_planets WHERE planet_id = %u', array($destination));
 				dbn("update [game]_stars set planetary_slots = planetary_slots + 1 where star_id = $target_planet[location]");
-				send_message($target_planet['location'], "Your planet <b class=b1>$target_planet[planet_name]</b> (system #<b>$target_planet[location]</b>) was destroyed by a <b class=b1>Omega Missile</b> launched by <b class=b1>$user[login_name]</b>.");
+				msgSendSys($target_planet['login_id'], "Your planet <b class=b1>$target_planet[planet_name]</b> (system #<b>$target_planet[location]</b>) was destroyed by a <b class=b1>Omega Missile</b> launched by <b class=b1>$user[login_name]</b>.");
 			}
 
 			post_news("<b class=b1>$user[login_name]</b> launched an <b class=b1>Omega Missile</b> at the planet <b class=b1>$target_planet[planet_name]</b>.");

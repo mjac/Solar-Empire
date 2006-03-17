@@ -55,7 +55,7 @@ if(isset($alpha)) {
 				if($victim_id == $user['login_id']){
 					continue;
 				}
-				send_message($victim_id,"<b class=b1>$user[login_name]</b> unleashed an Alpha Bomb in Star System #<b>$userShip[location]</b>.<br />The bomb hit <b>$ships_hit</b> of your ships, completely eliminating all of their shields.<br />Shown below is a complete listing of your all ships hit by the blast:<br />$ship_list");
+				msgSendSys($victim_id,"<b class=b1>$user[login_name]</b> unleashed an Alpha Bomb in Star System #<b>$userShip[location]</b>.<br />The bomb hit <b>$ships_hit</b> of your ships, completely eliminating all of their shields.<br />Shown below is a complete listing of your all ships hit by the blast:<br />$ship_list");
 			}
 
 			$error_str .= "You have successfully released an Alpha Bomb in system #<b>$star[star_id]</b>, hitting <b>$ship_counter</b> ship(s) in all, and reducing all shields on those ships to <b>0</b>.";
@@ -156,7 +156,7 @@ if (attack_planet_check($user) < 1 || IS_ADMIN) {
 			if($victim_id == $user['login_id']){
 				continue;
 			}
-			send_message($victim_id,"<b class=b1>$user[login_name]</b> unleashed a $b_text Bomb in Star System #<b>$userShip[location]</b>.<br />The bomb hit <b>$ships_hit</b> of your ships doing <b>$bomb_damage</b> damage to each.<br /><br />Of those hit, <b>$ships_killed</b> were destroyed by the blast.<br />Shown below is a compelte listing of all your ships hit by the bomb:<br />$ship_list");
+			msgSendSys($victim_id,"<b class=b1>$user[login_name]</b> unleashed a $b_text Bomb in Star System #<b>$userShip[location]</b>.<br />The bomb hit <b>$ships_hit</b> of your ships doing <b>$bomb_damage</b> damage to each.<br /><br />Of those hit, <b>$ships_killed</b> were destroyed by the blast.<br />Shown below is a compelte listing of all your ships hit by the bomb:<br />$ship_list");
 		}
 
 		if($elim == 0){

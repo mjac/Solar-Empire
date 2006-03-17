@@ -102,7 +102,7 @@ if(isset($destroy)) {
 	} elseif(($user['clan_id'] === $planet['clan_id'] || $planet['fighters'] != 0) && $user['joined_game'] > (time() - ($min_before_transfer * 86400))) {
 		$output_str .= "<br />You can not transfer a planet before the min_before_transfer time is up.<p>";
 	} else {
-		send_message($planet['login_id'],"<b class=b1>$user[login_name]</b> claimed the planet <b class=b1>$planet[planet_name]</b> from you.");
+		msgSendSys($planet['login_id'], "<b class=b1>$user[login_name]</b> claimed the planet <b class=b1>$planet[planet_name]</b> from you.");
 		post_news("<b class=b1>$user[login_name]</b> has claimed the planet <b class=b1>$planet[planet_name]</b>.");
 		dbn("update [game]_planets set login_id = $user[login_id], pass = '' where planet_id = '$planet[planet_id]'");
 		$planet['pass'] = 0;

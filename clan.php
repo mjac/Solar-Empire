@@ -38,7 +38,7 @@ if (isset($join)) { // Join clan
 
 		checkPlayer($user['login_id']);
 
-		send_message($clan['leader_id'], "<b class=b1>$user[login_name]</b> has joined your clan.");
+		msgSendSys($clan['leader_id'], "<b class=b1>$user[login_name]</b> has joined your clan.");
 
 		insert_history($user['login_id'], "Joined $clan[clan_name] clan.");
 	}
@@ -297,7 +297,7 @@ if (isset($leave)) { // Leave clan
 		$db->query('UPDATE [game]_users SET clan_id = NULL WHERE login_id = %u',
 		 array($user['login_id']));
 
-		send_message($clan['leader_id'], '<em>' . esc($user['login_name']) .
+		msgSendSys($clan['leader_id'], '<em>' . esc($user['login_name']) .
 		 '</em> has left your clan.');
 	}
 
