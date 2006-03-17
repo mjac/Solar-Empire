@@ -77,6 +77,20 @@ while (!feof($stars)) {
 
 ?>
 <p><?php echo $count; ?> star names have been inserted.</p>
+<h2>Adding administrator account</h2>
+<p><?php
+
+$newAdmin = $db->query('INSERT INTO user_accounts (login_id, login_name, ' .
+ 'passwd, session_exp, session_id, in_game, email_address, signed_up, ' .
+ 'last_login, login_count, last_ip, num_games_joined, page_views, ' .
+ 'real_name, total_score, default_color_scheme) VALUES (1, \'Admin\', ' .
+ '\'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\', 0, ' .
+ '\'\', NULL, \'Tyrant of the Universe\', 1, 1, 1, \'\', 0, 0, ' .
+ '\'Game Administrator\', 0, 1)');	
+
+echo $db->hasError($newAdmin) ? 'Failure' : 'Success';
+
+?></p>
 <h2>Result</h2>
 <p>If all of the queries completed successfully, delete the install directory
 and sign-in as Admin (no password).</p>
