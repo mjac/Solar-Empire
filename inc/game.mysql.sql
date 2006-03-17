@@ -26,6 +26,8 @@ CREATE TABLE gamename_clans (
   PRIMARY KEY (clan_id)
 ) TYPE=MyISAM;
 --
+DROP TABLE IF EXISTS gamename_clan_invites;
+--
 CREATE TABLE gamename_clan_invites (
   clan_id smallint unsigned NOT NULL,
   login_id int unsigned NOT NULL,
@@ -136,11 +138,11 @@ DROP TABLE IF EXISTS gamename_messages;
 --
 CREATE TABLE gamename_messages (
   message_id int unsigned NOT NULL,
-  sender_name varchar(32) NOT NULL default '',
+  login_id int NOT NULL,
+  sender_id int unsigned NULL default NULL,
+  sender_name varchar(32) NULL default NULL,
   `timestamp` int unsigned NOT NULL default 0,
-  login_id int NOT NULL default 0,
   `text` text NOT NULL,
-  sender_id int unsigned NOT NULL default 1,
   clan_id int unsigned NOT NULL default 0,
   PRIMARY KEY (message_id),
   KEY login_id (login_id),
