@@ -113,8 +113,6 @@ CREATE TABLE user_accounts (
   UNIQUE KEY email_address (email_address)
 ) TYPE=MyISAM;
 --
-INSERT INTO user_accounts (login_id, login_name, passwd, session_exp, session_id, in_game, email_address, signed_up, last_login, login_count, last_ip, num_games_joined, page_views, real_name, total_score, default_color_scheme) VALUES (1, 'Admin', 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', 0, '', NULL, 'Tyrant of the Universe', 1, 1, 1, '', 0, 0, 'Game Administrator', 0, 1);
---
 DROP TABLE IF EXISTS user_history;
 --
 CREATE TABLE user_history (
