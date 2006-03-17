@@ -422,17 +422,21 @@ function empty_bays(&$ship)
 }
 
 
-function &formatName($id, $name, $clanId, $clanSym, $clanCol)
+function formatName($id, $name, $clanId, $clanSym, $clanCol)
 {
 	static $cache = array();
 
-	if (!isset($cache[$name])) {
-		$cache[$name] = esc($name);
+	if ($name === NULL) {
+		return '<em>Galactic control</em>';
+	}
 
-		if ($id !== NULL) {
-			$cache[$name] = '<a href="' . esc('player_info.php?target=' . $id) .
-			 '">' . esc($cache[$name]) . '</a>';
-		}
+	if ($id === NULL) {
+		return esc($name);
+	}
+
+	if (!isset($cache[$name])) {
+		$cache[$name] = '<a href="' . esc('player_info.php?target=' . $id) .
+		 '">' . esc($name) . '</a>';
 
 		if ($clanId !== NULL) {
 			$cache[$name] = clanSymbol($clanSym, $clanCol) . " $cache[$name]";
