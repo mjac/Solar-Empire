@@ -30,9 +30,7 @@ if (isset($amount) && isset($target)) {
 	db("select clan_id from [game]_users where login_id = '$target'");
 	$todo = dbr();
 
-	if($amount > $user['cash']) {
-		print_page("Bounty","You do not have enough money to place that bounty.");
-	} elseif ($target == $user['login_id']) {
+	if ($target == $user['login_id']) {
 		print_page("Bounty","You may not place a bounty on yourself.");
 	} elseif ($todo['clan_id'] == $user['clan_id'] && $user['clan_id'] !== NULL) {
 		print_page("Bounty","You may not place a bounty on a clan-mate.");
@@ -44,23 +42,25 @@ if (isset($amount) && isset($target)) {
 		print_page("Bounty","Negative sums can not be placed for bounties.");
 	} elseif (!$initial) {
 		print_page("Bounty","You didn't state an amount to place on $targets head.");
+	} elseif (!giveMoneyPlayer(-$amount)) {
+		print_page("Bounty","You do not have enough money to place that bounty.");
 	} else {
 		dbn("update [game]_users set bounty = bounty + '$initial' where login_id = '$target'");
-		giveMoneyPlayer(-$amount);
 		db("select bounty, login_name from [game]_users where login_id = '$target'");
 		$returned = dbr();
-		send_message($user['login_id'], "<p>Someone has put $initial on " .
-		 "your head, making your bounty <em>$returned[0] credits</em>.</p>");
-		if ($returned[0] > $amount) {
-			$text .= "You have added <b>$initial</b> Credits to <b class=b1>$returned[1]'s</b> bounty, making the present bounty <b>$returned[0]</b>. You were charged <b>$amount</b> Credit(s) for the transaction.<p>";
+		msgSendSys($target, "<p>Someone has put $initial on your head, " .
+		 "making your bounty <em>$returned[bounty] credits</em>.</p>");
+		if ($returned['bounty'] > $amount) {
+			$text .= "You have added <b>$initial</b> Credits to <b class=b1>$returned[login_name]'s</b> bounty, making the present bounty <b>$returned[bounty]</b>. You were charged <b>$amount</b> Credit(s) for the transaction.<p>";
 		} else {
-			$text .= "You have placed <b>$initial</b> Credits on <b class=b1>$returned[1]'s</b> head. You were charged <b>$amount</b> Credit(s) for the transaction.<p>";
+			$text .= "You have placed <b>$initial</b> Credits on <b class=b1>$returned[login_name]'s</b> head. You were charged <b>$amount</b> Credit(s) for the transaction.<p>";
 		}
 		if($bount_mess) {
 			if (!giveTurnsPlayer(-1)) {
 				$text .= "You do not have enough turns to add the message, but rest assured, the bounty has been added non-the-less.";
 			} else {
-				send_message($user['login_id'], "<p>The bounty also came with a message: $bount_mess</p>");
+				msgSendSys($target, "<p>The bounty also came with a message: " .
+				 "$bount_mess</p>");
 				$text .= "You have been charged one turn for the additional message.";
 			}
 		}
@@ -70,7 +70,7 @@ if (isset($amount) && isset($target)) {
 
 //allow user to pay off bounty.
 if(isset($payoff) && $payoff < 0) {
-	if($user[cash] == 0) {
+	if($user['cash'] == 0) {
 		print_page("Bounty","You have no money. how do you expect to pay off a bounty?");
 	} else {
 
@@ -169,14 +169,14 @@ db('SELECT login_name, fighters_killed, ships_killed, bounty, ' .
 
 $player = dbr(1);
 if($player) {
-	$text .= make_table(array("Name","Fighters<br />Killed","Kills","Bounty"));
+	$text .= make_table(array("Name", "Fighter kills", "Ship kills", "Bounty"));
 	do {
 	  $dis_name = print_name($player);
 	  $player['login_name'] = $dis_name;
-	  $player['login_id'] = "";
+	  unset($player['login_id']);
 	  $text .= make_row($player);
 	} while ($player = dbr(1));
-	$text .= "</table><br />";
+	$text .= "</table>";
 }
 
 print_page('Bounties',$text);
