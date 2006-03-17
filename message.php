@@ -86,12 +86,12 @@ END;
 		db2("select login_id from [game]_users where clan_id='$clan_id' AND clan_id > 0");
 		$target_member = dbr2(1);
 		while($target_member) {
-			send_message($target_member['login_id'],$text);
+			send_message($target_member['login_id'], $text);
 			$target_member = dbr2(1);
 		}
 		$error_str = "Message sent to your clan.";
 	} elseif($target == -4) {
-		$error_str = message_all_players($text,$db_name, "All Players","<b class=b1>Admin</b>");
+		$error_str = message_all_players($text, $db_name, "All Players","<b class=b1>Admin</b>");
 	} elseif ($target == -5 && $user['bounty'] > 0 && IS_ADMIN && isset($clan_id)) {
 		$clan = $user['clan_id'];
 		$user['clan_id'] = $clan_id;
