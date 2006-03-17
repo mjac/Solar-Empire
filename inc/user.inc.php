@@ -463,6 +463,21 @@ function send_message($to, $text)
 	}
 }
 
+function msgSendSys($to, $text, $name = false)
+{
+	global $db;
+
+	$newId = newId('[game]_messages', 'message_id');
+
+	$ext = $name === false ? 'NULL' : ('\'' . $db->escape($name) . '\'');
+
+	$done = $db->query('INSERT INTO [game]_messages (message_id, timestamp, ' .
+	 'sender_name, sender_id, login_id, text) VALUES (%u, %u, ' . $ext . 
+	 ', NULL, %u, \'%s\')', array($newId, time(), $to, $db->escape($text)));
+
+	return !$db->hasError($done) && $db->affectedRows($done) == 1;
+}
+
 function print_messages($for, $full = false)
 {
 	global $db, $user, $error_str, $userOpt, $last_time, $prevdays,
@@ -485,7 +500,7 @@ function print_messages($for, $full = false)
 	}
 
 	$baseQuery = 'SELECT m.message_id, m.timestamp, m.text, ' .
-	 'm.sender_id, u.login_id, u.clan_id, c.sym_color AS ' .
+	 'm.sender_id, m.login_id, u.clan_id, c.sym_color AS ' .
 	 'clan_sym_color, c.symbol AS clan_sym, m.sender_name' . $sig .
 	 ' FROM [game]_messages AS m ' .
 	 'LEFT JOIN [game]_users AS u ON m.sender_id = u.login_id ' .
@@ -650,6 +665,9 @@ function retire_user($target)
 			$db->query('DELETE FROM [game]_messages WHERE login_id = %u',
 			 array($target));
 	}
+
+	$db->query('UPDATE [game]_messages SET sender_id = NULL WHERE ' .
+	 'sender_id = %u', array($target));
 
 	return true;
 }
