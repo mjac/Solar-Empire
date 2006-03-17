@@ -66,7 +66,7 @@ CREATE TABLE se_central_forum (
   PRIMARY KEY (message_id)
 ) TYPE=MyISAM;
 --
-DROP TABLE IF EXISTS se_games
+DROP TABLE IF EXISTS se_games;
 --
 CREATE TABLE se_games (
   `name` varchar(32) NOT NULL default '',
