@@ -67,14 +67,17 @@ if($sure != 'yes') {
 	}
 }
 
-if(empty($reason)){
+if (empty($reason)) {
 	$reason = "No Reason";
 }
 
 retire_user($target);
-post_news("Admin retired $target_info[login_name]: $reason");
-insert_history($user['login_id'],"Retired $target_info[login_name] From the Game");
-insert_history($target_info['login_id'],"Was Retired By The Admin");
-print_page("Retired","<b class=b1>$target_info[login_name]</b> has been removed from the game.");
+
+post_news("$user[login_name] retired $target_info[login_name]: $reason");
+
+insert_history($user['login_id'], "Retired $target_info[login_name] From the Game");
+insert_history($target_info['login_id'], "Was Retired By The Admin");
+
+print_page("Retired", "$target_info[login_name] has been removed from the game.");
 
 ?>
