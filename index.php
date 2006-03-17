@@ -45,7 +45,7 @@ gaming time</q>.</p>
 is an open source project hosted on SourceForge; look at the 
 <a href="http://sourceforge.net/news/?group_id=16534">news section</a> for 
 the latest updates.  The <a href="credits.php">credits</a> page contains a 
-list of all the contributors to the game.</a>.</p>
+list of all the contributors to the game</a>.</p>
 <p>Visit the <a href="http://forum.solar-empire.net/">global forums</a> to
 learn more and help develop this open-source game.</p>
 
