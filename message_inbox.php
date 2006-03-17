@@ -41,9 +41,9 @@ if(isset($clear_messages)) {
 	}
 }
 
-$cMessages = $db->query('SELECT COUNT(*) FROM [game]_messages AS m, ' .
- '[game]_users AS u where m.login_id = %u AND ' .
- 'm.sender_id = u.login_id', array($user['login_id']));
+$cMessages = $db->query('SELECT COUNT(*) FROM [game]_messages ' .
+ 'WHERE login_id = %u', array($user['login_id']));
+
 $counted = (int)current($db->fetchRow($cMessages));
 
 if($counted == 0){
