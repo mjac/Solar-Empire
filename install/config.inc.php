@@ -6,7 +6,7 @@ define('MCDB_PATH', dirname(__FILE__) . '/external/mcdb/mcdb.class.php');
 // DSN String - type://user:pass@host/database
 define('DB_DSN', 'mysql://USER:PASSWORD@localhost/DATABASE');
 
-define('SE_VERSION', '0.9.11');
+define('SE_VERSION', 'VERSION');
 header('X-Powered-By: System Wars ' . SE_VERSION);
 
 define('SESSION_TIME_LIMIT', 3600);
