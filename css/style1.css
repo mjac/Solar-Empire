@@ -214,7 +214,7 @@ table.shipListing th, table.shipListing td {
 }
 
 table.shipListing th {
-	background: #242B36;
+	background: #364045 url(blue_input_text.png) repeat-x;
 	border-right: 1px solid #333340;
 	border-bottom: 1px solid #333340;
 }
@@ -237,7 +237,7 @@ table.simple th, table.simple td {
 }
 
 table.simple th {
-	background: #243446;
+	background: #364045 url(blue_input_text.png) repeat-x;
 	border-right: 1px solid #333335;
 	border-bottom: 1px solid #333335;
 }
