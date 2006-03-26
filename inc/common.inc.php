@@ -532,11 +532,10 @@ function make_ship($parts, $owner)
 	return $db->hasError($result) ? false : $newId;
 }
 
-// escape a string std
+// escape a string for xml type documents
 function esc($str)
 {
-	return htmlspecialchars($str);
+	return htmlentities($str, ENT_QUOTES, 'UTF-8');
 }
-
 
 ?>
