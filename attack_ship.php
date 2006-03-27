@@ -38,12 +38,25 @@ if (!canAttackShip($tShip)) {
 	print_page('Attack attempt failed', $out);
 }
 
+$uMsg = sprintf("<p>Your %s attacked %s&#8217;s %s in system %u</p>", 
+ esc($userShip['ship_name']), esc($tShip['login_name']), 
+ esc($tShip['ship_name']), $userShip['location']);
+
+$tMsg = sprintf("<p>%s&#8217;s %s attacked your %s in system %u</p>", 
+ esc($tShip['login_name']), esc($tShip['ship_name']),
+ esc($userShip['ship_name']), $userShip['location']);
+
 
 // Chance of defending is n / (n + 1) - 0 ships 0 chance - 2 ships 2/3 chance
 if ($other = fleetDefender($tShip)) {
     $tShip = $other;
-    $out .= "<p>$tShip[ship_name] has <strong>flown in to defend</strong> " .
-	 print_name($tShip) . "'s fleet</p>\n";
+
+    $extra .= "<p>$tShip[ship_name] has <strong>flown in to defend</strong> " .
+	 esc($tShip['login_name']) . "&#8217;s fleet</p>\n";
+
+	$out .= $extra;
+	$uMsg .= $extra;
+	$tMsg .= $extra;
 }
 
 
@@ -86,26 +99,21 @@ $result = shipVship($userShip, $tShip);
 $rAttack = updateShip($userShip, $uShipOrg);
 $rDefend = updateShip($tShip, $tShipOrg);
 
-$out .= atkShipResult($uShipOrg, $tShipOrg, $tShip) .
- atkShipResult($tShip, $uShipOrg, $userShip);
+$uResult = atkShipResult($uShipOrg, $tShipOrg, $tShip);
+$tResult = atkShipResult($tShip, $uShipOrg, $userShip);
+$out .= $uResult . $tResult;
+
+$uStrResult = atkShipOverview($rAttack, $rDefend, $tShip);
+$out .= $uStrResult;
+
+$uMsg .= $uResult . $uStrResult;
+$tMsg .= $tResult . atkShipOverview($rDefend, $rAttack, $userShip);
+
+msgSendSys($userShip['login_id'], $uMsg, 'Ship attack report');
+msgSendSys($tShip['login_id'], $tMsg, 'Ship defence report');
 
 checkPlayer($user['login_id']);
 checkShip();
-
-if ($rAttack & SHIP_DEAD) {
-	$out .= "<p>Your ship was destroyed.</p>\n";
-	//post_news("<b class=b1>$target[login_name]</b> has been completely killed, and is out of the game permanently.");
-} elseif ($rDefend & SHIP_DEAD) {
-	if ($rDefend & SHIP_ESCAPED) {
-		$out .= "<p>You destroyed the enemy ship; $tShip[login_name] " .
-		 "managed to flee in an escape-craft.</p>\n";
-	} else if ($rDefend & SHIP_TRANSFERRED) {
-		$out .= "<p>You destroyed the enemy ship.</p>\n";
-	} else {
-		$out .= "<p>You destroyed the enemy ship, killing " .
-		 "$tShip[login_name] in the process.</p>\n";
-	}
-}
 
 $out .= "<h3>View <a href=\"system.php\">other ships</a> " .
  ($rDefend & SHIP_DEAD ? '' :
