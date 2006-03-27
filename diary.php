@@ -1,7 +1,6 @@
 <?php
 
 require_once('inc/user.inc.php');
-$filename = 'diary.php';
 
 $text = "<h1>Player Diary</h1>";
 
@@ -15,26 +14,17 @@ $dCount = $db->query('SELECT COUNT(*) FROM [game]_diary WHERE login_id = %u',
  $user['login_id']);
 $entryAmount = (int)current($db->fetchRow($dCount));
 
-//diary search
-if (isset($term)) {
-	$text .= search_the_db($term, $can_do_stop, "diary", $self, "entry");
-	print_page("Diary Search",$text);
-	if(empty($ret_text)){ //no results found
-		$text .= "<br />There are no entries of <b class=b1>$term</b> in your diary. Please broaden your search.<br /><br />";
-	} else {
-		print_page("Diary Search", $ret_text);
-	}
-}
-
 // Adds
 if (isset($add)) {
 	if($entryAmount > $max) {
 		print_page("Error","<p>Your diary is full");
 	}
-	$text .= "<FORM method=POST action=diary.php>";
-	$text .= "<p>Diary Entry:<br />";
-	$text .= "<textarea name=add_ent value='' cols=50 rows=20 wrap=soft></textarea></p>";
-	$text .= "<p><INPUT type=submit value=Submit></form><p>";
+
+	$text .= "<form method=POST action=diary.php>";
+	$text .= "<h2>Add entry</h2>";
+	$text .= "<p><textarea name=add_ent value=\"\" cols=50 rows=20 wrap=soft></textarea></p>";
+	$text .= "<p><INPUT type=submit value=Submit class=\"button\" /></p></form>";
+
 	print_page("Add Diary Entry",$text);
 }
 
@@ -64,11 +54,11 @@ if(isset($delete)) { //delete single
 } elseif(isset($delete_all)){ //delete all
 	if(!isset($sure)) {
 		get_var('Delete all','diary.php',"Are you sure you want to delete all entries in your diary?",'sure','yes');
-		$rs = "<a href=$PHP_SELF>Back to Diary</a>";
+		$rs = "<a href=$self>Back to Diary</a>";
 	} else{
 		dbn("delete from [game]_diary where login_id = '$user[login_id]'");
 		$text .= "Diary Successfully Emptied.<p>";
-		$rs = "<a href=$PHP_SELF>Back to Diary</a>";
+		$rs = "<a href=$self>Back to Diary</a>";
 	}
 }elseif(isset($del_select)){ //delete selected
 	if(empty($del_ent)){
@@ -90,11 +80,11 @@ if(isset($edit)){//edit screen
 	db("select * from [game]_diary where entry_id = '$edit' AND login_id = '$user[login_id]'");
 	$entry = dbr(1);
 	$entry_txt = $entry['entry'];
-	$text .= "<FORM method=POST action=diary.php>";
+	$text .= "<form method=post action=diary.php>";
 	$text .= "<input type=hidden name=edit2 value='$entry[entry_id]'>";
 	$text .= "<p>Change Text here:<br />";
 	$text .= "<textarea name=edit_ent cols=50 rows=20 wrap=soft>$entry_txt</textarea>";
-	$text .= "<p><INPUT type=submit value=Submit></form><p>";
+	$text .= "<p><INPUT type=submit value=Submit class=\"button\" /></form><p>";
 	print_page("Add Diary Entry",$text);
 
 } elseif(isset($edit2)){//saving edited entry
@@ -111,48 +101,41 @@ $dCount = $db->query('SELECT COUNT(*) FROM [game]_diary WHERE login_id = %u',
  $user['login_id']);
 $entryAmount = (int)current($db->fetchRow($dCount));
 
-$text .= "<p>You may store up to <b>$max</b> entries in this Diary.</p><p>There are presently <b>$entryAmount</b> entries in your diary.</p>";
-if (IS_ADMIN || IS_OWNER) {
-	$text .= "<p>Admin and Owner's diaries are not wiped when the game resets.</p>";
-}
+$text .= "<p>You may store up to <b>$max</b> entries in this Diary.</p>\n";
 
 if(!$entryAmount){//no entries in diary
 	if($entryAmount < $max) {
-		$text .= "<p><a href=\"{$_SERVER['SCRIPT_NAME']}?add=1\">Add entry</a></p>\n";
+		$text .= "<p><a href=\"$self?add=1\">Add entry</a></p>\n";
 	} else {
-		$text .= "<br />Your diary is full";
+		$text .= "<p>Your diary is full.</p>\n";
 	}
-	$text .= "<p>There are no entries in your diary.";
+	$text .= "<p>There are no entries in your diary.</p>\n";
 } else {
-	if($entryAmount < $max) {
-		$text .= "<p><a href=$filename?add=1>Add entry</a></p>";
-	} else {
-		$text .= "<p>Your diary is full</p>";
-	}
-	$text .= "<FORM method=POST action=$filename>";
-	$text .= "Search for a term in the Diary:<br />";
-	$text .= "<input type=text name=term size=10>";
-	$text .= " - <INPUT type=submit value=Search></form><p>";
-	$text .= "<p>Contents of the diary:";
-	$text .= make_table(array("Date Entered","Entry"));
+	$text .= "<h2>Entries</h2>\n<p>There are <em>$entryAmount entries</em> " .
+	 "in your diary.</p>\n";
+	$text .= $entryAmount < $max ? 
+	 "<p><a href=$self?add=1>Add entry</a></p>\n" :
+	 "<p>Your diary is full</p>\n";
+
+	$text .= make_table(array('Date entered', 'Entry', 'Options'));
 	if($entryAmount > 1){
-		$text .= "<FORM method=POST action=diary.php id=quick_del><input type=hidden name=del_select value=1>";
+		$text .= "<form method=post action=diary.php id=quick_del><input type=hidden name=del_select value=1>";
 	}
 
 	db2("select * from [game]_diary where login_id = '$user[login_id]' order by timestamp desc");
 
 	while($entry = dbr2(1)) {//list entries
 		$entry['entry'] = msgToHTML($entry['entry']);
-		$e_num = $entry['entry_id'];
-		$entry['entry_id'] = "- <a href=$filename?edit=$e_num>Edit</a> - <a href=$filename?delete=$e_num>Delete</a>";
-		$text .= make_row(array("<b>".date("M d - H:i",$entry['timestamp'])."</b>",$entry['entry'],$entry['entry_id']));
+		$text .= make_row(array(date("M d - H:i", $entry['timestamp']), 
+		 $entry['entry'], "<a href=\"$self?edit=$entry[entry_id]\">Edit</a> " .
+		 " - <a href=\"$self?delete=$entry[entry_id]\">Delete</a>"));
 	}
 	$text .= "</table><br />";
 }
 
 if ($entryAmount > 1){//show the big delete options
-	$text .= "<br /><INPUT type=submit value=\"Delete Selected Entries\">  - <a href=javascript:tickInvert(\"quick_del\")>Invert Entry Selection</a></form><br />";
-	$text .= "<br /><a href=$filename?delete_all=1>Delete All</a> entries in diary.";
+	$text .= "<br /><input type=submit value=\"Delete selected\" class=\"button\">  - <a href=\"#\" onclick=\"tickInvert(&quot;quick_del&quot;)\">Invert entry selection</a></form><br />";
+	$text .= "<br /><a href=$self?delete_all=1>Delete all</a> entries in diary.";
 }
 $rs = "<p><a href=\"system.php\">Back to Star System</a>";
 // print page
