@@ -152,15 +152,7 @@ It is only an example of what can be created.</p>
 }
 
 
-#reset signup times
-if(isset($reset_signup)) {
-	$out = "Signup times reset.<p>";
-	$db->query("update [game]_users set joined_game = " . time());
-	insert_history($user['login_id'],"Reset Signup Times.");
-}
-
-
-#reset game
+// reset game
 if(isset($reset)){
 	if($reset == 2) {
 		require_once('inc/generator.funcs.php');
@@ -297,7 +289,6 @@ $out .= <<<END
 	<li><a href="admin_edit_vars.php">Edit variables</a></li>
 	<li><a href="$self?pause=$pauseId">$pauseStr game</a></li>
 	<li><a href="$self?reset=1">Reset game</a></li>
-	<li><a href="$self?reset_signup=1">Reset signup times</a></li>
 	<li><a href="$self?difficulty=1">Change stated difficulty</a></li>
 </ul>
 
