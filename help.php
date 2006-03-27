@@ -356,14 +356,17 @@ your despotic ways upon.</p>
 
 	<dt>Gamma bomb</dt>
 	<dd><img src="img/equipment/bomb_gamma.jpg" alt="Gamma bomb" /></dd>
-	<dd>Used to do 200 damage to each ship in a star system (yours included). 
+	<dd>Does 200 damage to each ship in a star system (yours included). 
 	It will take this damage from shields first, and when all shields are gone, 
 	then from the fighter count. If there are no fighters, then it will simply 
-	destroy the ship. Best used in conjuction with an Alpha Bomb.</dd>
+	destroy the ship.  This bomb is used most effectively when detonated after 
+	an Alpha Bomb (when there are no shields); it can destroy entire 
+	fleets.</dd>
 
 	<dt>Delta bomb</dt>
 	<dd><img src="img/equipment/bomb_delta.jpg" alt="Delta bomb" /></dd>
-	<dd>Causes tremendous damage (over 4000) to every ship in the system.</dd>
+	<dd>Causes tremendous damage (over 4000 points) to every ship in the 
+	system.</dd>
 </dl>
 
 END;
@@ -528,8 +531,8 @@ END;
 } elseif(isset($clans)) {
 	$error_str .= <<<END
 <h1>Clan information</h1>
-<p>This Page contains basic information on clans. How to join, what they are 
-good for, and that sort of thing.</p>
+<p>This page contains basic information on clans: how to join, what they are 
+good for and that sort of thing.</p>
 <ul>
 	<li><a href="#basic_clan">Basic clan information</a></li>
 	<li><a href="#loyal_clan">Loyalty in a Clan</a></li>
@@ -555,8 +558,8 @@ the clan you are entering, usually given to you by the clan leader.</p>
 <p>Clan loyalty is one of the more important aspects of the game: if you show 
 strong loyalty to help your clan without many complaints to the clan leader 
 then others may ask you to be part of their clan at a later date. If you are 
-unloyal to your clan, you will be most likely be kicked out of the clan, and 
-then probably destroyed by that clan's members to boot. After that offense, 
+disloyal to your clan, you will be most likely be kicked out of the clan, and 
+then probably destroyed by that clan's members to boot. After that offence, 
 information about you will be posted on the forum and you will have a very 
 difficult time finding clans to join in the future.</p>
 
