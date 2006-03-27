@@ -266,9 +266,9 @@ function atkShipResult(&$attacker, &$from, &$to)
 		 ' hull integrity</em>';
 	}
 
-	return "<p><strong>$attacker[ship_name] " . (empty($effect) ?
-	 "</strong> did not do any damage" : ("destroyed</strong> <em>" .
-	 implode('</em>, <em>', $effect))) . "</em></strong></p>\n";
+	return "<p>$attacker[ship_name] " . (empty($effect) ?
+	 " did not do any damage" : ("destroyed <em>" .
+	 implode('</em>, <em>', $effect))) . "</em></p>\n";
 }
 
 
@@ -289,6 +289,26 @@ function atkPlanetResult(&$attacker, &$from, &$to)
 	return "<p><strong>$attacker[ship_name] " . (empty($effect) ?
 	 "</strong> did not do any damage" : ("destroyed</strong> <em>" .
 	 implode('</em>, <em>', $effect))) . "</em></strong></p>\n";
+}
+
+function atkShipOverview(&$rAttack, &$rDefend, &$tShip)
+{
+	if ($rAttack & SHIP_DEAD) {
+		return "<p>Your ship was destroyed.</p>\n";
+	} elseif ($rDefend & SHIP_DEAD) {
+		if ($rDefend & SHIP_ESCAPED) {
+			return "<p>You destroyed the enemy ship; " . 
+			 esc($tShip['login_name']) . " managed to flee in an " .
+			 "escape-craft.</p>\n";
+		} else if ($rDefend & SHIP_TRANSFERRED) {
+			return "<p>You destroyed the enemy ship.</p>\n";
+		} else {
+			return "<p>You destroyed the enemy ship, killing " .
+			 esc($tShip['login_name']) . " in the process.</p>\n";
+		}
+	}
+
+	return "<p>Neither ship was destroyed.</p>\n";
 }
 
 ?>
