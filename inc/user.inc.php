@@ -551,10 +551,6 @@ function print_messages($for, $full = false)
 		 'WHERE login_id = -1 AND timestamp < %u', array($last_time));
 		$num_mes_prev = (int)current($db->fetchRow($count));
 		$msgStr .= "<p><a href=\"forum.php?last_time=$last_time&prevdays=yes\">Previous $userOpt[forum_back] Hours</a></p>";
-
-		if (IS_ADMIN) {
-		    $msgStr .= "<p><a href=\"forum.php?killallmsg=1\">Delete All Forum Messages</a></p>\n";
-		}
 	}
 
 	return $msgStr;
@@ -599,12 +595,12 @@ function formatMsgs($list, $full = false, $type = 'forum')
 		 $msg['message_id'] . "\">Log</a>";
 
 		if ($full) {
-			$msgStr .= " - <a href=\"$page.php?killmsg=$msg[message_id]" .
+			$msgStr .= " - <a href=\"$page.php?remove[]=$msg[message_id]" .
 			 (IS_ADMIN && $type === 'clan' ?
 			 "&amp;look_at=$user[clan_id]&amp;clan_forum=1" : '') .
 			 "\">Delete</a>";
 			if ($checkboxes) {
-				$msgStr .= " - <input type=\"checkbox\" name=\"del_mess[$msg[message_id]]\" value=\"$msg[message_id]\" />";
+				$msgStr .= " - <input type=\"checkbox\" name=\"remove[]\" value=\"$msg[message_id]\" />";
 			}
 		}
 
@@ -620,12 +616,13 @@ function formatMsgs($list, $full = false, $type = 'forum')
 END;
 
 		$msgStr = <<<END
-<p><a href="$page.php?killallmsg=1">Delete All Messages</a></p>
-<form method="post" action="$page.php" id="messag_form">
+<p><a href="$page.php?removeAll=1" 
+ onclick="return confirm(&quot;Are you sure?&quot;);">Delete all 
+messages</a></p>
+<form method="post" action="$page.php" id="removeMessages">
 $msgStr
-	<p><a href="#" onclick="tickInvert('messag_form');">Invert Message Selection</a> -
-	<input type="submit" value="Delete selected" class="button" />
-	<input type="hidden" name="clear_messages" value="1">$clan</p>
+	<p><a href="#" onclick="tickInvert('removeMessages');">Invert message selection</a> -
+	<input type="submit" value="Delete selected" class="button" />$clan</p>
 </form>
 
 END;
