@@ -5,40 +5,24 @@ require_once('inc/user.inc.php');
 #Message stuff
 $out = "<h1>Message inbox for " . print_name($user) . "</h1>";
 
-#Deleted single message
-if(isset($killmsg)) {
-    $gone = $db->query('DELETE FROM [game]_messages WHERE message_id = ' .
-	 '%u AND login_id = %u', array($killmsg, $user['login_id']));
-	if ($db->affectedRows($gone) > 0) {
-		$out .= "<p>Message Deleted.</p>\n";
-	}
+// Delete all messages
+if (isset($removeAll)) {
+	$del = $db->query('DELETE FROM [game]_messages WHERE login_id = %u', 
+	 array($user['login_id']));
+	$out .= "<p>" . $db->affectedRows($del) . 
+	 " message(s) have been deleted!</p>\n";
 }
 
-#Delete all messages
-if(isset($killallmsg)) {
-  if(!isset($sure)) {
-	db("select count(message_id) from [game]_messages where login_id = '$user[login_id]'");
-	$count_mess = dbr();
-    get_var('Delete Messages','message_inbox.php','Are you sure you want delete all <b>'.$count_mess[0].'</b> messages?','sure','yes');
-  } else {
-	dbn("delete from [game]_messages where login_id = $user[login_id]");
-	$out .= "<p>All Messages Deleted!</p>";
-  }
-}
+// Delete n messages
+if (isset($remove) && is_array($remove)) {
+	$args = $remove;
+	$args[] = $user['login_id'];
 
-//Delete selected messages
-if(isset($clear_messages)) {
-	if(!$del_mess){
-	    $out .= "No messages selected to be deleted.<p>";
-	} else {
-		$q_m = 0;
-		$temp656 = $del_mess;
-		while ($var = each($temp656)) {
-		  dbn("delete from [game]_messages where message_id = '$var[value]' AND login_id = '$user[login_id]'");
-		  $q_m++;
-		}
-		$out .= "<b>$q_m</b> Message(s) Deleted.<p>";
-	}
+	$del = $db->query('DELETE FROM [game]_messages WHERE (message_id = %u' . 
+	 str_repeat(' OR message_id = %u', count($remove) - 1) . ') AND ' .
+	 'login_id = %u', $args);
+
+	$out .= "<p>" . $db->affectedRows($del) . " message(s) deleted.</p>";
 }
 
 $cMessages = $db->query('SELECT COUNT(*) FROM [game]_messages ' .
@@ -46,7 +30,7 @@ $cMessages = $db->query('SELECT COUNT(*) FROM [game]_messages ' .
 
 $counted = (int)current($db->fetchRow($cMessages));
 
-if($counted == 0){
+if ($counted == 0) {
   	$out .= "<p>You have no messages.</p>";
 } else {
 	$out .= print_messages($user['login_id'], true);
