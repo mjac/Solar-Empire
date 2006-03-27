@@ -91,22 +91,26 @@ END;
 	print_page('Admin Forum',$out);
 }
 
+if (IS_ADMIN) {
+	// Delete all messages
+	if (isset($removeAll)) {
+		$del = $db->query('DELETE FROM [game]_messages WHERE login_id = -1');
+		$out .= "<p>" . $db->affectedRows($del) . 
+		 " message(s) have been deleted!</p>\n";
+	}
 
-if (isset($killmsg) && IS_ADMIN) {
-	$db->query('DELETE FROM [game]_messages WHERE message_id = %u AND ' .
-	 'login_id = -1', array($killmsg));
-}
+	// Delete n messages
+	if (isset($remove) && is_array($remove)) {
+		$del = $db->query('DELETE FROM [game]_messages WHERE (message_id = %u' . 
+		 str_repeat(' OR message_id = %u', count($remove) - 1) . ') AND ' .
+		 'login_id = -1', $remove);
 
-if (isset($killallmsg) && IS_ADMIN) {
-	if (!isset($sure)) {
-		get_var('Delete Messages', 'forum.php', 'Are you sure you want delete all Forum messages?', 'sure', 'yes');
-	} else {
-		$db->query('DELETE FROM [game]_messages WHERE login_id = -1');
+		$out .= "<p>" . $db->affectedRows($del) . " message(s) deleted.</p>";
 	}
 }
 
 $out .= "<h1>Game forum</h1>\n";
-if($user['last_access_forum'] > 0){
+if ($user['last_access_forum'] > 0) {
 	if (!isset($find_last)) {
 		$out .= "<p><a href=\"forum.php?last_time={$user['last_access_forum']}&find_last=1\">Show new posts</a></p>\n";
 	} else {
