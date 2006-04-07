@@ -92,7 +92,7 @@ END;
 		print_page('Create Clan', 'Invalid name', "?clans=1");
 	} else {
 		$sExists = $db->query('SELECT COUNT(*) FROM [game]_clans WHERE ' .
-		 'symbol = %u', array($symbol));
+		 'symbol = \'%s\'', array($db->escape($symbol)));
 
 		if (current($db->fetchRow($sExists)) > 0) {
 			print_page('Create Clan','That symbol is already in use.',"?clans=1");
