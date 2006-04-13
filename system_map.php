@@ -8,7 +8,7 @@ echo "<h1>Star Map</h1>\n";
 
 if(isset($print)) {
 	$map_url = 'img/' . $db_name . '_maps/psm_full.png';
-} elseif(isset($find) && $allow_search_map != 0) {
+} elseif(isset($find) && $gameOpt['allow_search_map'] != 0) {
 	$star = $db->query('SELECT COUNT(*) FROM [game]_stars WHERE ' .
 	 'star_id = %u', array($find));
 
@@ -31,7 +31,7 @@ echo <<<END
 
 END;
 
-if($allow_search_map == 1){
+if ($gameOpt['allow_search_map'] == 1) {
 	echo <<<END
 <h2>Find system</h2>
 <form action="$self" method="get">

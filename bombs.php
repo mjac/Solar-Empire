@@ -3,8 +3,8 @@
 require_once('inc/user.inc.php');
 
 if (!IS_ADMIN) {
-	if ($user['turns_run'] < $turns_before_attack) {
-		print_page("Bomb","You can't attack during the first $turns_before_attack turns of having your account.");
+	if ($user['turns_run'] < $gameOpt['turns_before_attack']) {
+		print_page("Bomb","You can't attack during the first $gameOpt[turns_before_attack] turns of having your account.");
 	}
 
 	if ($user['ship_id'] === NULL) {
@@ -22,7 +22,7 @@ if(isset($alpha)) {
 	if (attack_planet_check($user) < 1 || IS_ADMIN) {
 		if($user['alpha'] < 1) {
 			$error_str = "You don't have a Alpha Bomb.";
-		} elseif($flag_sol_attack == 0 && $userShip['location'] == 1 && !IS_ADMIN) {
+		} elseif($gameOpt['flag_sol_attack'] == 0 && $userShip['location'] == 1 && !IS_ADMIN) {
 			$error_str = "The Admin has disabled all forms of attack in the Sol System (system #<b>1</b>)..";
 		} elseif(!isset($sure)) {
 			get_var('Use Alpha Bomb','bombs.php','Are you sure you want to use an Alpha Bomb?','sure','');
@@ -91,7 +91,7 @@ if (attack_planet_check($user) < 1 || IS_ADMIN) {
 		$error_str = "You don't have a Gamma Bomb.";
 	} elseif($user['delta'] < 1 && $bomb_type==2) {
 		$error_str = "You don't have a Delta Bomb.";
-	} elseif($flag_sol_attack == 0 && $userShip['location'] == 1 && !IS_ADMIN) {
+	} elseif($gameOpt['flag_sol_attack'] == 0 && $userShip['location'] == 1 && !IS_ADMIN) {
 		$error_str = "The Admin has disabled all forms of attack in the Sol System (system #<b>1</b>).";
 	} elseif(!isset($sure)) {
 		get_var('Use $b_text Bomb','bombs.php',"Are you sure you want to detonate a $b_text Bomb?",'sure','');
@@ -101,11 +101,11 @@ if (attack_planet_check($user) < 1 || IS_ADMIN) {
 		post_news("$user[login_name] unleashed a $b_text Bomb in system #$userShip[location]");
 
 		get_star();
-		if ($bomb_type==1) { #gamma bomb
+		if ($bomb_type == 1) { // gamma bomb
 			$bomb_damage = 200;
-		} elseif ($bomb_type==2) { #delta bomb
-			#clear all shields on all ships before we start.
-			db("select s.ship_id from [game]_ships s, [game]_users u where s.location = '$userShip[location]' AND u.login_id != 1 AND s.ship_id > 1 AND s.login_id = u.login_id AND u.turns_run > '$turns_safe'");
+		} elseif ($bomb_type == 2) { // delta bomb
+			// clear all shields on all ships before we start.
+			db("select s.ship_id from [game]_ships s, [game]_users u where s.location = '$userShip[location]' AND u.login_id != 1 AND s.ship_id > 1 AND s.login_id = u.login_id AND u.turns_run > $gameOpt[turns_safe]");
 
 			while($target_ship = dbr(1)){
 				dbn("update [game]_ships set shields = 0 where ship_id = '$target_ship[ship_id]'");
@@ -119,7 +119,7 @@ if (attack_planet_check($user) < 1 || IS_ADMIN) {
 		$dam_victim = array();
 		$destroyed_ships = 0;
 
-		$lastresort = $db->query("select s.fighters,s.shields,s.ship_id,s.metal,s.fuel,s.location,s.login_id,s.ship_name,s.point_value,u.login_name from [game]_ships s,[game]_users u where s.location = '$userShip[location]' AND s.login_id >'1' AND s.login_id = u.login_id AND u.turns_run >= '$turns_safe'");
+		$lastresort = $db->query("select s.fighters,s.shields,s.ship_id,s.metal,s.fuel,s.location,s.login_id,s.ship_name,s.point_value,u.login_name from [game]_ships s,[game]_users u where s.location = '$userShip[location]' AND s.login_id >'1' AND s.login_id = u.login_id AND u.turns_run >= $gameOpt[turns_safe]");
 
 		$elim = 0;
 

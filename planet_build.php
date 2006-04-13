@@ -9,16 +9,17 @@ $planet_img = mt_rand(1,15);
 $error_str = "";
 // checks
 get_star();
-if($user['genesis'] < 1) {
+if ($user['genesis'] < 1) {
 	$error_str .= "You don't have a genesis device.";
-} elseif($uv_planet_slots_use && $star['planetary_slots'] < 1) {
+} elseif ($gameOpt['uv_planet_slots_use'] && $star['planetary_slots'] < 1) {
 	$error_str .= "This system has no available planetary slots.";
-} elseif($userShip['location'] == 1 && !IS_ADMIN) {
+} elseif ($userShip['location'] == 1 && !IS_ADMIN) {
 	$error_str = "Players cannot build planets in Sol.";
-} elseif($user['ship_id'] === NULL && !IS_ADMIN) {
+} elseif ($user['ship_id'] === NULL && !IS_ADMIN) {
 	$error_str = "You are not in command of a ship. How do you expect to force the alliegence of snivelling planet dwellers if you have no ship with which to suppress them?<p>You may not create a planet without a ship.";
-} elseif ($user['turns_run'] < $turns_before_planet_attack && !isset($letme) && !IS_ADMIN) {
-	print_page("No landing","Cannot land, create or attack a planet within the first <b class=b1>$turns_before_planet_attack turns</b> of your account. This is to stop cheating.");
+} elseif ($user['turns_run'] < $gameOpt['turns_before_planet_attack'] && 
+     !isset($letme) && !IS_ADMIN) {
+	print_page("No landing","Cannot land, create or attack a planet within the first <b class=b1>$gameOpt[turns_before_planet_attack] turns</b> of your account. This is to stop cheating.");
 } elseif($user['turns'] < 5) {
 	$error_str = "You need 5 turns to create a planet.";
 } elseif(empty($planet_name)) {
@@ -54,7 +55,7 @@ if($user['genesis'] < 1) {
 	 $user['login_id'], $planet_img));
 	
 
-	if ($uv_planet_slots_use) {
+	if ($gameOpt['uv_planet_slots_use']) {
 		$db->query('UPDATE [game]_stars SET planetary_slots = ' .
 		 'planetary_slots - 1 WHERE star_id = %u', array($star['star_id']));
 	}

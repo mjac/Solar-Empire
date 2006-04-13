@@ -29,8 +29,8 @@ if ($planet === false) {
 	print_page('Planet', 'That planet does not exist.');
 } elseif ($userShip['location'] != $planet_loc) {
 	print_page('Planet', 'That planet is not in this system.');
-} elseif ($user['turns_run'] < $turns_before_planet_attack && !IS_ADMIN) {
-	print_page("No landing","Cannot land, create or attack a planet within the first <b class=b1>$turns_before_planet_attack turns </b>of your account.","?planet=1");
+} elseif ($user['turns_run'] < $gameOpt['turns_before_planet_attack'] && !IS_ADMIN) {
+	print_page("No landing","Cannot land on, create or attack a planet within the first <b class=b1>$gameOpt[turns_before_planet_attack] turns </b>of your account.","?planet=1");
 // planet has password and user has entered it correctly.
 } elseif (!empty($planet['pass']) && $planet['login_id'] !== $user['login_id'] &&
            isset($p_pass) && $p_pass === $planet['pass']) {
@@ -99,7 +99,7 @@ if(isset($destroy)) {
 } elseif(isset($claim)) {
 	if($planet['login_id'] === $user['login_id']) {
 		$output_str .= "<br />You can't claim a planet from yourself.<p>";
-	} elseif(($user['clan_id'] === $planet['clan_id'] || $planet['fighters'] != 0) && $user['joined_game'] > (time() - ($min_before_transfer * 86400))) {
+	} elseif(($user['clan_id'] === $planet['clan_id'] || $planet['fighters'] != 0) && $user['joined_game'] > (time() - ($gameOpt['min_before_transfer'] * 86400))) {
 		$output_str .= "<br />You can not transfer a planet before the min_before_transfer time is up.<p>";
 	} else {
 		msgSendSys($planet['login_id'], "<b class=b1>$user[login_name]</b> claimed the planet <b class=b1>$planet[planet_name]</b> from you.");
@@ -189,10 +189,10 @@ END;
 				$output_str .= "You do not have enough turns.<br />It requires <b>$turn</b> turns just to get to <b class=b1>Sol</b> and back. Thats before ship loading.<p>";
 			} else { #main autoshifting bit for taking colonists from Sol
 				#determine if player can afford the costs, and if they can, then do the processing
-				$c_c = $cost_colonist * $colonist;
-				if($user['cash'] < $c_c || $user['turns'] < $turn + $ship_count){
-					if($cost_colonist > 0){
-						$colonist = floor($user['cash'] / $cost_colonist);
+				$c_c = $gameOpt['cost_colonist'] * $colonist;
+				if ($user['cash'] < $c_c || $user['turns'] < $turn + $ship_count) {
+					if ($gameOpt['cost_colonist'] > 0) {
+						$colonist = floor($user['cash'] / $gameOpt['cost_colonist']);
 					}
 					if($colonist_cap > $colonist || $user['turns'] < $turn + $ship_count){
 						$free_turns = $user['turns'] - $turn;
@@ -214,7 +214,7 @@ END;
 					}
 				}
 				$turn += $ship_count;
-				$c_c = $colonist * $cost_colonist;
+				$c_c = $colonist * $gameOpt['cost_colonist'];
 				if($sure != 'yes') { #ensure the user wants to carry out the autoshift.
 					get_var('Autoshift','planet.php',"Are you sure you want to autoshift using the folling stats:
 					<br /><b>$ship_count</b> ship(s).
@@ -274,7 +274,7 @@ END;
 #take or leave a physical resource using 1 ship.
 } elseif (isset($mineral_alloc)) {
 	if (conditions($user, $planet)) { #ensure user is allowed to play with this sort of stuff.
-		$output_str .= "Physical resources may not be left on this planet by you, until the min_before_transfer time has passed (<b>$min_before_transfer</b> days).<p>";
+		$output_str .= "Physical resources may not be left on this planet by you, until the min_before_transfer time has passed (<b>$gameOpt[min_before_transfer]</b> days).<p>";
 	} else {
 		#ensure all are rounded & valid
 		if (isset($set_fighters)) {
@@ -353,7 +353,7 @@ END;
 /*if(isset($shield)) {
 	if($shield == 0) { // Take
 	if(conditions($user,$planet)) {
-		$output_str .= "Shields may not be taken from this planet by you, until the min_before_transfer time has passed (<b>$min_before_transfer</b> days).<p>";
+		$output_str .= "Shields may not be taken from this planet by you, until the min_before_transfer time has passed (<b>$gameOpt[min_before_transfer]</b> days).<p>";
 	} elseif($amount < 1) {
 			$def = $planet[shield_charge];
 			if($def > ($userShip[max_shields] - $userShip[shields])) {
@@ -373,7 +373,7 @@ END;
 		}
 	} elseif($shield == 1) { // Leave
 	if(conditions($user,$planet)) {
-		$output_str .= "Shields may not be left on this planet by you, until the min_before_transfer time has passed (<b>$min_before_transfer</b> days).<p>";
+		$output_str .= "Shields may not be left on this planet by you, until the min_before_transfer time has passed (<b>$gameOpt[min_before_transfer]</b> days).<p>";
 		} elseif($amount < 1) {
 			$def = $userShip[shields];
 			if($def > ($planet[shield_gen] * 1000) - $planet[shield_charge]) {
@@ -430,7 +430,7 @@ END;
 			$output_str .= "It will cost <b>$turn_cost</b> turns to perform this action.<br />At present you do not posses that many turns.";
 			unset($results);
 		} elseif(conditions($user,$planet)) { #check to see if been in game for long enough
-			$output_str .= "$text_mat may not be left on this planet by you, until the min_before_transfer time has passed (<b>$min_before_transfer</b> days).<p>";
+			$output_str .= "$text_mat may not be left on this planet by you, until the min_before_transfer time has passed (<b>$gameOpt[min_before_transfer]</b> days).<p>";
 		} elseif(!(isset($sure) && $sure == 'yes')) { #confirmation
 			get_var("Leave all $text_mat",'planet.php',"Are you sure you want to leave all the <b class=b1>$text_mat</b>(<b>$results[goods]</b>) from the <b>$results[ship_count]</b> ships with it on in this system onto the planet below, at a cost of <b>$turn_cost</b> turns?",'sure','yes');
 		} else {
@@ -450,7 +450,7 @@ END;
 		$ship_counter = 0;
 
 		if(conditions($user,$planet)) {#been in game long enough?
-			$output_str .= "Fighters may not be left on this planet by you, until the min_before_transfer time has passed (<b>$min_before_transfer</b> days).<p>";
+			$output_str .= "Fighters may not be left on this planet by you, until the min_before_transfer time has passed (<b>$gameOpt[min_before_transfer]</b> days).<p>";
 		} elseif($planet[$tech_mat] < 1) { #can't take stuff if there isn't any to take
 			$output_str.= "This planet has no <b class=b1>$text_mat</b> on it.";
 		} elseif($type == 0){ #fighters
@@ -540,7 +540,7 @@ END;
 	if (!(isset($sure) && $sure == "yes")) {
 		get_var('Charge all ships','planet.php',"Are you sure you want to charge all the Ships in this system with <b class=b1>shields</b>?",'sure','yes');
 	} elseif(conditions($user,$planet)) {
-		$output_str .= "Shields may not be taken from this planet by you, until the min_before_transfer time has passed (<b>$min_before_transfer</b> days).<p>";
+		$output_str .= "Shields may not be taken from this planet by you, until the min_before_transfer time has passed (<b>$gameOpt[min_before_transfer]</b> days).<p>";
 	} elseif($user[turns] < 3) {
 		print_page("Error","You need <b>3</b> turns to charge all ships in a system.");
 	} elseif($planet[shield_charge] < 1) {

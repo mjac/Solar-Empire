@@ -19,29 +19,32 @@ function imageError($str, $width, $height)
 	exit;
 }
 
-if (!$allow_search_map) {
-	imageError('You are not allowed to search the map!', $uv_universe_size,
-	 $uv_universe_size);
+if (!$gameOpt['allow_search_map']) {
+	imageError('You are not allowed to search the map!', 
+	 $gameOpt['uv_universe_size'], $gameOpt['uv_universe_size']);
 }
 
 if(!(isset($from) && isset($to))) {
-	imageError('Please set $from and $to.', $uv_universe_size, $uv_universe_size);
+	imageError('Please set $from and $to.', $gameOpt['uv_universe_size'],
+	 $gameOpt['uv_universe_size']);
 }
 
 $fQuery = $db->query('SELECT x, y FROM [game]_stars WHERE star_id = %u', array($from));
 $tQuery = $db->query('SELECT x, y from [game]_stars WHERE star_id = %u', array($to));
 
 if ($db->numRows($fQuery) < 1) {
-	imageError('$from is an invalid star', $uv_universe_size, $uv_universe_size);
+	imageError('$from is an invalid star', $gameOpt['uv_universe_size'],
+	 $gameOpt['uv_universe_size']);
 }
 if ($db->numRows($tQuery) < 1) {
-	imageError('$to is an invalid star', $uv_universe_size, $uv_universe_size);
+	imageError('$to is an invalid star', $gameOpt['uv_universe_size'],
+	 $gameOpt['uv_universe_size']);
 }
 
 $starFrom = $db->fetchRow($fQuery);
 $starTo = $db->fetchRow($tQuery);
 
-$size = $uv_universe_size + 50;
+$size = $gameOpt['uv_universe_size'] + 50;
 
 $im = imagecreatefrompng('img/' . $db_name . '_maps/sm_full.png');
 

@@ -12,7 +12,7 @@ $vars = $db->query('SELECT name, value, descript FROM [game]_db_vars ' .
  'ORDER BY name');
 
 
-if (!$admin_var_show) {
+if (!$gameOpt['admin_var_show']) {
 	print_page('Error', 'Admin has disabled public viewing of game vars');
 }
 

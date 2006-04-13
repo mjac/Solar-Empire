@@ -50,9 +50,9 @@ function statusBar()
 {
 	global $db, $user, $userShip, $gameInfo, $gameOpt;
 
-	$menu = "<h1><em>" . popup_help("game_info.php?db_name=$gameInfo[db_name]", 600,
-	 450, $gameInfo['name']) . ($gameInfo['paused'] == 1 ? ' (paused)' : '') .
-	 "</em></h1>\n";
+	$menu = "<h1><em>" . popup_help("game_info.php?db_name=$gameInfo[db_name]", 
+	 600, 450, $gameInfo['name']) . " (" . esc($gameInfo['status']) . 
+	 ")</em></h1>\n";
 
 	$uAmount = $db->query('SELECT COUNT(login_id) FROM [game]_users WHERE ' .
 	 'login_id > 1 AND last_request > %u', array(time() - 300));
@@ -67,8 +67,9 @@ function statusBar()
 
 	$menu .= "<p>" . date('<\a \t\i\t\l\e="T">M d - H:i</\a>') . "</p>\n";
 
-	if ($gameInfo['paused'] != 1) {
-		$menu .= "<p>$gameOpt[count_days_left_in_game] days left</p>\n";
+	if ($gameInfo['status'] === 'running') {
+		$days = ceil(($gameInfo['finishes'] - time()) / 86400);
+		$menu .= "<p>$gameOpt[count_days_left_in_game] day(s) left</p>\n";
 	}
 
 
@@ -480,10 +481,10 @@ function msgSendSys($to, $text, $name = false)
 
 function print_messages($for, $full = false)
 {
-	global $db, $user, $error_str, $userOpt, $last_time, $prevdays,
-	 $bug_board, $allow_signatures, $find_last;
+	global $db, $user, $userOpt, $last_time, $prevdays, $gameOpt, $find_last;
 
-	$sig = $allow_signatures && $userOpt['show_sigs'] ? ', u.sig' : '';
+	$sig = $gameOpt['allow_signatures'] && $userOpt['show_sigs'] ? 
+	 ', u.sig' : '';
 	$prev = isset($prevdays);
 
 	$gForum = $for == -1;
@@ -708,10 +709,10 @@ function get_star_dist($s1,$s2)
 //function to check if a player is dead and out during sudden death.
 function deathCheck($user)
 {
-	global $sudden_death, $gameInf;
+	global $gameOpt, $gameInfo;
 
 	if ($user['ship_id'] === NULL) {
-		if ($sudden_death && $user['login_id'] != $gameInfo['admin']) {
+		if ($gameOpt['sudden_death'] && $user['login_id'] != $gameInfo['admin']) {
 		    pageStart('Sudden death');
 		    echo "You have no ship, and this game is Sudden Death. <br />As such you are out of the game. <br />You may still access the Forum, and send/recieve private messages though.";
 		    pageStop();
@@ -769,14 +770,15 @@ function attack_planet_check()
 //load ship types from database.
 function load_ship_types()
 {
-	global $db, $fighter_cost_earth;
+	global $db, $gameOpt;
 	$ship_types = array();
 
 	$sInfo = $db->query('SELECT * FROM [game]_ship_types WHERE ' .
 	 'auction != 1 ORDER BY type_id');
 
 	while($this_type = $db->fetchRow($sInfo)) {
-		$this_type['cost'] += $this_type['fighters'] * $fighter_cost_earth;
+		$this_type['cost'] += $this_type['fighters'] * 
+		 $gameOpt['fighter_cost_earth'];
 		$ship_types[$this_type['type_id']] = $this_type;
 	}
 

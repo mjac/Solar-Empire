@@ -28,30 +28,28 @@ if (!isset($ship_stats['config'])) {
 }
 
 //Bulk Purchase of ships
-if(isset($mass)) {
-	#ensure users don't enter equations in place of numbers.
-	settype($num, "integer");
-
-	if($ship_stats['type'] != "Freighter") { #check to ensure are only able to bulk buy merchants
+if (isset($mass)) {
+	if ($ship_stats['type'] != "Freighter") { #check to ensure are only able to bulk buy merchants
 		$error_str = "<b>Seatogu's Spacecraft Emporium</b> does not offer facilities for mass purchasing of any ship type other than Freighters.";
-	}elseif ($num < 1) {	#check to allow user to enter the number of ships they want to buy.
-		$t7676 = $max_ships - $numships;
-		if($t7676*$ship_stats['cost'] > $user['cash']){
-			$t7676 = floor($user['cash'] / $ship_stats['cost']);
+	} elseif ($num < 1) {	#check to allow user to enter the number of ships they want to buy.
+		$maxPurchase = $gameOpt['max_ships'] - $numships;
+		if($maxPurchase * $ship_stats['cost'] > $user['cash']){
+			$maxPurchase = floor($user['cash'] / $ship_stats['cost']);
 		}
+
 		$error_str .= <<<END
 <h1>Bulk purchase</h1>
 <h2>$ship_stats[name] quantity?</h2>
 <form action="$self" method="post">
 	<input type="hidden" name="mass" value="$mass" />
-	<input name="num" value="$t7676" size="3" class="text" />
+	<input name="num" value="$maxPurchase" size="3" class="text" />
 	<input type="submit" value="Submit" class="button" /></form>
 </form>
 
 END;
-	}elseif ($numships + $num > $max_ships) { # check to ensure tehy are not trying to buy too many ships
-		$error_str = "You already own <b>$numships</b> ship(s). The Admin has set the max number of ships players may have to <b>$max_ships</b>.";
-	} elseif(!isset($ship_name)) { #confirm purchase.
+	} elseif ($numships + $num > $gameOpt['max_ships']) {
+		$error_str = "You already own <b>$numships</b> ship(s). The Admin has set the max number of ships players may have to <b>$gameOpt[max_ships]</b>.";
+	} elseif(!isset($ship_name)) {
 		$rs = "<p><a href=earth.php>Back to Earth.</a>";
 		$rs .= "<br /><a href=\"shop_ship.php\">Return to Ship Shop</a>";
 		get_var('Name your new ships','ship_build.php',"Your fleet presently consists of <b>$numships</b> ship(s).<br />When naming your new ships they will be given a number after the name you have entered. (3-25 Characters)",'ship_name','');
@@ -99,7 +97,7 @@ if($user['one_brob'] > 0 && !isset($duplicate) && !isset($mass)) {
 
 
 if ($numships >= $gameOpt['max_ships']) {
-	$error_str = "You already own <b>$numships</b> ship(s).	The admin has set the max number of ships players may have. The limit is <b>$max_ships</b>.";
+	$error_str = "You already own <b>$numships</b> ship(s).	The admin has set the max number of ships players may have. The limit is <b>$gameOpt[max_ships]</b>.";
 } elseif ($got_a_brob == 1 && shipHas($ship_stats, 'oo')) {
 	$error_str .= "You are already the proud owner of a flagship.<br />Due to galactic conventions, to keep the universe fairly safe you're only allowed one at a time.<br />Also, when you do loose this present one, your next one will cost twice the amount it of the last one.";
 } elseif(!isset($ship_name)) {

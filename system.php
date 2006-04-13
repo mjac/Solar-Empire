@@ -393,7 +393,7 @@ if(isset($toloc)) {
 	}
 
 	if ($user['turns'] < $gameOpt['ship_warp_cost'] && $gameOpt['ship_warp_cost'] > 0 && !IS_ADMIN) {
-		$out = "Sorry, you can't move because you have less than <b>$ship_warp_cost</b> turn(s). <br />This is the present turn cost to move between systems, as set by the <b class=b1>Admin</b>.<p>";
+		$out = "Sorry, you can't move because you have less than <b>$gameOpt[ship_warp_cost]</b> turn(s). <br />This is the present turn cost to move between systems, as set by the <b class=b1>Admin</b>.<p>";
 	} elseif ($gameOpt['ship_warp_cost'] < 0 && $user['turns'] < $warp_cost && !IS_ADMIN) {
 		$out = "Sorry, you can't more because you have less than <b>$warp_cost</b> turn(s).<br />This is the amount of turns required to move the largest ship in your present fleet.<br />Differernt ships use different amounts of turns to move between systems. See the help for more information.";
 	} else {
@@ -563,12 +563,12 @@ while ($planet = $db->fetchRow($planets)) {
 		     ($planet['fighters'] == 0) || $user['ship_id'] === NULL) {
 			$temp_str .= " - <a href=\"planet.php?planet_id=$planet[planet_id]\">Land</a>";
 		} else {
-			if ($flag_planet_attack != 0 && canAttackPlanet($planet)) {
+			if ($gameOpt['flag_planet_attack'] != 0 && canAttackPlanet($planet)) {
 				$temp_str .= " - <a href=attack_planet.php?target=$planet[planet_id]>Attack</a>";
 				if (shipHas($userShip, 'sv')) { //quark disrupter
 					$temp_str .= " - <a href=attack_planet.php?quark=1&target=$planet[planet_id]>Fire Quark Displacer</a>";
 				}
-				if (shipHas($userShip, 'sw') && $enable_superweapons == 1) { //terra maelstrom
+				if (shipHas($userShip, 'sw') && $gameOpt['enable_superweapons'] == 1) { //terra maelstrom
 					$temp_str .= " - <a href=attack_planet.php?terra=1&target=$planet[planet_id]>Fire Terra Maelstrom</a>";
 				}
 				if($planet['pass'] !== '') {

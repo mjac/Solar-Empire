@@ -164,8 +164,9 @@ END;
 
 	if (($user['clan_id'] === NULL && $amount < $gameOpt['max_clans']) || IS_ADMIN) {
 		$output .= "<p><a href=clan.php?create=1>Create a new clan</a></p>\n";
-	} elseif ($amount >= $max_clans) {
-		$output .= "<p>You may not create a clan because the limit of $max_clans has been reached.</p>\n";
+	} elseif ($amount >= $gameOpt['max_clans']) {
+		$output .= "<p>You may not create a clan because the limit of " .
+		 "$gameOpt[max_clans] has been reached.</p>\n";
 	}
 
 	if ($amount > 0) {
@@ -190,7 +191,7 @@ END;
 			$details = "<a href=\"clan.php?clan_info=1&amp;target=$clan[clan_id]\">View</a>";
 			if(($user['clan_id'] === NULL && ($clan['members'] < $gameOpt['clan_member_limit'])) || IS_ADMIN) {
 				$details .= " - <a href=clan.php?join=$clan[clan_id]>Join</a>";
-			} elseif($clan['members'] >= $clan_member_limit) {
+			} elseif($clan['members'] >= $gameOpt['clan_member_limit']) {
 				$details .= " - <em>Full</em>";
 			}
 			$name = clanName($clan['clan_name'], $clan['symbol'],

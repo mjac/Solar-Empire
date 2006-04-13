@@ -69,17 +69,16 @@ CREATE TABLE se_central_forum (
 DROP TABLE IF EXISTS se_games;
 --
 CREATE TABLE se_games (
-  `name` varchar(32) NOT NULL default '',
   db_name varchar(16) NOT NULL default '',
+  `name` varchar(32) NOT NULL default '',
   admin int unsigned NOT NULL default 1,
-  `status` tinyint unsigned NOT NULL default 1,
-  paused tinyint unsigned NOT NULL default 1,
+  `status` ENUM('hidden', 'paused', 'running') NOT NULL default 'paused',
   description text NOT NULL,
   intro_message text NOT NULL,
   num_stars int unsigned NOT NULL default 150,
-  todays_tip int unsigned NOT NULL default 1,
   difficulty int unsigned NOT NULL default 3,
-  last_reset int unsigned NOT NULL default 0,
+  started int unsigned NOT NULL default 0,
+  finishes int unsigned NOT NULL default 0,
   processed_cleanup int unsigned NOT NULL default 0,
   processed_turns int unsigned NOT NULL default 0,
   processed_systems int unsigned NOT NULL default 0,

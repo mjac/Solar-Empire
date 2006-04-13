@@ -95,8 +95,8 @@ if (isset($transfer)) {
 	} else {
 		if ($trans_amount < 0) {
 			print_page("Transfer Error", "Smart idea but you cannot force someone to give you credits.");
-		} elseif ($user['joined_game'] > (time() - ($min_before_transfer * 86400)) && !IS_ADMIN) {
-			print_page("Transfer Error","The admin has restricted access to Credit transfer. You may only transfer Credits once you have been in the game <b>$min_before_transfer</b> days or more. <br /><a href=javascript:back()>Go back</a><br />");
+		} elseif ($user['joined_game'] > (time() - ($gameOpt['min_before_transfer'] * 86400)) && !IS_ADMIN) {
+			print_page("Transfer Error","The admin has restricted access to Credit transfer. You may only transfer Credits once you have been in the game <b>$gameOpt[min_before_transfer]</b> days or more. <br /><a href=javascript:back()>Go back</a><br />");
 		} elseif (!giveMoneyPlayer(-$trans_amount)) {
 			print_page("Transfer Error","You don't have that much cash<br /><a href=javascript:back()>Go back</a><br />");
 		} else {
@@ -169,7 +169,7 @@ $text .= quick_row("Ship Points Lost",calc_perc($player['ships_lost_points'],$al
 $text .= quick_row("Fighters Killed",calc_perc($player['fighters_killed'],$all_player['fighters_killed']));
 $text .= quick_row("Fighters Lost",calc_perc($player['fighters_lost'],$all_player['fighters_lost']));
 
-if($score_method != 0){
+if ($gameOpt['score_method'] != 0) {
 	db("select count(login_id) from [game]_users where score > '$player[score]' AND login_id > 5");
 	$score_front = dbr();
 	db("select count(login_id) from [game]_users where login_id > 5");
@@ -230,7 +230,7 @@ if($full) {
 #links at bottom of page to transfer stuff and message player.
 if ($player['login_id'] != $user['login_id']) {
 	$text .= "<a href=message.php?target=$target>Message $player[login_name]</a><br />";
-	if ($user['joined_game'] < (time() - ($min_before_transfer * 86400)) || IS_ADMIN) {
+	if ($user['joined_game'] < (time() - ($gameOpt['min_before_transfer'] * 86400)) || IS_ADMIN) {
 		$text .= "<a href=\"ship_send.php?target=$target\">Transfer Ship Registration</a><br />";
 		$text .= "<form action=player_info.php><input type=hidden name=transfer value=yes>";
 		$text .= "Transfer cash to <b class=b1>$player[login_name]</b>:<br />";
@@ -239,7 +239,7 @@ if ($player['login_id'] != $user['login_id']) {
 		$text .= "<input type=hidden name=trans_target value=$player[login_name]>";
 		$text .= "<input type=\"submit\" value=\"Transfer\" class=\"button\" /></form>";
 	} else {
-		$text .= "<p>You may not Transfer Things yet. <br />Your account must be <b>$min_before_transfer</b> or more days old.<p>";
+		$text .= "<p>You may not Transfer Things yet. <br />Your account must be <b>$gameOpt[min_before_transfer]</b> or more days old.<p>";
 	}
 }
 

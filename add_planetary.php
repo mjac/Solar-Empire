@@ -23,7 +23,7 @@ if ($planet['login_id'] !== $user['login_id']) {
 	$header = "Omega Missile Construction";
 	if ($planet['elect'] < 50 || $planet['metal'] < 200 || $planet['fuel'] < 100) { #134800
 		$out .= "You can not afford a <b class=b1>Omega Missile</b>.";
-	} elseif ($enable_superweapons == 0) {
+	} elseif ($gameOpt['enable_superweapons'] == 0) {
 		$out .= "Admin has disabled the ability to use these weapons, as such, building a missile is pointless";
 	} elseif (!giveMoneyPlayer(-100000)) {
 		$out .= "<p>You do not have 100000 credits.</p>";
@@ -37,11 +37,11 @@ if ($planet['login_id'] !== $user['login_id']) {
 
 	if ($user['turns'] < 5) {
 		$out .= "You will require at least <b>5</b> turns to launch the missile, no matter the desination";
-	} elseif ($enable_superweapons == 0) {
+	} elseif ($gameOpt['enable_superweapons'] == 0) {
 		$out .= "Admin has disabled the ability to use these weapons";
-	} elseif ($user['turns_run'] < $turns_before_planet_attack && !IS_ADMIN) {
-		$out .= "You have not used enough turns to be able to attack planets.<br />You need to have used <b>$turns_before_planet_attack</b> or more turns.";
-	} elseif ($flag_planet_attack == 0) {
+	} elseif ($user['turns_run'] < $gameOpt['turns_before_planet_attack'] && !IS_ADMIN) {
+		$out .= "You have not used enough turns to be able to attack planets.<br />You need to have used <b>$gameOpt[turns_before_planet_attack]</b> or more turns.";
+	} elseif ($gameOpt['flag_planet_attack'] == 0) {
 		$out .= "The admin presentlty has planet attacking disabled.";
 	} elseif ($planet['missile'] < 1) {
 		$out .= "You do not have a missile on this planet.";
@@ -182,7 +182,7 @@ if ($planet['login_id'] !== $user['login_id']) {
 #build a launch pad
 } elseif(isset($launch_pad)) {
 	$header = 'Launch Pad Construction';
-	if ($enable_superweapons == 0) {
+	if ($gameOpt['enable_superweapons'] == 0) {
 		$out .= <<<END
 <p>Admin has disabled the ability to use these weapons, as such, building a
 missile pad is pointless.</p>

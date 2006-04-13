@@ -29,8 +29,8 @@ $gInfo = $db->query('SELECT COUNT(*), SUM(cash), SUM(turns), ' .
  'login_id != %u', array($gameInfo['admin']));
 $playerStats = $db->fetchRow($gInfo, ROW_NUMERIC);
 
-$gInfo = $db->query('SELECT g.name, g.description, g.paused, ' .
- 'g.last_reset, g.difficulty, u.login_name FROM se_games AS g ' .
+$gInfo = $db->query('SELECT g.name, g.description, g.status, ' .
+ 'g.started, g.difficulty, u.login_name FROM se_games AS g ' .
  'LEFT JOIN user_accounts AS u ON g.admin = u.login_id WHERE ' .
  'g.db_name = \'[game]\'');
 $info = $db->fetchRow($gInfo);
@@ -45,11 +45,11 @@ $info = $db->fetchRow($gInfo);
 	</tr>
 	<tr>
 	    <th>Status</th>
-	    <td><?php echo $info['paused'] == 1 ? 'Paused' : 'Running'; ?></td>
+	    <td><?php echo esc($info['status']); ?></td>
 	</tr>
 	<tr>
 	    <th>Players / Max</th>
-	    <td><?php echo esc($playerStats[0] . ' / ' . $max_players); ?></td>
+	    <td><?php echo esc($playerStats[0] . ' / ' . $gameOpt['max_players']); ?></td>
 	</tr>
 	<tr>
 	    <th>Difficulty</th>
@@ -57,12 +57,12 @@ $info = $db->fetchRow($gInfo);
 	</tr>
 	<tr>
 	    <th>Started</th>
-	    <td><?php echo date("M d - H:i", $info['last_reset']); ?></td>
+	    <td><?php echo date("M d - H:i", $info['started']); ?></td>
 	</tr>
 </table>
 <?php
 
-if ($playerStats[0] >= $max_players) {
+if ($playerStats[0] >= $gameOpt['max_players']) {
 ?>
 <p>Player Limit for game reached. No New players allowed to join game.</p>
 <?php
@@ -72,7 +72,7 @@ if ($playerStats[0] >= $max_players) {
 <?php
 }
 
-if ($admin_var_show == 1) {
+if ($gameOpt['admin_var_show'] == 1) {
 ?>
 <p><a href="<?php echo esc('game_vars.php?db_name=' . $db_name);
 ?>">Game Variables</a></p>

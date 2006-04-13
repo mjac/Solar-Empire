@@ -140,9 +140,9 @@ $error_str = "";
 if (isset($special_info)) {
 	$error_str .= "";
 } elseif (isset($game_vars)) {
-	if(!isset($admin_var_show)) {
+	if(!isset($gameOpt['admin_var_show'])) {
 		$error_str .= "You may not see the vars for a game when you are not in said game.";
-	} elseif($admin_var_show == 0) {
+	} elseif($gameOpt['admin_var_show'] == 0) {
 		$error_str .= "The Admin of this game, doesn't want the game variables displayed.";
 	} else {
 		db("select * from [game]_db_vars order by name");
@@ -581,7 +581,7 @@ must read for any newbie to the game.</p>
 which lists some of the things that use turns and their costs. A players turns 
 are augmented each hour by some more turns. These turns are given out by the 
 game, and vary from game to game. For this game they are at 
-<em>$increase_turns per $process_turns seconds</em>.
+<em>$gameOpt[increase_turns] per $gameOpt[process_turns] seconds</em>.
 <table class="simple">
 	<tr>
 		<th>Action</th>
@@ -593,11 +593,11 @@ game, and vary from game to game. For this game they are at
 	</tr>
 	<tr>
 		<td>Attack ship</td>
-		<td>$space_attack_turn_cost</td>
+		<td>$attack_turn_cost_ship</td>
 	</tr>
 	<tr>
 		<td>Attack planet</td>
-		<td>$planet_attack_turn_cost</td>
+		<td>$attack_turn_cost_planet</td>
 	</tr>
 	<tr>
 		<td>Self destruct</td>
@@ -740,8 +740,9 @@ minerals, assign the fleet to mine either fuel or metal.</p>
 <p class="figure"><img src="img/help/menu_ship_mine.png" alt="Assigning ships to mine fuel" /></p>
 
 <h2>Congratulations</h2>
-<p>Now you should be ready to start an empire: you will gain $increase_turns 
-turns per $process_turns seconds, spend them and improve your status.</p>
+<p>Now you should be ready to start an empire: you will gain 
+$gameOpt[increase_turns] turns per $gameOpt[process_turns] seconds, spend 
+them and improve your status.</p>
 
 END;
 
@@ -751,7 +752,7 @@ END;
 * Technical Documents
 *************/
 
-} elseif(isset($tech_info)){
+} elseif(isset($tech_info)) {
 	$help_type = "Technical Information";
 	$error_str .= <<<END
 <h1>Technical Information</h1>
@@ -832,7 +833,7 @@ if(!isset($popup)){
 
 END;
 
-	if(!isset($clan_member_limit) || ($clan_member_limit > 0 && $max_clans > 0)){
+	if ($gameOpt['max_clans'] > 0) {
 		echo "\t<li><a href=\"help.php?clans=1\">Clans</a></li>\n";
 	}
 
@@ -845,7 +846,7 @@ END;
 			<li><a href="help.php?tech_info=1">Technical information</a></li>
 
 END;
-	if($admin_var_show == 1) {
+	if($gameOpt['admin_var_show'] == 1) {
 		echo "\t<li><a href=help.php?game_vars=1>Game variables</a></li>\n";
 	}
 

@@ -5,8 +5,8 @@ require_once('inc/admin.inc.php');
 $out = '';
 
 #update all player scores
-if(isset($update_scores)){
-	if($score_method == 0){
+if (isset($update_scores)) {
+	if ($gameOpt['score_method'] == 0) {
 		$out .= "Scoring is presently turned off. Set the admin var to something other than 0 to turn it on.<br /><br />";
 	} else {
 		score_func(0,1);
@@ -30,10 +30,9 @@ if(isset($more_money)){
 }
 
 #news post
-if(isset($post_game_news) && empty($text)) {
-	get_var('Post News', $self, 'What do you want to post in the News?','text','');
-} elseif(isset($post_game_news)) {
-	$login_id = -1;
+if (isset($post_game_news) && empty($text)) {
+	get_var('Post News', $self, 'What do you want to post in the News?', 'text', '');
+} elseif (isset($post_game_news)) {
 	post_news($text);
 	$out = "News Posted.<p>";
 }
@@ -54,10 +53,10 @@ if (isset($show_active)) {
 		$out .= "<table class=\"simple\">\n\t<tr>\n\t\t<th>Login Name</th>\n" .
 		 "\t\t<th>Last Request</th>\n\t</tr>\n";
 		while ($player = $db->fetchRow($players)) {
-		  $out .= "\t<tr>\n\t\t<td>" . print_name($player) . "</td>\n" .
-		   "\t\t<td>" . date( "H:i:s (M d)", $player['last_request']) . "</td>\n" .
-		   "\n\t</tr>\n";
-		  $player = dbr();
+			$out .= "\t<tr>\n\t\t<td>" . print_name($player) . "</td>\n" .
+			 "\t\t<td>" . date( "H:i:s (M d)", $player['last_request']) . 
+			 "</td>\n\n\t</tr>\n";
+			$player = dbr();
 		}
 		$out .= "</table>";
 	}
@@ -94,23 +93,27 @@ END;
 }
 
 
-#(un)pause
-if(isset($pause)){
-	if($pause == 1){
-		$out = "Game Paused.<p>";
-		$db->query("update se_games set paused = '1' where db_name = '$db_name'");
-		post_news("Game paused");
-		insert_history($user['login_id'],"Paused Game.");
-	} elseif ($pause == 2) {
-		post_news("Game un-paused");
-		$out = "<p>Game Un-paused.</p>";
-		$db->query("update se_games set paused = 0, processed_cleanup = %u, processed_systems = %u, processed_turns = %u, processed_ships = %u, processed_planets = %u, processed_government = %u where db_name = '[game]'", array(time(), time(), time(), time(), time(), time()));
-		insert_history($user['login_id'],"Unpaused Game.");
+// Change game status
+if (isset($status)) {
+	$status = strtolower($status);
+	switch ($status) {
+		case 'paused':
+		case 'running':
+			post_news("Game $status");
+		case 'hidden':
+			$db->query('UPDATE se_games SET status = \'%s\', ' .
+			 'processed_cleanup = %u, processed_systems = %u, ' .
+			 'processed_turns = %u, processed_ships = %u, ' .
+			 'processed_planets = %u, processed_government = %u WHERE ' .
+			 'db_name = \'[game]\'', array($db->escape($status), time(), 
+			 time(), time(), time(), time(), time()));
+			$out .= "<p>Game is now $status.</p>\n";
+			insert_history($user['login_id'], "Changed status to $status.");
 	}
 }
 
 //preview a universe
-if(isset($preview)){
+if (isset($preview)) {
 	print_header("Universe Preview");
 ?>
 <script>
@@ -153,8 +156,8 @@ It is only an example of what can be created.</p>
 
 
 // reset game
-if(isset($reset)){
-	if($reset == 2) {
+if (isset($reset)) {
+	if ($reset == 2) {
 		require_once('inc/generator.funcs.php');
 		$out .= "<h1>Game reset started</h1>\n<ul>\n";
 
@@ -189,8 +192,8 @@ if(isset($reset)){
 		$db->query('DELETE FROM [game]_bilkos');
 		$out .= "\t<li>Auction house emptied</li>\n";
 
-		$db->query('UPDATE se_games SET last_reset = %u WHERE ' .
-		 'db_name = \'[game]\'', array(time()));
+		$db->query('UPDATE se_games SET started = %u, finishes = %u WHERE ' .
+		 'db_name = \'[game]\'', array(time(), time() + 1728000));
 		$out .= "\t<li>Last reset date updated to now</li>\n</ul>\n";
 
 		post_news('Game reset');
@@ -206,7 +209,7 @@ if(isset($reset)){
 
 
 #list all planets in game
-if(isset($planet_list) || isset($sort_planets)){
+if (isset($planet_list) || isset($sort_planets)) {
 	if (isset($sorted) && $sorted == 1) {
 		$going = "ASC";
 		$sorted = 2;
@@ -274,20 +277,15 @@ if(isset($descr)){
 	insert_history($user['login_id'],"Game description changed.");
 }
 
-
-#list all admin options
-$pQuery = $db->query('SELECT paused FROM se_games WHERE db_name = \'[game]\'');
-$paused = current($db->fetchRow($pQuery, ROW_NUMERIC)) == 1;
-$pauseStr = $paused ? 'Un-Pause' : 'Pause';
-$pauseId = $paused ? 2 : 1;
-
 $out .= <<<END
 <h1>Administration</h1>
 
 <h2>Game Functions</h2>
 <ul>
 	<li><a href="admin_edit_vars.php">Edit variables</a></li>
-	<li><a href="$self?pause=$pauseId">$pauseStr game</a></li>
+	<li>Set status to <a href="$self?status=hidden">hidden</a>, 
+	<a href="$self?status=paused">paused</a> or 
+	<a href="$self?status=running">running</a></li>
 	<li><a href="$self?reset=1">Reset game</a></li>
 	<li><a href="$self?difficulty=1">Change stated difficulty</a></li>
 </ul>

@@ -36,8 +36,8 @@ if (isset($amount) && isset($target)) {
 		print_page("Bounty","You may not place a bounty on a clan-mate.");
 	} elseif ($target == $gameInfo['admin']) {
 		print_page("Bounty","You may not place a bounty on the Admin.");
-	} elseif ($user['turns_run'] < $turns_before_attack && !IS_ADMIN) {
-		print_page("Bounty","You may not place a bounty during the first <b>$turns_before_attack</b> turns of your account's existence. This is because placing a bounty is a form of attack.");
+	} elseif ($user['turns_run'] < $gameOpt['turns_before_attack'] && !IS_ADMIN) {
+		print_page("Bounty","You may not place a bounty during the first <b>$gameOpt[turns_before_attack]</b> turns of your account's existence. This is because placing a bounty is a form of attack.");
 	} elseif ($amount < 0) {
 		print_page("Bounty","Negative sums can not be placed for bounties.");
 	} elseif (!$initial) {
@@ -130,8 +130,8 @@ if(!isset($place)) {
 
 END;
 	}
-} elseif ($user['turns_run'] < $turns_before_attack && !IS_ADMIN) {
-	print_page("Bounty","You may not place a bounty during the first <b>$turns_before_attack</b> turns of your accounts' existence. This is because placing a bounty is a form of attack.");
+} elseif ($user['turns_run'] < $gameOpt['turns_before_attack'] && !IS_ADMIN) {
+	print_page("Bounty","You may not place a bounty during the first <b>$gameOpt[turns_before_attack]</b> turns of your accounts' existence. This is because placing a bounty is a form of attack.");
 } else {
 	if ($user['clan_id'] !== NULL) {
 		db("select login_name, login_id from [game]_users where login_id != $gameInfo[admin] AND login_id != $user[login_id] AND clan_id != $user[clan_id] AND joined_game = 1 order by login_name");

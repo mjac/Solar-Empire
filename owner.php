@@ -4,7 +4,7 @@
 
 require_once('inc/owner.inc.php');
 
-$out_str = "";
+$out_str = '';
 
 
 #developer sends a message
@@ -76,18 +76,20 @@ END;
 	 'SUM(num_games_joined), SUM(page_views) from user_accounts');
 	$serv1 = $db->fetchRow($genInfo, ROW_NUMERIC);
 
-	$gameAmount = $db->query("SELECT COUNT(*) FROM se_games WHERE status = 1");
+	$gameAmount = $db->query('SELECT COUNT(*) FROM se_games');
 	$serv2 = $db->fetchRow($gameAmount, ROW_NUMERIC);
 
-	$out_str .= make_table(array());
-	$out_str .= quick_row("Total Games:", "$serv2[0]");
-	$out_str .= quick_row("Total Accounts:","$serv1[0]");
-	$out_str .= quick_row("Total Logins:","$serv1[1]");
-	$out_str .= quick_row("Total page views:","$serv1[3]");
+	$out_str .= make_table(array()) . quick_row('Total Games:',  $serv2[0]) .
+	 quick_row('Total Accounts:', $serv1[0]) . 
+	 quick_row('Total Logins:', $serv1[1]) .
+	 quick_row('Total page views:', $serv1[3]);
 	if ($serv1[0] > 0) {
-		$out_str .= quick_row("Logins / Player:", number_format($serv1[1] / $serv1[0], 2));
-		$out_str .= quick_row("Games Joined / Player:", number_format($serv1[2] / $serv1[0], 2));
-		$out_str .= quick_row("Page Views / Player:", number_format($serv1[3] / $serv1[0], 2));
+		$out_str .= quick_row('Logins / Player:', 
+		 number_format($serv1[1] / $serv1[0], 2));
+		$out_str .= quick_row('Games Joined / Player:', 
+		 number_format($serv1[2] / $serv1[0], 2));
+		$out_str .= quick_row('Page Views / Player:', 
+		 number_format($serv1[3] / $serv1[0], 2));
 	}
 	$out_str .= "</table><br />";
 } elseif (isset($php_info)) {
@@ -110,6 +112,6 @@ END;
 
 }
 
-print_page("Server Admin",$out_str);
+print_page("Server Admin", $out_str);
 
 ?>

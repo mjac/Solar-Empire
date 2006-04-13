@@ -239,15 +239,6 @@ function post_news($headline)
 	 $db->escape($headline), $p_user['login_id']));
 }
 
-//function that will send a header correct e-mail, or return failure if it doesn't work
-function send_mail($myname, $myemail, $contactname, $contactemail, $subject, $message)
-{
-	$headers = "MIME-Version: 1.0\n";
-	$headers .= "Content-type: text/plain; charset=iso-8859-1\n";
-	$headers .= "From: \"".$myname."\" <".$myemail.">\n";
-	return (mail("\"".$contactname."\" <".$contactemail.">", $subject, $message, $headers));
-}
-
 
 /********************
 Ship Information Functions
@@ -256,9 +247,7 @@ Ship Information Functions
 //function to figure out the size of a ship in textual terms
 function discern_size($hull)
 {
-	static $sizes = array(
-		'Small', 'Medium', 'Large', 'Immense', 'Gigantic'
-	);
+	static $sizes = array('Small', 'Medium', 'Large', 'Immense', 'Gigantic');
 
 	$pos = floor(sqrt($hull) / 10);
 	$max = count($sizes) - 1;
@@ -337,7 +326,6 @@ function selectGame($db_name)
 }
 
 
-// GLOBALS ARE DEPRECIATED! use gameOpt instead
 function gameVars($db_name)
 {
 	global $db, $gameOpt;
@@ -345,7 +333,7 @@ function gameVars($db_name)
 
 	$options = $db->query("SELECT name, value from {$db_name}_db_vars");
 	while (list($name, $value) = $db->fetchRow($options, ROW_NUMERIC)) {
-		$GLOBALS[$name] = $gameOpt[$name] = (int)$value;
+		$gameOpt[$name] = (int)$value;
 	}
 }
 
@@ -357,7 +345,7 @@ Calculating Functions
 //function used to work out players scores
 function score_func($login_id,$full)
 {
-	global $score_method, $db, $gameInfo;
+	global $gameOpt, $db, $gameInfo;
 
 /*
 Listed below are all of the score methods, and some info on them.
@@ -369,21 +357,18 @@ Listed below are all of the score methods, and some info on them.
 */
 
 	//determines if admin is updateing all scores, or an individual players score is being updated.
-	if($full != 1) {
-		$s = $db->query("select value from [game]_db_vars where name = 'score_method'");
-		$alpha_var = $db->fetchRow($s);
-		$score_method = $alpha_var['value'];
+	if ($full != 1) {
 		$extra_text = "login_id = '$login_id'";
 		$plan_text = "login_id = '$login_id'";
 	} else {
 		$and_text = " AND ";
 		$extra_text = $plan_text = "login_id != " . $gameInfo['admin'];
 	}
-	if($score_method==1){ //scoring method, whereby only kills,are taken into account.
+	if ($gameOpt['score_method'] == 1) { //scoring method, whereby only kills,are taken into account.
 		$db->query("update [game]_users set score = (fighters_killed + (ships_killed * 10)) - (fighters_lost * 0.75 + (ships_lost * 5)) where ".$extra_text);
-	} elseif($score_method == 2){ //takes into account ships lost, ships killed, fighters lost, fighters killed.
+	} elseif ($gameOpt['score_method'] == 2) { //takes into account ships lost, ships killed, fighters lost, fighters killed.
 		$db->query("update [game]_users set score = ships_killed_points - (ships_lost_points * 0.5) where ".$extra_text);
-	} elseif($score_method == 3){ //total fiscal value score.
+	} elseif ($gameOpt['score_method'] == 3) { //total fiscal value score.
 		$one = $db->query("select sum(fighters) + sum(point_value), login_id from [game]_ships where ".$extra_text." GROUP BY login_id");
 		$two = $db->query("select sum(fighters), login_id from [game]_planets where ".$plan_text." GROUP BY login_id");
 		if($full == 1){

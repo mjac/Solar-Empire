@@ -92,9 +92,10 @@ if ($db_name !== NULL) {
 
 //user has selected a game.
 if (isset($_REQUEST['game_selected'])) {
-	$gQuery = $db->query('SELECT db_name, admin, name, last_reset, ' .
-	 'intro_message FROM se_games WHERE db_name = \'%s\'',
-	 array($db->escape($_REQUEST['game_selected'])));
+	$gQuery = $db->query('SELECT db_name, admin, name, started, ' .
+	 'intro_message FROM se_games WHERE db_name = \'%s\' AND ' .
+	 '(status != \'paused\' OR admin = %u)',
+	 array($db->escape($_REQUEST['game_selected']), $p_user['login_id']));
 
 	if ($db->numRows($gQuery) < 1) {
 		header('Location: game_listing.php');
@@ -158,7 +159,7 @@ END;
 		gameVars($db_name);
 
 
-		if ($players >= $max_players) { //game full check
+		if ($players >= $gameOpt['max_players']) { //game full check
 			print_header("Game Full");
 			echo "<b class=b1>$gameInfo[name]</b> is full. Try a Different Game.";
 			print_footer();
@@ -213,10 +214,10 @@ END;
 
 			//create user's first ship
 			$startWith = $db->query('SELECT * FROM [game]_ship_types WHERE ' .
-			 'type_id = %u', array($start_ship));
+			 'type_id = %u', array($gameOpt['start_ship']));
 			if (!$firstShip = $db->fetchRow($startWith)) {
-				trigger_error('Ship #' . $start_ship . ' is missing, the user ' .
-				 'cannot join the game.', E_USER_ERROR);
+				trigger_error('Ship #' . $gameOpt['start_ship'] . 
+				 ' is missing; the user cannot join the game.', E_USER_ERROR);
 				exit();
 			}
 
@@ -233,7 +234,8 @@ END;
 			$db->query('INSERT INTO [game]_users (login_id, login_name, ' .
 			 'joined_game, turns, cash, ship_id) VALUES (%u, \'%s\', %u, %u, ' .
 			 '%u, %u)', array($p_user['login_id'], $db->escape($in_game_name),
-			 time(), $start_turns, $start_cash, $ship_id));
+			 time(), $gameOpt['start_turns'], $gameOpt['start_cash'],
+			 $ship_id));
 
 			//insert user options
 			$db->query('INSERT INTO [game]_user_options (login_id) ' .
@@ -266,6 +268,7 @@ END;
 print_header("Game Listings");
 
 if (IS_OWNER && isset($_REQUEST['newGame'])) {
+	require_once('inc/generator.funcs.php');
 	$query = '';
 	$fp = fopen('inc/game.' . $db->type . '.sql', 'r');
 	while (!feof($fp)) {
@@ -278,6 +281,7 @@ if (IS_OWNER && isset($_REQUEST['newGame'])) {
 		}
 	}
 	$db->query('%s', array(str_replace('gamename', $_REQUEST['newGame'], $query)));
+	clearImages('img/' . $_REQUEST['newGame'] . '_maps');
 }
 
 ?>
@@ -308,9 +312,10 @@ require_once('inc/server_news.inc.html');
 $joined = array();
 $unjoined = array();
 
-//cycle through the games that are running.
-$games = $db->query('SELECT name, db_name, paused FROM ' .
- 'se_games WHERE status = \'1\' ORDER BY name ASC');
+// Cycle through the games that are not hidden
+$games = $db->query('SELECT name, db_name, status FROM ' .
+ 'se_games WHERE status != \'hidden\' OR admin = %u ORDER BY name ASC', 
+ array($p_user['login_id']));
 while ($game = $db->fetchRow($games, ROW_NUMERIC)) {
 	$inGame = $db->query('SELECT COUNT(*) FROM ' . $game[1] .
 	 '_users WHERE login_id = %u', array($p_user['login_id']));
@@ -329,9 +334,9 @@ if (!empty($joined)) {
 <?php
 	foreach ($joined as $game) {
 ?>
-	<li><a href="<?php echo esc(URL_SELF . '?game_selected=' . $game[1])
+	<li><a href="<?php echo esc(URL_SELF . '?game_selected=' . $game[1]);
 	?>"><?php echo esc($game[0]); ?></a> <?php
-		if ($game[2] == 1) {
+		if ($game[2] === 'paused') {
 				?> (paused)<?php
 		} else {
 			$sd = $db->query('SELECT value FROM ' . $game[1] .
@@ -356,7 +361,7 @@ if (!empty($unjoined)) {
 ?>
 	<li><a href="<?php echo esc(URL_SELF . '?game_selected=' . $game[1])
 	?>"><?php echo esc($game[0]); ?></a> <?php
-		if ($game[2] == 1) {
+		if ($game[2] === 'paused') {
 			?> (paused)<?php
 		} else {
 			$sd = $db->query('SELECT value FROM ' . $game[1] .

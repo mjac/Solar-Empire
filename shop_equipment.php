@@ -9,8 +9,6 @@ if (deathCheck($user) || $userShip === NULL || $userShip['location'] != 1) {
 
 $error_str = "";
 
-#fighter cost is now based upon the admin var.
-#$fighter_cost = 100;
 $fighter_cost = $gameOpt['fighter_cost_earth'];
 if($fighter_cost <= 0){
 	$fighter_cost = 1;
@@ -86,31 +84,34 @@ function buyEquipment($field, $name, $cost, $amount)
 // checks
 if(isset($buy)) {
 	if ($buy == 1) { //fighters
-		$error_str .= buyShipItem("fighters", "max_fighters", "Fighters", $fighter_cost, 1);
+		$error_str .= buyShipItem('fighters', 'max_fighters', 'Fighters', $fighter_cost, 1);
 	} elseif ($buy == 2) { //shields
-		$error_str .= buyShipItem("shields", "max_shields", "Shields", $shield_cost, 1);
+		$error_str .= buyShipItem('shields', 'max_shields', 'Shields', $shield_cost, 1);
 	} elseif ($buy == 5) { // genesis device
-		if ($uv_planets < 1 || IS_ADMIN) {
-			$error_str .= buyEquipment("genesis", "Genesis Device", $cost_genesis_device, 1);
+		if ($gameOpt['uv_planets'] < 1 || IS_ADMIN) {
+			$error_str .= buyEquipment('genesis', "Genesis Device", $gameOpt['cost_genesis_device'], 1);
 		} else {
 		    $error_str .= "<p>Genesis devices are unavailable - planets " .
 			 "cannot be created or destroyed artificially.</p>\n";
 		}
 	} elseif ($buy == 'gamma') { // gamma bomb
-	    if ($bomb_level_shop >= 1 || IS_ADMIN) {
-	        $error_str .= buyEquipment('gamma', 'Gamma Bomb', $bomb_cost, 1);
+	    if ($gameOpt['bomb_level_shop'] >= 1 || IS_ADMIN) {
+	        $error_str .= buyEquipment('gamma', 'Gamma Bomb',
+			 $gameOpt['bomb_cost'], 1);
 	    } else {
 			$error_str .= "<p>Gamma bombs are outlawed.</p>\n";
 		}
 	} elseif ($buy === 'alpha') { // alpha bomb
-	    if ($bomb_level_shop >= 1 || IS_ADMIN) {
-	        $error_str .= buyEquipment('alpha', 'Alpha Bomb', $bomb_cost, 1);
+	    if ($gameOpt['bomb_level_shop'] >= 1 || IS_ADMIN) {
+	        $error_str .= buyEquipment('alpha', 'Alpha Bomb',
+			 $gameOpt['bomb_cost'], 1);
 	    } else {
 			$error_str .= "<p>Alpha bombs are outlawed.</p>\n";
 		}
 	} elseif ($buy === 'delta') { // alpha bomb
-	    if ($bomb_level_shop >= 2 || IS_ADMIN) {
-	        $error_str .= buyEquipment('delta', 'Delta Bomb', $bomb_cost * 50, 1);
+	    if ($gameOpt['bomb_level_shop'] >= 2 || IS_ADMIN) {
+	        $error_str .= buyEquipment('delta', 'Delta Bomb',
+			 $gameOpt['bomb_cost'] * 50, 1);
 	    } else {
 			$error_str .= "<p>Delta bombs are outlawed.</p>\n";
 		}
@@ -200,7 +201,7 @@ $error_str .= <<<END
 
 END;
 
-if ($uv_planets < 1 || IS_ADMIN) {
+if ($gameOpt['uv_planets'] < 1 || IS_ADMIN) {
 	$error_str .= <<<END
 <h2>Planet devices</h2>
 <dl>
@@ -209,14 +210,14 @@ if ($uv_planets < 1 || IS_ADMIN) {
 	<dd>These are used to create a planet.  One thousand of your
 	followers accompany it and inhabit the planet after its creation.</dd>
 	<dd><a href="$self?buy=5">Purchase one</a> for
-	<em>$cost_genesis_device credits</em>.</dd>
+	<em>$gameOpt[cost_genesis_device] credits</em>.</dd>
 </dl>
 
 END;
 }
 
 
-if ($bomb_level_shop >= 1 || IS_ADMIN) {
+if ($gameOpt['bomb_level_shop'] >= 1 || IS_ADMIN) {
 	$error_str .= <<<END
 <h2>System-wide bombs</h2>
 <dl>
@@ -226,18 +227,18 @@ if ($bomb_level_shop >= 1 || IS_ADMIN) {
 	shields</strong> in this system before disappearing from the universe
 	altogether.</dd>
 	<dd><a href="$self?buy=alpha">Purchase one</a> for
-	<em>$bomb_cost credits</em>.</dd>
+	<em>$gameOpt[bomb_cost] credits</em>.</dd>
 
 	<dt>Gamma bomb</dt>
 	<dd><img src="img/equipment/bomb_gamma.jpg" alt="Gamma bomb" /></dd>
 	<dd>Causes <strong>blast damage of 200</strong> to every local ship.</dd>
 	<dd><a href="$self?buy=gamma">Purchase one</a> for
-	<em>$bomb_cost credits</em>.</dd>
+	<em>$gameOpt[bomb_cost] credits</em>.</dd>
 
 END;
 
-    if ($bomb_level_shop >= 2 || IS_ADMIN) {
-        $cost = $bomb_cost * 50;
+    if ($gameOpt['bomb_level_shop'] >= 2 || IS_ADMIN) {
+        $cost = $gameOpt['bomb_cost'] * 50;
 		$error_str .= <<<END
 
 	<dt>Delta bomb</dt>

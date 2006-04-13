@@ -32,11 +32,11 @@ function idle_colonists()
 	 $planet['alloc_elect'] - $planet['alloc_organ'];
 }
 
-#ensure a user can transfer stuff.
+// Ensure a user can transfer stuff.
 function conditions($user, $planet)
 {
-	global $min_before_transfer;
-	if ($user['joined_game'] > (time() - ($min_before_transfer * 24 * 60 * 60)) &&
+	global $gameOpt;
+	if ($user['joined_game'] > (time() - ($gameOpt['min_before_transfer'] * 86400)) &&
 	     ($user['login_id'] !== $planet['login_id'] && $planet['fighters'] != 0) &&
 	     !IS_ADMIN) {
 		return true;

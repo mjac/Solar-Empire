@@ -7,30 +7,30 @@ define('SHIP_UNCHANGED', 8);
 
 function canAttackShip($ship)
 {
-	global $user, $userShip, $gameInfo, $turns_before_attack, $flag_sol_attack,
-	 $flag_space_attack, $turns_safe;
+	global $user, $userShip, $gameInfo, $gameOpt;
 
-	return IS_ADMIN || ($user['turns_run'] > $turns_safe &&
-	 $ship['turns_run'] > $turns_safe &&
+	return IS_ADMIN || ($user['turns_run'] > $gameOpt['turns_safe'] &&
+	 $ship['turns_run'] > $gameOpt['turns_safe'] &&
 	 ($user['clan_id'] === NULL || $user['clan'] != $ship['clan_id']) &&
 	 (!shipHas($ship, 'hs') || shipHas($userShip, 'sc')) &&
-	 $user['turns_run'] > $turns_before_attack && $user['ship_id'] !== NULL &&
-	 ($userShip['location'] != 1 || $flag_sol_attack == 1) &&
+	 $user['turns_run'] > $gameOpt['turns_before_attack'] && 
+	 $user['ship_id'] !== NULL &&
+	 ($userShip['location'] != 1 || $gameOpt['flag_sol_attack'] == 1) &&
      !(shipHas($userShip, 'po') || shipHas($userShip, 'na')) &&
-	 $flag_space_attack == 1);
+	 $gameOpt['flag_space_attack'] == 1);
 }
 
 function canAttackPlanet($planet)
 {
-	global $user, $userShip, $gameInfo, $turns_before_attack, $flag_sol_attack,
-	 $flag_planet_attack, $turns_safe;
+	global $user, $userShip, $gameInfo, $gameOpt;
 
-	return IS_ADMIN || ($user['turns_run'] > $turns_safe &&
-	 $planet['turns_run'] > $turns_safe && 
+	return IS_ADMIN || ($user['turns_run'] > $gameOpt['turns_safe'] &&
+	 $planet['turns_run'] > $gameOpt['turns_safe'] && 
 	 ($user['clan_id'] === NULL || $user['clan'] != $planet['clan_id']) &&
-	 $user['turns_run'] > $turns_before_attack && $user['ship_id'] !== NULL &&
-	 ($userShip['location'] != 1 || $flag_sol_attack == 1) &&
-	 $flag_planet_attack == 1);
+	 $user['turns_run'] > $gameOpt['turns_before_attack'] && 
+	 $user['ship_id'] !== NULL &&
+	 ($userShip['location'] != 1 || $gameOpt['flag_sol_attack'] == 1) &&
+	 $gameOpt['flag_planet_attack'] == 1);
 }
 
 function attackSway($hit)

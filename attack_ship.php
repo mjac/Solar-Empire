@@ -22,7 +22,7 @@ if (!canAttackShip($tShip)) {
 	if ($user['clan_id'] === NULL || $user['clan'] != $ship['clan_id']) {
 		$reasons[] = 'the ship is owned by one of your fellow clan members';
 	}
-	if ($ship['turns_run'] > $turns_safe) {
+	if ($ship['turns_run'] > $gameOpt['turns_safe']) {
 		$reasons[] = 'you are still in safe-turns';
 	}
 	if (shipHas($tShip, 'hs') && !shipHas($userShip, 'sc')) {

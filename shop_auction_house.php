@@ -20,7 +20,7 @@ if($user['ship_id'] === NULL || $userShip['location'] == 1){
 $rate = 5;
 
 #work out the number of seconds an item is to remain in bilkos for.
-$bilkos_seconds = $bilkos_time * 3600;
+$bilkos_seconds = $gameOpt['bilkos_time'] * 3600;
 
 $text = <<<END
 <h1>Auction house</h1>
@@ -69,8 +69,8 @@ if(isset($collect)){
 	} elseif($userShip['location'] != 1) {
 		$text .= "You may only collect this item from the auction house at Earth, as that is where the central repository of goods is stored.";
 	} else {
-		if($item['item_type'] == 1){ #ships
-			if($numships[0] >= $max_ships){
+		if ($item['item_type'] == 1) { #ships
+			if ($numships[0] >= $gameOpt['max_ships']) {
 				$text .= "You may not collect this item as you are already at the ship limit.";
 			} else {
 				$item['item_code'] = str_replace('ship', '', $item[item_code]);
@@ -152,7 +152,7 @@ if(isset($collect)){
 			}
 		} elseif($item['item_type'] == 4){ #misc
 			if($item['item_code'] > 9 && $item['item_code'] < 101){
-				if($user['turns'] + $item['item_code'] > $max_turns){
+				if ($user['turns'] + $item['item_code'] > $gameOpt['max_turns']) {
 					$text .= "You cannot collect your turns because adding these to your present turns would take you over the turn limit.";
 				} else {
 					$text .= "Here are your <b>$item[item_code]</b> turns.";
@@ -227,13 +227,14 @@ if(isset($collect)){
 			if($item['bidder_id'] > 0){
 				giveMoney($item['bidder_id'], $item['going_price']);
 				$newId = newId('[game]_messages', 'message_id');
-				dbn("INSERT INTO [game]_messages (message_id, timestamp, sender_name, sender_id, login_id, text) VALUES ($newId, ".time().",'Bilkos','$user[login_id]','$item[bidder_id]','Your bid on the <b class=b1>$item[item_name]</b> has been beaten by <b class=b1>$user[login_name]</b> who has put a new bid of <b>$new_bid</b> Credits on the item.<p>The lot will remain open for a further <b>$bilkos_time hrs</b>. If there are no new bidders, then <b class=b1>$user[login_name]</b> will take the lot.<p>You have been refunded the money you deposited on the lot.')");
+				dbn("INSERT INTO [game]_messages (message_id, timestamp, sender_name, sender_id, login_id, text) VALUES ($newId, ".time().",'Bilkos','$user[login_id]','$item[bidder_id]','Your bid on the <b class=b1>$item[item_name]</b> has been beaten by <b class=b1>$user[login_name]</b> who has put a new bid of <b>$new_bid</b> Credits on the item.<p>The lot will remain open for a further <b>$gameOpt[bilkos_time] hrs</b>. If there are no new bidders, then <b class=b1>$user[login_name]</b> will take the lot.<p>You have been refunded the money you deposited on the lot.')");
 			}
 			dbn("update [game]_bilkos set timestamp=".time().", bidder_id=$user[login_id],going_price=$new_bid where item_id = $bid;");
 			$text .= <<<END
 <h2>Bid successful</h2>
-<p>Provided no-one out bids you within the next <em>$bilkos_time hours</em>,
-you will soon be the proud new owner of a <strong>$item[item_name]</strong>.</p>
+<p>Provided no-one out bids you within the next <em>$gameOpt[bilkos_time] 
+hours</em>, you will soon be the proud new owner of a 
+<strong>$item[item_name]</strong>.</p>
 
 END;
 		}

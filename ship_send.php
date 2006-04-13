@@ -18,7 +18,7 @@ if ($user['joined_game'] > (time() - ($gameOpt['min_before_transfer'] * 86400)) 
 db("select login_id, login_name, clan_id from [game]_users where login_id = $target");
 $target = dbr();
 
-if($sudden_death == 1 && !IS_ADMIN) { //SD check
+if ($gameOpt['sudden_death'] == 1 && !IS_ADMIN) { //SD check
 	#ensure target isn't dead.
 	db("select count(ship_id) from [game]_ships where login_id = '$target[login_id]'");
 	$count = dbr();
@@ -39,11 +39,11 @@ if(isset($do_ship)) { //user has selected stuff to transfer
 	db("select count(ship_id) from [game]_ships where login_id = '$target[login_id]'");
 	$ship_count = dbr();
 
-	if($user['cash'] < $estimated_cost) { # ensure have enough cash
+	if ($user['cash'] < $estimated_cost) { # ensure have enough cash
 		$text .= "Signing over a single ship costs $estimated_cost Credits<br />To transfer all the selected ships will cost as much as <b>$estimated_cost</b> Credits.";
-	} elseif($num_ships < 1){
+	} elseif ($num_ships < 1) {
 		$text .= "No ships Selected for Transfer!";
-	} elseif($ship_count[0] >= $max_ships){
+	} elseif ($ship_count[0] >= $gameOpt['max_ships']) {
 		$text .= "<b class=b1>$target[login_name]</b> already has the maximum number of ships.";
 	} else {
 		//can transfer ships.

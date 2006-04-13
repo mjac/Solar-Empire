@@ -18,14 +18,14 @@ if (empty($port)) {
 	print_page('Port', 'That port is not in this system.');
 }
 
-$metal_buy = $buy_metal + $port['metal_bonus'];
-$metal_sell = $buy_metal - round(($buy_metal/100)*20) + $port['metal_bonus'];
-$fuel_buy = $buy_fuel + $port['fuel_bonus'];
-$fuel_sell = $buy_fuel - round(($buy_fuel/100)*20) + $port['fuel_bonus'];
-$elect_buy = $buy_elect + $port['elect_bonus'];
-$elect_sell = $buy_elect - round(($buy_elect/100)*20) + $port['elect_bonus'];
-$organ_buy = $buy_organ + $port['organ_bonus'];
-$organ_sell = $buy_organ - round(($buy_organ/100)*20) + $port['organ_bonus'];
+$metal_buy = $gameOpt['buy_metal'] + $port['metal_bonus'];
+$metal_sell = $gameOpt['buy_metal'] - round(($gameOpt['buy_metal'] / 100) * 20) + $port['metal_bonus'];
+$fuel_buy = $gameOpt['buy_fuel'] + $port['fuel_bonus'];
+$fuel_sell = $gameOpt['buy_fuel'] - round(($gameOpt['buy_fuel'] / 100) * 20) + $port['fuel_bonus'];
+$elect_buy = $gameOpt['buy_elect'] + $port['elect_bonus'];
+$elect_sell = $gameOpt['buy_elect'] - round(($gameOpt['buy_elect'] / 100) * 20) + $port['elect_bonus'];
+$organ_buy = $gameOpt['buy_organ'] + $port['organ_bonus'];
+$organ_sell = $gameOpt['buy_organ'] - round(($gameOpt['buy_organ'] / 100) * 20) + $port['organ_bonus'];
 
 $rs = "<p><a href=shop_port.php>Return to Starport</a></p>\n";
 

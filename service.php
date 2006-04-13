@@ -109,7 +109,7 @@ function processPlanets()
 	 '[game]_user_options AS u ON u.login_id = p.login_id');
 
 	while ($p = $db->fetchRow($planets, ROW_ASSOC)) {
-		/* For the user report, if wanted */
+		// For the user report
 		$reportStr = "<p><strong>Manufacturing report for $p[planet_name]" .
 		 "</strong></p>\n";
 
@@ -120,7 +120,7 @@ function processPlanets()
 		$resourceUsed = $resourceUsed > $p['elect'] ? $p['elect'] : $resourceUsed;
 		$resourceUsed = $resourceUsed > $fighterMax ? $fighterMax : $resourceUsed;
 
-		$figsProduced = floor($resourceUsed * 10);
+		$figsProduced = floor($resourceUsed / 10 * $gameOpt['planet_fighters']);
 
 		if ($figsProduced > 0) {
 			$db->query('UPDATE [game]_planets SET fighters = ' .
@@ -138,23 +138,26 @@ function processPlanets()
 			 "produced <strong>$figsProduced fighters</strong>.</p>\n";
 		}
 
-		/* Electronics: 1 in 50 */
+		// Electronics
 		$electBudget = floor($p['alloc_elect'] / 50);
 		$electBudget = $p['fuel'] < $electBudget ? $p['fuel'] : $electBudget;
 		$electBudget = $p['metal'] < $electBudget ? $p['metal'] : $electBudget;
-		if ($electBudget > 0) {
-			$db->query("UPDATE [game]_planets SET elect = elect + $electBudget, " .
+
+		$eMade = floor($electBudget / 10 * $gameOpt['planet_elect']);
+
+		if ($made > 0) {
+			$db->query("UPDATE [game]_planets SET elect = elect + $eMade, " .
 			 "fuel = fuel - $electBudget, metal = metal - $electBudget " .
 			 "WHERE planet_id = $id");
 
-			$reportStr .= "<p>Fuel Used: <b>$electBudget</b><br />\n" .
-			 "Metal Used: <b>$electBudget</b><br />\n" .
-			 "<em>$p[alloc_elect] colonists</em> produced <strong>$electBudget " .
+			$reportStr .= "<p>Fuel used: <b>$electBudget</b><br />\n" .
+			 "Metal used: <b>$electBudget</b><br />\n" .
+			 "<em>$p[alloc_elect] colonists</em> produced <strong>$eMade " .
 			 "electronics</strong>.</p>\n";
 		}
 
-		/* Organics production. 1 per 500 colonists assigned */
-		$organicProduce = floor($p['alloc_organ'] / 500);
+		// Organics production
+		$organicProduce = floor($p['alloc_organ'] / $gameOpt['planet_organ']);
 		if ($organicProduce > 0) {
 			$db->query("UPDATE [game]_planets SET organ = organ + " .
 			 "$organicProduce WHERE planet_id = $id");
@@ -205,8 +208,11 @@ function processGovernment()
 	global $db, $gameOpt;
 
 	// AUCTION HOUSE
-	$db->query("delete from [game]_bilkos where timestamp <= " . (time() - 172800) . " && bidder_id = 0 && active=1");
-	$lots = $db->query("select bidder_id,item_name,item_id from [game]_bilkos where timestamp <= ".(time()-86400) ." && active = 1 && bidder_id > 0");
+	$db->query('DELETE FROM [game]_bilkos WHERE timestamp <= %u AND ' .
+	 'bidder_id = 0 AND active = 1', array(time() - 172800));
+	$lots = $db->query('SELECT bidder_id, item_name, item_id FROM ' .
+	 '[game]_bilkos WHERE timestamp <= %u AND active = 1 AND bidder_id > 0', 
+	 array(time() - 86400));
 	while($lot = $db->fetchRow($lots)){
 		$newId = newId('[game]_messages', 'message_id');
 		$db->query('INSERT INTO [game]_messages (message_id, timestamp, ' .
@@ -378,14 +384,13 @@ function processCleanup()
 	 '[game]_ships, [game]_stars, [game]_user_options, [game]_users');
 }
 
-$games = $db->query('SELECT db_name FROM se_games WHERE status >= 1 && ' .
- 'paused != 1');
+$games = $db->query('SELECT db_name FROM se_games WHERE status = \'running\'');
 
-while (list($name) = $db->fetchRow($games, ROW_NUMERIC)) {
-	$db->addVar('game', $name);
+while ($name = $db->fetchRow($games, ROW_NUMERIC)) {
+	$db->addVar('game', $name[0]);
 
-	$gameInfo = selectGame($name);
-	gameVars($name);
+	$gameInfo = selectGame($name[0]);
+	gameVars($name[0]);
 
     $amount = dbTaskAmount('systems');
 	while (--$amount >= 0) {

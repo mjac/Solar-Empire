@@ -59,7 +59,6 @@ INSERT INTO gamename_db_vars (name, value, min, max, descript) VALUES ('admin_va
 ('clan_member_limit', 5, 0, 100, 'Max number of players able to join a single clan.'),
 ('cost_colonist', 1, 0, 10000, 'Cost per colonist, as taken from Earth'),
 ('cost_genesis_device', 20000, 0, 100000, 'Cost of genesis devices.'),
-('count_days_left_in_game', 20, 0, 10000, 'Number of days left before reseting.  Counts down every night.'),
 ('enable_superweapons', 1, 0, 1, 'Setting this to 0 will mean the terra maelstrom, and the omega missile will be turned off. <br>Useful if you want very big planets in your game, or if using the uv_planets variable for a limited planet count within the game.'),
 ('fighter_cost_earth', 100, 1, 10000, 'The cost to buy a fighter at earth.'),
 ('flag_planet_attack', 1, 0, 1, 'Planet attack flag.  When set to 0 planets can not be attacked.'),
@@ -67,17 +66,16 @@ INSERT INTO gamename_db_vars (name, value, min, max, descript) VALUES ('admin_va
 ('flag_space_attack', 1, 0, 1, 'Space attack flag.  When set to 0 ships can not be attacked.'),
 ('increase_shields', 5, 0, 100, 'Shield percentage regenerated per tick.'),
 ('increase_turns', 5, 0, 1000, 'Turns gained per tick.'),
-('keep_sol_clear', 1, 0, 1, 'If 1 then will scatter all non-newbie ships from Sol if they are in that system for two consecutive hours.'),
 ('max_clans', 10000, 0, 10000, 'Max number of clans that can be created.'),
 ('max_players', 100000, 0, 100000, 'Max number of players that can be signed up in the game.'),
 ('max_ships', 100, 0, 1000, 'Max number of ships that a player can have.'),
 ('max_turns', 250, 10, 1000000, 'Max number of turns a player can have.'),
-('message_colour', 3, 0, 4, 'Colour of forum & private messages of admin only: 1=yellow, 2=blue, 3=green, 4=red'),
 ('min_before_transfer', 3, 0, 10000, 'Min number of days before players can transfer cash/ships.'),
 ('new_logins', 1, 0, 1, 'New login flag. When set to 0, new players cannot sign-up.'),
-('planet_attack_turn_cost', 10, 0, 1000, 'Number of turns it takes to attack a planet.'),
-('planet_elect', 8, 1, 10000, 'The number of electronics a user gets produced from 500 assigned colonists using 10 metal and 10 fuel.'),
-('planet_fighters', 5, 1, 10000, 'The number of fighters a user gets produced from 100 assigned colonists using 1 metal, 1 fuel, and 1.'),
+('attack_turn_cost_ship', 2, 0, 1000, 'Number of turns it takes to attack another ship.'),
+('attack_turn_cost_planet', 10, 0, 1000, 'Number of turns it takes to attack a planet.'),
+('planet_elect', 10, 1, 10000, 'The number of electronics a user gets produced from 50 assigned colonists using 10 metal and 10 fuel.'),
+('planet_fighters', 50, 1, 10000, 'The number of fighters a user gets produced from 100 assigned colonists using 10 metals, fuels and electronics.'),
 ('planet_organ', 550, 1, 1000000, 'The number of colonists required to produce 1 unit of organics.'),
 ('rr_fuel_chance', 50, 0, 100, 'Chance that a star system will recieve random amount of fuel.'),
 ('rr_fuel_chance_max', 5000, 0, 1000000, 'Maximum amount of fuel that a system will recieve.'),
@@ -87,10 +85,8 @@ INSERT INTO gamename_db_vars (name, value, min, max, descript) VALUES ('admin_va
 ('rr_metal_chance_min', 100, 0, 1000000, 'Minimum amount of metal that a system will recieve.'),
 ('score_method', 0, 0, 4, 'Decides method of scoring used.<br><br>0: Scores are Off<br>1: Score is based on fighter kills and such like.<br>2: Score is based on point value of ships killed and lost.<br>3: Score based on fiscal value of player.<br>4: Score takes just about everything into account.'),
 ('ship_warp_cost', 1, -1, 1000, 'This var determines how much it costs for players to warp between systems.<br><br>Set it between 0 and 1000 to determine the number of turns,<br>OR<br>set it to -1, whereby a different system will be used, where different ship types take different numbers of turns to get to places. The bigger the ship the more turns it takes.'),
-('space_attack_turn_cost', 2, 0, 1000, 'Number of turns it takes to attack another ship.'),
 ('start_cash', 5000, 0, 1000000, 'Amount of cash a player starts out with.'),
 ('start_ship', 5, 3, 6, 'Ship player starts in. 3 = SS, 4 = MF, 5 = ST, 6= HM'),
-('start_tech', 0, 0, 1000000, 'Number of tech support units a player starts out with. Recommended as zero, unless running an Extreme Game.'),
 ('start_turns', 40, 0, 1000000, 'Amount of turns a player starts out with.'),
 ('sudden_death', 0, 0, 1, 'When this is set to 1, players can never regenerate, nor can new players join the game.'),
 ('turns_before_attack', 50, 0, 1000, 'Turns that have to be used before a new account can attack ships.'),
@@ -362,11 +358,10 @@ CREATE TABLE gamename_users (
   banned_time int unsigned NOT NULL default 0,
   banned_reason tinytext default '' NOT NULL,
   one_brob tinyint NOT NULL default 0,
-  second_scatter tinyint NOT NULL default 0,
   PRIMARY KEY (login_id),
   KEY login_name (login_name)
 ) TYPE=MyISAM;
 --
 DELETE FROM se_games WHERE db_name = 'gamename';
 --
-INSERT INTO se_games (name, db_name, admin, status, paused, description, intro_message, num_stars, todays_tip, difficulty, last_reset, processed_cleanup, processed_turns, processed_systems, processed_ships, processed_planets, processed_government) VALUES ('Test Game!', 'gamename', 1, 1, 1, '', '', 150, 1, 3, 1132263227, 1132263227, 1132263227, 1132263227, 1132263227, 1132263227, 1132263227);
+INSERT INTO se_games (db_name, name, admin, `status`, description, intro_message, num_stars, difficulty, started, finishes, processed_cleanup, processed_turns, processed_systems, processed_ships, processed_planets, processed_government) VALUES ('gamename', 'Test Game!', 1, 'paused', '', '', 150, 3, UNIX_TIMESTAMP(), UNIX_TIMESTAMP() + 1728000, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), UNIX_TIMESTAMP());
