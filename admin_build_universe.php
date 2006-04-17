@@ -1,7 +1,7 @@
 <?php
 
 require_once('inc/admin.inc.php');
-require_once('inc/generator.funcs.php');
+require_once('inc/generator.inc.php');
 
 set_time_limit(30);
 
