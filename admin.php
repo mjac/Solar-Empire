@@ -9,8 +9,8 @@ if (isset($finishes)) {
 	if (preg_match('/^([12][0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-9]|' .
 	 '3[01]) (0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/', $finishes, 
 	 $match)) {
-		$newEnd = mktime($match[0][3], $match[0][4], $match[0][5], $match[0][1], 
-		 $match[0][2], $match[0][0]);
+		$newEnd = mktime($match[4], $match[5], $match[6], $match[2], 
+		 $match[3], $match[1]);
 
 		$db->query('UPDATE se_games SET finishes = %u WHERE db_name = ' .
 		 '\'[game]\'', array($newEnd));
@@ -296,8 +296,9 @@ $out .= <<<END
 	<li><a href="$self?reset=1">Reset game</a></li>
 	<li><a href="$self?difficulty=1">Change stated difficulty</a></li>
 	<li><form method="post" action="$self">
-		<p><input type="text" name="finishes" value="YYYY-MM-DD HH:MM:SS" />
-		<input type="submit" value="Change game finish" /></p>
+		<p><input type="text" name="finishes" value="YYYY-MM-DD HH:MM:SS"
+		 class="text" />
+		<input type="submit" value="Change finish date" class="button" /></p>
 	</form></li>
 </ul>
 
