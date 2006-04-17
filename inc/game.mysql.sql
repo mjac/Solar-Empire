@@ -83,7 +83,7 @@ INSERT INTO gamename_db_vars (name, value, min, max, descript) VALUES ('admin_va
 ('rr_metal_chance', 75, 0, 100, 'Chance that a star system will recieve random amount of metal.'),
 ('rr_metal_chance_max', 5000, 0, 1000000, 'Maximum amount of metal that a system will recieve.'),
 ('rr_metal_chance_min', 100, 0, 1000000, 'Minimum amount of metal that a system will recieve.'),
-('score_method', 0, 0, 4, 'Decides method of scoring used.<br><br>0: Scores are Off<br>1: Score is based on fighter kills and such like.<br>2: Score is based on point value of ships killed and lost.<br>3: Score based on fiscal value of player.<br>4: Score takes just about everything into account.'),
+('score_method', 0, 0, 2, 'Decides method of scoring used. 0: scores are off. 1: Score is based on fighter kills and such like. 2: score is based on point value of ships killed and lost.'),
 ('ship_warp_cost', 1, -1, 1000, 'This var determines how much it costs for players to warp between systems.<br><br>Set it between 0 and 1000 to determine the number of turns,<br>OR<br>set it to -1, whereby a different system will be used, where different ship types take different numbers of turns to get to places. The bigger the ship the more turns it takes.'),
 ('start_cash', 5000, 0, 1000000, 'Amount of cash a player starts out with.'),
 ('start_ship', 5, 3, 6, 'Ship player starts in. 3 = SS, 4 = MF, 5 = ST, 6= HM'),
