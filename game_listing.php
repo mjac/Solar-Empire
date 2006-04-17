@@ -136,26 +136,24 @@ END;
 			exit();
 		}
 
-		//not banned from game, so may continue.
+		// Not banned from game, so may continue.
 		insert_history($login_id, "Logged In");
 
-		//set the user in the game, and increase login count by 1.
+		// Set the user in the game and increase login count by 1.
 		$db->query('UPDATE [game]_users SET game_login_count = ' .
 		 'game_login_count + 1 WHERE login_id = %u', array($login_id));
 		$db->query('UPDATE user_accounts SET in_game = \'[game]\' WHERE ' .
 		 'login_id = %u', array($login_id));
 
-		//Update score
-		score_func($login_id, 0);
 		header('Location: system.php');
 
 		exit();
-	} else { //user joining selected game
+	} else { // User joining selected game
 		$pCount = $db->query('SELECT COUNT(*) FROM [game]_users WHERE ' .
 		 'login_id != %u', array($gameInfo['admin']));
 		$players = (int)current($db->fetchRow($pCount));
 
-		//get the vars for the game
+		// Get the vars for the game
 		gameVars($db_name);
 
 
@@ -268,7 +266,7 @@ END;
 print_header("Game Listings");
 
 if (IS_OWNER && isset($_REQUEST['newGame'])) {
-	require_once('inc/generator.funcs.php');
+	require_once('inc/generator.inc.php');
 	$query = '';
 	$fp = fopen('inc/game.' . $db->type . '.sql', 'r');
 	while (!feof($fp)) {
