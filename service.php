@@ -3,6 +3,32 @@
 require_once('inc/common.inc.php');
 require_once('inc/db.inc.php');
 
+/**
+ * Updates player scores
+ * 0 = Scores are off.
+ * 1 = (fighter kills + (ship kills * 10)) - (fighter kills * 0.75 + (ship kills *5))
+ * 2 = ship points killed - (ship points lost * 0.5)
+ */
+
+function calcScores()
+{
+	global $gameOpt, $db;
+
+	switch ($gameOpt['score_method']) {
+		case 0:
+			$db->query('UPDATE [game]_users SET score = 0');
+			break;
+		case 1:
+			$db->query('UPDATE [game]_users SET score = (fighters_killed + ' .
+			 'ships_killed * 10) - (fighters_lost / 2 + ships_lost * 5)');
+			break;
+		case 2:
+			$db->query('UPDATE [game]_users SET score = ships_killed_points ' . 
+			 '- ships_lost_points / 2');
+			break;
+	}
+}
+
 function taskAmount($last, $frequency)
 {
 	return floor((time() - $last) / $frequency);
@@ -321,6 +347,8 @@ function processTurns()
 	 array($gameOpt['increase_turns']));
 	$db->query('UPDATE [game]_users SET turns = %u WHERE turns > %u',
 	 array($gameOpt['max_turns'], $gameOpt['max_turns']));
+
+	calcScores();
 }
 
 function processCleanup()
