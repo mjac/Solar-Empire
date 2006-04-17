@@ -51,8 +51,8 @@ function statusBar()
 	global $db, $user, $userShip, $gameInfo, $gameOpt;
 
 	$menu = "<h1><em>" . popup_help("game_info.php?db_name=$gameInfo[db_name]", 
-	 600, 450, $gameInfo['name']) . " (" . esc($gameInfo['status']) . 
-	 ")</em></h1>\n";
+	 600, 450, $gameInfo['name']) . ($gameInfo['status'] === 'running' ? '' : 
+	 (" (" . esc($gameInfo['status']) . ")")) . "</em></h1>\n";
 
 	$uAmount = $db->query('SELECT COUNT(login_id) FROM [game]_users WHERE ' .
 	 'login_id > 1 AND last_request > %u', array(time() - 300));
@@ -68,8 +68,8 @@ function statusBar()
 	$menu .= "<p>" . date('<\a \t\i\t\l\e="T">M d - H:i</\a>') . "</p>\n";
 
 	if ($gameInfo['status'] === 'running') {
-		$days = ceil(($gameInfo['finishes'] - time()) / 86400);
-		$menu .= "<p>$gameOpt[count_days_left_in_game] day(s) left</p>\n";
+		$menu .= "<p>" . ceil(($gameInfo['finishes'] - time()) / 86400) . 
+		 " day(s) left</p>\n";
 	}
 
 
