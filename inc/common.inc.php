@@ -337,58 +337,6 @@ function gameVars($db_name)
 	}
 }
 
-
-/********************
-Calculating Functions
-*********************/
-
-//function used to work out players scores
-function score_func($login_id,$full)
-{
-	global $gameOpt, $db, $gameInfo;
-
-/*
-Listed below are all of the score methods, and some info on them.
-0 = Scores are off.
-1 = (fighter kills + (ship kills * 10)) - (fighter kills * 0.75 + (ship kills *5))
-2 = ship points killed - (ship points lost * 0.5)
-3 = total value (ship/planet fighters plus ship point value)
-4 = ultimate score. takes everything into account.
-*/
-
-	//determines if admin is updateing all scores, or an individual players score is being updated.
-	if ($full != 1) {
-		$extra_text = "login_id = '$login_id'";
-		$plan_text = "login_id = '$login_id'";
-	} else {
-		$and_text = " AND ";
-		$extra_text = $plan_text = "login_id != " . $gameInfo['admin'];
-	}
-	if ($gameOpt['score_method'] == 1) { //scoring method, whereby only kills,are taken into account.
-		$db->query("update [game]_users set score = (fighters_killed + (ships_killed * 10)) - (fighters_lost * 0.75 + (ships_lost * 5)) where ".$extra_text);
-	} elseif ($gameOpt['score_method'] == 2) { //takes into account ships lost, ships killed, fighters lost, fighters killed.
-		$db->query("update [game]_users set score = ships_killed_points - (ships_lost_points * 0.5) where ".$extra_text);
-	} elseif ($gameOpt['score_method'] == 3) { //total fiscal value score.
-		$one = $db->query("select sum(fighters) + sum(point_value), login_id from [game]_ships where ".$extra_text." GROUP BY login_id");
-		$two = $db->query("select sum(fighters), login_id from [game]_planets where ".$plan_text." GROUP BY login_id");
-		if($full == 1){
-			while($plan_array = $db->fetchRow($one)){
-				$temp_plan_array[$plan_array['login_id']] = $plan_array[0];
-			}
-			while($ship_array = $db->fetchRow($two)){
-				$ship_array[0] += $temp_plan_array[$ship_array['login_id']];
-				$db->query("update [game]_users set score = '$ship_array[0]' where login_id = '$ship_array[login_id]'");
-			}
-			$db->query("update [game]_users set score = 0 where score < 0");
-		} else {
-			$ship_array = dbr();
-			$plan_array = dbr2();
-			$ship_array[0] += $plan_array[0];
-			$db->query("update [game]_users set score = '$ship_array[0]' where login_id = '$login_id'");
-		}
-	}
-}
-
 // Calculate and format the percentage of a fraction
 function calc_perc($num, $den)
 {
