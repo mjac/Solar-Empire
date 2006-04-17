@@ -389,14 +389,11 @@ Listed below are all of the score methods, and some info on them.
 	}
 }
 
-//function used to calculate the percentage of something. does not divide things by 0 though.
-function calc_perc($num1,$num2){
-	if($num1 == 0 || $num2 == 0){
-		return "$num1 (0%)";
-	} else {
-		$result = number_format(($num1 / $num2) * 100, 2, '.','');
-		return number_format($num1)." (".$result."%)";
-	}
+// Calculate and format the percentage of a fraction
+function calc_perc($num, $den)
+{
+	return $den == 0 ? 'Invalid' : number_format($num) . ' (' . 
+	 number_format(($num / $den) * 100, 2, '.', '') .' %)';
 }
 
 //function to figure out how many empty cargo bays there are on the ship.
