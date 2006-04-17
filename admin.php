@@ -4,20 +4,27 @@ require_once('inc/admin.inc.php');
 
 $out = '';
 
-#update all player scores
-if (isset($update_scores)) {
-	if ($gameOpt['score_method'] == 0) {
-		$out .= "Scoring is presently turned off. Set the admin var to something other than 0 to turn it on.<br /><br />";
+if (isset($finishes)) {
+	$match = array();
+	if (preg_match('/^([12][0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-9]|' .
+	 '3[01]) (0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/', $finishes, 
+	 $match)) {
+		$newEnd = mktime($match[0][3], $match[0][4], $match[0][5], $match[0][1], 
+		 $match[0][2], $match[0][0]);
+
+		$db->query('UPDATE se_games SET finishes = %u WHERE db_name = ' .
+		 '\'[game]\'', array($newEnd));
+
+		$out .= "<p>Game finishing date changed to " .
+		 date('Y-m-d H:i:s', $newEnd) . "</p>\n";
 	} else {
-		score_func(0,1);
-		$out .= "Scores successfully updated.<br /><br />";
+		$out .= "<p>Invalid format for the date: use YYYY-MM-DD HH:MM:SS</p>\n";
 	}
-	insert_history($user['login_id'],"Updated All Player Scores");
 }
 
 #give players money
-if(isset($more_money)){
-	if(!isset($money_amount)){
+if (isset($more_money)) {
+	if (!isset($money_amount)) {
 		get_var('Increase Money','admin.php','How much money do you want to give to each player?','money_amount','');
 	} elseif($money_amount < 1) {
 		$out .= "You can't decrease the players money.<br /><br />";
@@ -158,7 +165,7 @@ It is only an example of what can be created.</p>
 // reset game
 if (isset($reset)) {
 	if ($reset == 2) {
-		require_once('inc/generator.funcs.php');
+		require_once('inc/generator.inc.php');
 		$out .= "<h1>Game reset started</h1>\n<ul>\n";
 
 		clearImages('img/' . $gameInfo['db_name'] . '_maps');
@@ -288,6 +295,10 @@ $out .= <<<END
 	<a href="$self?status=running">running</a></li>
 	<li><a href="$self?reset=1">Reset game</a></li>
 	<li><a href="$self?difficulty=1">Change stated difficulty</a></li>
+	<li><form method="post" action="$self">
+		<p><input type="text" name="finishes" value="YYYY-MM-DD HH:MM:SS" />
+		<input type="submit" value="Change game finish" /></p>
+	</form></li>
 </ul>
 
 <h2>Godlike Abilities</h2>
