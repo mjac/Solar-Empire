@@ -97,12 +97,11 @@ END;
 		global $links;
 		if (!empty($links)) {
 			global $star, $self;
-			$bar .= "\t<map name=\"systemMap\">\n";
+			$bar .= "\t<map name=\"systemMap\" id=\"#systemMap\">\n";
 
 			$linkInfo = array();
-			$info = $db->query('SELECT star_id, x, y FROM ' .
-			 '[game]_stars WHERE star_id = ' .
-			 implode(' OR star_id = ', $links));
+			$info = $db->query('SELECT star_id, x, y FROM [game]_stars ' .
+			 'WHERE star_id = ' . implode(' OR star_id = ', $links));
 			while ($s = $db->fetchRow($info)) {
 				$s['x'] = $s['x'] - $star['x'] + (200 / 2);
 				$s['y'] = $s['y'] - $star['y'] + (200 / 2);
