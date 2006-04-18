@@ -86,15 +86,12 @@ if (isset($difficulty)) {
 especially new players, to join certain games depending on their experience.</p>
 <form action="$self" method="post">
 	<ul>
-		<li><input type="radio" name="set_dif" value="1" /> Beginner</li>
-		<li><input type="radio" name="set_dif" value="2" /> Beginner &#8211; 
-		Intermediate</li>
+		<li><input type="radio" name="set_dif" value="1" /> Training</li>
+		<li><input type="radio" name="set_dif" value="2" /> Beginner</li>
 		<li><input type="radio" name="set_dif" value="3" /> Intermediate</li>
-		<li><input type="radio" name="set_dif" value="4" /> Intermediate &#8211; 
-		Advanced</li>
+		<li><input type="radio" name="set_dif" value="4" /> Challenge</li>
 		<li><input type="radio" name="set_dif" value="5" /> Advanced</li>
-		<li><input type="radio" name="set_dif" value="6" /> All skill 
-		levels</li>
+		<li><input type="radio" name="set_dif" value="6" /> All Levels</li>
 	</ul>
 	<p><input type="submit" class="button" value="Change difficulty" />
 	<input type="hidden" name="difficulty" value="1" /></p>
