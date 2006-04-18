@@ -22,29 +22,30 @@ if (isset($finishes)) {
 	}
 }
 
-#give players money
+// Give players money
 if (isset($more_money)) {
 	if (!isset($money_amount)) {
-		get_var('Increase Money','admin.php','How much money do you want to give to each player?','money_amount','');
-	} elseif($money_amount < 1) {
-		$out .= "You can't decrease the players money.<br /><br />";
+		get_var('Increase Money','admin.php','How much money do you want to ' .
+		 'give to each player?','money_amount','');
 	} else {
-		$db->query('UPDATE [game]_users SET cash = cash + %d WHERE ' .
-		 'login_id != %u', array($money_amount, $gameInfo['admin']));
-		insert_history($user['login_id'], 'Gave $money_amount credits to all players.');
+		$db->query('UPDATE [game]_users SET cash = cash + %d', 
+		 array($money_amount));
+		insert_history($user['login_id'], 
+		 'Gave $money_amount credits to all players.');
 		$out .= "<p>Every player has been given $money_amount credits.</p>\n";
 	}
 }
 
-#news post
+// Post news
 if (isset($post_game_news) && empty($text)) {
-	get_var('Post News', $self, 'What do you want to post in the News?', 'text', '');
+	get_var('Post News', $self, 'What do you want to post in the News?', 
+	 'text', '');
 } elseif (isset($post_game_news)) {
+	$out = "<p>News Posted.</p>\n";
 	post_news($text);
-	$out = "News Posted.<p>";
 }
 
-//active user listing
+// Active user listing
 if (isset($show_active)) {
 	$out = "<h1>Users active within the past 5 minutes</h1>\n<p>Time Loaded: " .
 	 date("H:i:s (M d)") . " <a href=\"admin.php?show_active=1\">Reload</a></p>";
@@ -73,7 +74,7 @@ if (isset($show_active)) {
 }
 
 
-#admin sets difficulty
+// Set game rating
 if (isset($difficulty)) {
 	if (!isset($set_dif)) {
 		$out = <<<END
@@ -96,13 +97,13 @@ especially new players, to join certain games depending on their experience.</p>
 </form>
 
 END;
-		print_page("Select Difficulty",$out);
+		print_page('Select difficulty', $out);
 	} elseif (!(is_numeric($set_dif) && $set_dif >= 1 && $set_dif <= 6)) {
 		$out .= "<p>Invalid difficulty.</p>\n";
 	} else {
 		$db->query('UPDATE se_games SET difficulty = %u where db_name = ' .
 		 '\'[game]\'', array($set_dif));
-		$out .= "<p>Stated Difficulty updated.</p>\n";
+		$out .= "<p>Stated difficulty updated.</p>\n";
 		insert_history($user['login_id'], 'Game difficulty changed.');
 	}
 }
@@ -129,19 +130,11 @@ if (isset($status)) {
 
 //preview a universe
 if (isset($preview)) {
-	print_header("Universe Preview");
-?>
-<script>
-function refresh(){
-	var now = new Date();
-	document.images.preview_uni_img.src = 'admin_build_universe.php?preview=1&process=1&rand=' + now.getTime();
-}
-</script>
-<a href="javascript:refresh();">Generate New Universe</a><br />
-<img name="preview_uni_img" src="admin_build_universe.php?preview=1&process=1"
- title="Generating universe and loading image. This may take some time." /><br />
-<a href='javascript:refresh();'>Generate New Universe</a>
-<p>The above image uses the following variables <b>only</b>.</p>
+	$out = <<<END
+<h1><a href="$self?preview=1">Universe preview</a></h1>
+<p><img src="admin_build_universe.php?preview=1&amp;process=1"
+ title="Generating universe; this may take some time." /></p>
+<p>The above image uses <strong>only</strong> the following variables.</p>
 <ul>
 	<li>uv_map_layout</li>
 	<li>uv_max_link_dist</li>
@@ -153,20 +146,14 @@ function refresh(){
 </ul>
 <p>Changing any of these variables will have some sort of effect on the
 image/universe generated.</p>
-<h3>Warning</h3>
-<p>If you change <em>uv_universe_size</em>, during a game that has
-<em>uv_explored</em> set to 0, players may experience some very strange maps
-getting created. So be sure to set uv_universe_size back to what it was when
-you finished messing around if you are not about to create a new game.</p>
-<p>There is no way to save the present universe and use it in a game.
+<p>There is no way to save the previewd universe and use it in a game.
 It is only an example of what can be created.</p>
+<p>If no image appears, then there is a pretty big bug somewhere in the 
+universe generation process. Report it to the Server Admin.</p>
 
-<p>If no image appears, then there is a pretty big bug somewhere in the universe generation process. Report it to the Server Admin.
+END;
 
-<?php
-
-	print_footer();
-	exit;
+	print_page('Universe preview', $out);
 }
 
 
@@ -223,7 +210,7 @@ if (isset($reset)) {
 }
 
 
-#list all planets in game
+// All planets in game
 if (isset($planet_list) || isset($sort_planets)) {
 	if (isset($sorted) && $sorted == 1) {
 		$going = "ASC";
@@ -253,44 +240,54 @@ if (isset($planet_list) || isset($sort_planets)) {
 }
 
 
-#change intro message
-if(isset($messag)){
-	if($messag == 1){
-		db("select intro_message from se_games where db_name = '$db_name'");
-		$present_mess = dbr();
-		$present_mess[0] = stripslashes($present_mess[0]);
-		$out .= "Please enter a message that all new players will recieve when they join. <p>Notes: HTML is enabled. Message codes are not used.";
-		$out .= "<form name=get_var_form action=$self method=POST>";
-		$out .= "<input type=hidden name=messag value='2'>";
-		$out .= "<textarea name=new_mess cols=50 rows=20 wrap=soft>$present_mess[0]</textarea>";
-		$out .= '<p><input type=submit value=Change /></form>';
-	} else {
-		$db->query("update se_games set intro_message = '%s' where db_name = '[game]'", array($db->escape($new_mess)));
-		$out .= "The Intro message has been changed.";
+// Change introduction message
+if (isset($messag)) {
+	if (isset($new_mess)) {
+		$db->query('UPDATE se_games SET intro_message = \'%s\' WHERE ' .
+		 'db_name = \'[game]\'', array($db->escape($new_mess)));
+		$out .= "<p>The introduction message has been changed.</p>\n";
 	}
-	print_page("Change Intro Message",$out);
-	insert_history($user['login_id'],"Intro Message Changed.");
+
+	$msg = esc($gameInfo['intro_message']);
+	$out .= <<<END
+<h1>Change the introduction message</h1>
+<p>Enter a message that all new players will recieve when they join. XHTML can 
+be used, ensure that it is valid.</p>
+<form action="$self" method="post">
+	<p><input type="hidden" name="messag" value="1" />
+	<textarea name="new_mess" cols="50" rows="20">$msg</textarea></p>
+	<p><input type="submit" value="Change" class="button" /></p>
+</form>
+END;
+
+	print_page('Change the introduction message', $out);
+	insert_history($user['login_id'], 'Changed the introduction message.');
 }
 
-
-
-#change game description
-if(isset($descr)){
-	if($descr == 1){
-		db("select description from se_games where db_name = '$db_name'");
-		$present_desc = dbr();
-		$out .= "Please enter some words that explain the game.<p>Note: HTML is enabled, but does not use the message codes. <br />(Leave empty if you don't want to use it)";
-		$out .= "<form name=get_var_form action=$self method=POST>";
-		$out .= "<input type=hidden name=descr value='2'>";
-		$out .= "<textarea name=new_descr cols=50 rows=20 wrap=soft>$present_desc[description]</textarea>";
-		$out .= '<p><input type=submit value=Change></form>';
-	} else {
-		$db->query("update se_games set description = '$new_descr' where db_name = '$db_name'");
-		$out .= "The description of the game has been changed.";
+// Change game description
+if (isset($descr)) {
+	if (isset($new_mess)) {
+		$db->query('UPDATE se_games SET description = \'%s\' WHERE ' .
+		 'db_name = \'[game]\'', array($db->escape($new_mess)));
+		$out .= "<p>The introduction message has been changed.</p>\n";
 	}
-	print_page("Change Description",$out);
-	insert_history($user['login_id'],"Game description changed.");
+
+	$msg = esc($gameInfo['description']);
+	$out .= <<<END
+<h1>Change the game description</h1>
+<p>Enter a message that explains the purpose of this specific game. XHTML can 
+be used, ensure that it is valid.</p>
+<form action="$self" method="post">
+	<p><input type="hidden" name="descr" value="1" />
+	<textarea name="new_mess" cols="50" rows="20">$msg</textarea></p>
+	<p><input type="submit" value="Change" class="button" /></p>
+</form>
+END;
+
+	print_page('Change the game description', $out);
+	insert_history($user['login_id'], 'Changed the game description.');
 }
+
 
 $out .= <<<END
 <h1>Administration</h1>
@@ -312,9 +309,11 @@ $out .= <<<END
 
 <h2>Godlike Abilities</h2>
 <ul>
-	<li><a href="admin_build_universe.php?build_universe=1&amp;process=1">Create the universe</a></li>
+	<li><a href="admin_build_universe.php?build_universe=1&amp;process=1">Create
+	the universe</a></li>
 	<li><a href="$self?preview=1">Preview a universe</a></li>
-	<li><a href="admin_build_universe.php?gen_new_maps=1&amp;process=1">Generate maps</a></li>
+	<li><a href="admin_build_universe.php?gen_new_maps=1&amp;process=1">Generate
+	maps</a></li>
 	<li><a href="admin_edit_links.php">Edit star links</a></li>
 	<li><a href="admin_unlink_scan.php">Link star islands</a></li>
 </ul>
@@ -330,14 +329,13 @@ $out .= <<<END
 	<li><a href="admin_ban_player.php">Ban player</a></li>
 	<li><a href="$self?show_active=1">List online players</a></li>
 	<li><a href="$self?planet_list=1">List all planets</a></li>
-	<li><a href="$self?update_scores=1">Update scores</a></li>
 	<li><a href="$self?more_money=1">Give money</a></li>
 </ul>
 
 <h2>General</h2>
 <ul>
-	<li><a href="$self?descr=1">Change game description</a></li>
-	<li><a href="$self?messag=1">Change intro message</a></li>
+	<li><a href="$self?descr=1">Change the game description</a></li>
+	<li><a href="$self?messag=1">Change the introduction message</a></li>
 </ul>
 END;
 
