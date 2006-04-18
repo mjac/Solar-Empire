@@ -22,18 +22,17 @@ if(isset($all_colon) && $user['ship_id'] !== NULL){
 
 	$amount = isset($amount) ? (int)$amount : 0;
 	if ($amount <= 0) {
-		get_var('Take Colonists', $self, '<a href=earth.php?all_colon=1>Fill Ship</a><p>How many colonists do you want to take?<br />They cost <b>' . $gameOpt['cost_colonist'] . '</b> credit(s) each.<p>','amount',$fill);
+		get_var('Take Colonists', $self, "<p><a href=\"earth.php?all_colon=1\">Fill Ship</a>  How many colonists do you want to take?  They cost <b>$gameOpt[cost_colonist]</b> credit(s) each.</p>\n", 'amount', $fill);
 	} elseif($fill < 1) {
-		$out .= "You do not have the facilities (either money OR cargo space) to buy colonists. Try a different ship.<p>";
+		$out .= "<p>You do not have the facilities (either money OR cargo space) to buy colonists. Try a different ship.</p>";
 	}elseif($amount > $userShip['empty_bays']) {
-		$out .= "You can't carry that many colonists.<p>";
-	} elseif($amount * $gameOpt['cost_colonist'] > $user['cash']) {
-		$out .= "You can't afford that many colonists.<p>";
+		$out .= "<p>You can't carry that many colonists.</p>";
+	} elseif(!giveMoneyPlayer(-$gameOpt['cost_colonist'] * $amount)) {
+		$out .= "<p>You can't afford that many colonists.</p>";
 	} else {
-		giveMoneyPlayer(-$gameOpt['cost_colonist'] * $amount);
-		$db->query("update [game]_ships set colon = colon + $amount where ship_id = $user[ship_id]");
-		$userShip['colon'] += $amount;
-		$userShip['empty_bays'] -= $amount;
+		$db->query('UPDATE [game]_ships SET colon = colon + %u WHERE ' .
+		 'ship_id = %u', array($amount, $user['ship_id']));
+		checkShip();
 	}
 }
 
