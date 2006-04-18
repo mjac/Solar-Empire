@@ -331,9 +331,8 @@ if (!empty($joined)) {
 <ul>
 <?php
 	foreach ($joined as $game) {
-?>
-	<li><a href="<?php echo esc(URL_SELF . '?game_selected=' . $game[1]);
-	?>"><?php echo esc($game[0]); ?></a> <?php
+		echo "\t<li><a href=\"" . esc(URL_SELF . '?game_selected=' . $game[1]) .
+		 "\">" . esc($game[0]) . "</a> ";
 		if ($game[2] === 'paused') {
 				?> (paused)<?php
 		} else {
@@ -343,7 +342,8 @@ if (!empty($joined)) {
 				echo ' (sudden death)';
 			}
 		}
-		echo ' - ' . popup_help('game_info.php?db_name=' . $game[1], 600, 450);
+		echo ' - ' . popup_help('game_info.php?db_name=' . $game[1], 600, 450) .
+		 "</li>\n";
 	}
 ?>
 </ul>
@@ -351,16 +351,17 @@ if (!empty($joined)) {
 }
 
 if (!empty($unjoined)) {
-?>
+	echo <<<END
 <h2>Unjoined games</h2>
 <ul>
-<?php
+
+END;
+
 	foreach ($unjoined as $game) {
-?>
-	<li><a href="<?php echo esc(URL_SELF . '?game_selected=' . $game[1])
-	?>"><?php echo esc($game[0]); ?></a> <?php
+		echo "\t<li><a href=\"" . esc(URL_SELF . '?game_selected=' . $game[1]) .
+		 "\">" . esc($game[0]) . "</a> ";
 		if ($game[2] === 'paused') {
-			?> (paused)<?php
+				?> (paused)<?php
 		} else {
 			$sd = $db->query('SELECT value FROM ' . $game[1] .
 			 '_db_vars WHERE name = \'sudden_death\'');
@@ -368,11 +369,10 @@ if (!empty($unjoined)) {
 				echo ' (sudden death)';
 			}
 		}
-		echo ' - ' . popup_help('game_info.php?db_name=' . $game[1], 600, 450);
+		echo ' - ' . popup_help('game_info.php?db_name=' . $game[1], 600, 450) .
+		 "</li>\n";
 	}
-?>
-</ul>
-<?php
+	echo "</ul>\n";
 }
 
 if (empty($joined) && empty($unjoined)) {
@@ -390,8 +390,8 @@ if (empty($joined) && empty($unjoined)) {
 if (IS_OWNER) {
 ?>
 	<li><form action="<?php echo $self; ?>" method="get">
-		<input type="text" name="newGame" class="text" />
-		<input type="submit" class="button" value="Add game" />
+		<p><input type="text" name="newGame" class="text" />
+		<input type="submit" class="button" value="Add game" /></p>
 	</form></li>
 <?php
 }
