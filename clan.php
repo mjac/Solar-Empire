@@ -108,12 +108,10 @@ END;
 		$db->query('UPDATE [game]_users SET clan_id = %u WHERE ' .
 		 'login_id = %u', array($clan_id, $user['login_id']));
 
-		$user['clan_id'] = $clan_id;
-		$user['clan_sym'] = $symbol;
-		$user['clan_sym_color'] = $sym_color;
-
 		post_news("$user[login_name] formed the $name clan ($symbol)");
 		insert_history($user['login_id'], "Created the $name clan.");
+
+		checkPlayer();
 	}
 }
 
