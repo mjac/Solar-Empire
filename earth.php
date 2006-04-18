@@ -64,7 +64,7 @@ if ($user['ship_id'] !== NULL) {
 	capacity</dd>
 
 	<dt><a href="earth.php?colonist=1">Colonist recruitment centre</a> &#8212; 
-	<a href=earth.php?all_colon=1>fill fleet</a></dt>
+	<a href="earth.php?all_colon=1">fill fleet</a></dt>
 	<dd>These servants populate your planets and power your empire</dd>
 
 END;
@@ -76,7 +76,7 @@ $out .= <<<END
 
 	<dt><a href="bounty.php">&#8216;Charity shop&#8217;</a></dt>
 	<dd>Place a bounty on a player&#8217;s head</dd>
-</ul>
+</dl>
 <h2><a href="system.php">Back into space</a></h2>
 END;
 
