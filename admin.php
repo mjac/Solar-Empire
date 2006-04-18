@@ -74,28 +74,36 @@ if (isset($show_active)) {
 
 
 #admin sets difficulty
-if(isset($difficulty)){
-	if(!isset($set_dif)){
+if (isset($difficulty)) {
+	if (!isset($set_dif)) {
 		$out = <<<END
-<p>This will have no effect upon the game itself, but will serve simply to 
-inform new joiners to the game what to expect.</p>
-<form action="$self" name="get_dif_form" method="post">
-	<p><input type="radio" name="set_dif" value="1" />Beginner
-	<br /><input type="radio" name="set_dif" value="2" />Beginner -> Intermediate
-	<br /><input type="radio" name="set_dif" value="3" />Intermediate
-	<br /><input type="radio" name="set_dif" value="4" />Intermediate - > Advanced
-	<br /><input type="radio" name="set_dif" value="5" />Advanced
-	<br /><input type="radio" name="set_dif" value="6" />All Skill Levels</p>
-	<p><input type="submit" class="button" />
+<p>This will have no effect upon the game itself but guides people, 
+especially new players, to join certain games depending on their experience.</p>
+<form action="$self" method="post">
+	<ul>
+		<li><input type="radio" name="set_dif" value="1" /> Beginner</li>
+		<li><input type="radio" name="set_dif" value="2" /> Beginner &#8211; 
+		Intermediate</li>
+		<li><input type="radio" name="set_dif" value="3" /> Intermediate</li>
+		<li><input type="radio" name="set_dif" value="4" /> Intermediate &#8211; 
+		Advanced</li>
+		<li><input type="radio" name="set_dif" value="5" /> Advanced</li>
+		<li><input type="radio" name="set_dif" value="6" /> All skill 
+		levels</li>
+	</ul>
+	<p><input type="submit" class="button" value="Change difficulty" />
 	<input type="hidden" name="difficulty" value="1" /></p>
 </form>
 
 END;
 		print_page("Select Difficulty",$out);
+	} elseif (!(is_numeric($set_dif) && $set_dif >= 1 && $set_dif <= 6)) {
+		$out .= "<p>Invalid difficulty.</p>\n";
 	} else {
-		$db->query("update se_games set difficulty = '$set_dif' where db_name = '$db_name'");
-		$out .= "Stated Difficulty updated<p>";
-		insert_history($user['login_id'],"Game difficulty changed.");
+		$db->query('UPDATE se_games SET difficulty = %u where db_name = ' .
+		 '\'[game]\'', array($set_dif));
+		$out .= "<p>Stated Difficulty updated.</p>\n";
+		insert_history($user['login_id'], 'Game difficulty changed.');
 	}
 }
 
