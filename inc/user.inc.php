@@ -837,36 +837,6 @@ function message_all_players($text, $game_db, $recipients, $sender)
 
 
 
-//a function to allow for easy addition of upgrades.
-function make_standard_upgrade($upgrade_str, $config_addon, $cost,
- $developement_id)
-{
-	global $user, $userShip, $db;
-	if (shipHas($userShip, $config_addon)){
-		return "Your ship is already equipped with a <b class=b1>$upgrade_str</b>.<br />There is no point in having more than one on a ship.<p>";
-	} elseif ($userShip['upgrades'] < 1){
-		return '';
-	} elseif (!giveMoneyPlayer(-$cost)) {
-		return "You can not afford to buy a <b class=b1>$upgrade_str</b>.<p>";
-	} else {
-		$configArr = explode(':', $userShip['config']);
-		if (empty($configArr[0])) {
-			$configArr[0] = $config_addon;
-		} else {
-			$configArr[] = $config_addon;
-		}
-		
-		$userShip['config'] = implode(':', $configArr);
-
-		$db->query("update [game]_ships set config = '$userShip[config] ', upgrades = upgrades - 1 where ship_id = '$user[ship_id]'");
-
-		--$userShip['upgrades'];
-
-		return "<b class=b1>$upgrade_str</b>, purchased and fitted to the <b class=b1>$userShip[ship_name]</b> for <b>$cost</b> Credits.<p>";
-	}
-}
-
-
 /*
 This function will select fill as many ships in a fleet as possible with whatever is requested.
 
