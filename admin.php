@@ -4,6 +4,8 @@ require_once('inc/admin.inc.php');
 
 $out = '';
 
+
+// Changes when the game ends
 if (isset($finishes)) {
 	$match = array();
 	if (preg_match('/^([12][0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-9]|' .
@@ -22,6 +24,7 @@ if (isset($finishes)) {
 	}
 }
 
+
 // Give players money
 if (isset($more_money)) {
 	if (!isset($money_amount)) {
@@ -35,6 +38,7 @@ if (isset($more_money)) {
 		$out .= "<p>Every player has been given $money_amount credits.</p>\n";
 	}
 }
+
 
 // Post news
 if (isset($post_game_news) && empty($text)) {
@@ -128,6 +132,7 @@ if (isset($status)) {
 	}
 }
 
+
 //preview a universe
 if (isset($preview)) {
 	$out = <<<END
@@ -157,7 +162,7 @@ END;
 }
 
 
-// reset game
+// Reset game
 if (isset($reset)) {
 	if ($reset == 2) {
 		require_once('inc/generator.inc.php');
@@ -207,36 +212,6 @@ if (isset($reset)) {
 
 	print_page('Reset game', "<p>Are you sure you want to reset the game? " .
 	 "<a href=$self?reset=2>Yes</a> or <a href=$self>no</a>?</p>\n");
-}
-
-
-// All planets in game
-if (isset($planet_list) || isset($sort_planets)) {
-	if (isset($sorted) && $sorted == 1) {
-		$going = "ASC";
-		$sorted = 2;
-	} else {
-		$going = "DESC";
-		$sorted = 1;
-	}
-	if(!empty($sort_planets)){
-		db("select login_name,planet_name,location,fighters,colon, p.cash,metal,fuel,elect,organ from [game]_planets AS p LEFT JOIN [game]_users AS u ON p.login_id = u.login_id where location != 1 AND planet_type >= 0 order by $sort_planets $going");
-	} else {
-		db("select login_name,planet_name,location,fighters,colon, p.cash,metal,fuel,elect,organ from [game]_planets AS p LEFT JOIN [game]_users AS u ON p.login_id = u.login_id where location != 1 AND planet_type >= 0 order by login_name asc, fighters desc, planet_name asc");
-	}
-
-	$clan_planet = dbr(1);
-	if($clan_planet) {
-		$out .= make_table(array("<a href=$self?sort_planets=login_name&sorted=$sorted>Planet Owner</a>","<a href=$self?sort_planets=planet_name&sorted=$sorted>Planet Name</a>","<a href=$self?sort_planets=location&sorted=$sorted>Location</a>","<a href=$self?sort_planets=fighters&sorted=$sorted>Fighters</a>","<a href=$self?sort_planets=colon&sorted=$sorted>Colonists</a>","<a href=$self?sort_planets=cash&sorted=$sorted>Cash</a>","<a href=$self?sort_planets=metal&sorted=$sorted>Metal</a>","<a href=$self?sort_planets=fuel&sorted=$sorted>Fuel</a>","<a href=$self?sort_planets=elect&sorted=$sorted>Electronics</a>","<a href=$self?sort_planets=organ&sorted=$sorted>Organics</a>"));
-		while($clan_planet) {
-			$out .= make_row($clan_planet);
-			$clan_planet = dbr(1);
-		}
-		$out .= "</table>";
-		print_page("Planet List", $out);
-	} else {
-		$out .= "There are no planets in the game.<p>";
-	}
 }
 
 
@@ -327,8 +302,7 @@ $out .= <<<END
 <h2>Players</h2>
 <ul>
 	<li><a href="admin_ban_player.php">Ban player</a></li>
-	<li><a href="$self?show_active=1">List online players</a></li>
-	<li><a href="$self?planet_list=1">List all planets</a></li>
+	<li><a href="$self?show_active=1">View online players</a></li>
 	<li><a href="$self?more_money=1">Give money</a></li>
 </ul>
 
