@@ -59,7 +59,7 @@ if ($user['ship_id'] !== NULL) {
 	shop</a></dt>
 	<dd>For that competitive advantage</dd>
 
-	<dt><a href="shop_upgrades.php">Ship upgrade Store</a></dt>
+	<dt><a href="shop_upgrades.php">Ship upgrades</a></dt>
 	<dd>A variety of upgrades for ships including cargo and fighter 
 	capacity</dd>
 
