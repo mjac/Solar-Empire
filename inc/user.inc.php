@@ -276,19 +276,21 @@ function get_var($title, $page_name, $text, $var_name, $var_default)
 {
 	pageStart($title);
 	echo <<<END
-<p>$text</p>
-<form name="get_var_form" action="$page_name" method="post">
+<div>$text</div>
+<form action="$page_name" method="post">
 END;
+	echo "<p style=\"display: none;\">";
 	foreach ($_REQUEST as $var => $value) {
 		echo "\t<input type=\"hidden\" name=\"" . esc($var) . "\" value=\"" .
 		 esc($value) . "\" />\n";
 	}
+	echo "</p>\n";
 
 	switch ($var_name) {
 	    case 'sure':
 	    	echo <<<END
 	<p><input type="hidden" name="sure" value="yes" />
-	<input type="submit" name="submit" value="Yes" class="button" /> -
+	<input type="submit" value="Yes" class="button" /> -
 	<input type="button" onclick="history.back()" value="No" class="button" /></p>
 
 END;
@@ -298,21 +300,21 @@ END;
 	    case 'passwd_verify':
 	    	echo <<<END
 	<p><input type="password" name="$var_name" value="$var_default" />
-	<input type="submit" name="submit" value="Submit" class="button" /></p>
+	<input type="submit" value="Submit" class="button" /></p>
 
 END;
 	        break;
 	    case 'text':
 	    	echo <<<END
 	<p><textarea name="$var_name" cols="50" rows="20">$var_default</textarea></p>
-	<p><input type="submit" name="submit" value="Submit" class="button" /></p>
+	<p><input type="submit" value="Submit" class="button" /></p>
 
 END;
 	        break;
 	    default:
 	    	echo <<<END
 	<p><input type="text" name="$var_name" value="$var_default" class="text" />
-	<input type="submit" name="submit" value="Submit" class="button" /></p>
+	<input type="submit" value="Submit" class="button" /></p>
 
 END;
 	}
