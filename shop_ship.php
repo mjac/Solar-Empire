@@ -44,24 +44,24 @@ Return to <a href="earth.php">earth</a> after making your purchase.</p>
 
 END;
 
-$merc_text = $bat_text = $car_text = $other_text = $rd_text = "";
+$merc_text = $bat_text = $car_text = $other_text = $rd_text = '';
 
 $ship_types = load_ship_types();
 foreach ($ship_types as $type_id => $ship_stats) {
-	$link = popup_help("help.php?popup=1&ship_info=1&shipno=$type_id",300,600);
+	$link = popup_help("help.php?popup=1&amp;ship_info=1&shipno=$type_id",300,600);
 	if($ship_stats['type'] == "Freighter") {
-		$merc_text .= make_row(array("<a href=ship_build.php?ship_type=$type_id>$ship_stats[name]</a>", "$ship_stats[abbr]","<b>$ship_stats[cost]</b>", "<a href=ship_build.php?ship_type=$type_id>Buy One</a>", "<a href=ship_build.php?mass=$type_id>Buy Many</a>", "$link<b></b></a>"));
+		$merc_text .= make_row(array("<a href=\"ship_build.php?ship_type=$type_id\">$ship_stats[name]</a>", "$ship_stats[abbr]","<b>$ship_stats[cost]</b>", "<a href=\"ship_build.php?ship_type=$type_id\">Buy One</a>", "<a href=\"ship_build.php?mass=$type_id\">Buy Many</a>", $link));
 	} elseif($ship_stats['type'] == "Battleship") {
-		$bat_text .= make_row(array("<a href=ship_build.php?ship_type=$type_id>$ship_stats[name]</a>", "$ship_stats[abbr]","<b>$ship_stats[cost]</b>", "<a href=ship_build.php?ship_type=$type_id>Buy One</a>", "$link<b></b></a>"));
+		$bat_text .= make_row(array("<a href=\"ship_build.php?ship_type=$type_id\">$ship_stats[name]</a>", "$ship_stats[abbr]","<b>$ship_stats[cost]</b>", "<a href=\"ship_build.php?ship_type=$type_id\">Buy One</a>", $link));
 	} elseif($ship_stats['type'] == "Raider") {
-		$rd_text .= make_row(array("<a href=ship_build.php?ship_type=$type_id>$ship_stats[name]</a>", "$ship_stats[abbr]", "<b>$ship_stats[cost]</b>", "$link<b></b></a>","<b>$ship_stats[cost]</b>", "<a href=ship_build.php?ship_type=$type_id>Buy One</a>", "$link<b></b></a>"));
+		$rd_text .= make_row(array("<a href=\"ship_build.php?ship_type=$type_id\">$ship_stats[name]</a>", "$ship_stats[abbr]", "<b>$ship_stats[cost]</b>", $link, "<b>$ship_stats[cost]</b>", "<a href=\"ship_build.php?ship_type=$type_id\">Buy One</a>", $link));
 	} elseif (stristr($ship_stats['type'], 'Carrier') !== false) {
-		$car_text .= make_row(array("<a href=ship_build.php?ship_type=$type_id>$ship_stats[name]</a>", "$ship_stats[abbr]", "<b>$ship_stats[cost]</b>", "<a href=ship_build.php?ship_type=$type_id>Buy One</a>", "$link<b></b></a>"));
+		$car_text .= make_row(array("<a href=\"ship_build.php?ship_type=$type_id\">$ship_stats[name]</a>", "$ship_stats[abbr]", "<b>$ship_stats[cost]</b>", "<a href=\"ship_build.php?ship_type=$type_id\">Buy One</a>", $link));
 	} else {
 		if($user['one_brob'] > 0 && shipHas($ship_stats, 'oo')) {
 			$ship_stats['cost'] = $ship_stats['cost'] * $user['one_brob'];
 		}
-		$other_text .= make_row(array("<a href=ship_build.php?ship_type=$type_id>$ship_stats[name]</a>", "$ship_stats[abbr]", "$ship_stats[type]", "<b>$ship_stats[cost]</b>", "<a href=ship_build.php?ship_type=$type_id>Buy One</a>", "$link<b></b></a>"));
+		$other_text .= make_row(array("<a href=\"ship_build.php?ship_type=$type_id\">$ship_stats[name]</a>", "$ship_stats[abbr]", "$ship_stats[type]", "<b>$ship_stats[cost]</b>", "<a href=\"ship_build.php?ship_type=$type_id\">Buy One</a>", $link));
 	}
 }
 
