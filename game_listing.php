@@ -85,7 +85,7 @@ if (!checkAuth()) {
 	exit();
 }
 
-if ($db_name !== NULL) {
+if ($p_user['in_game'] !== NULL) {
 	header('Location: logout.php?logout_single_game=1');
 	exit();
 }
@@ -167,7 +167,7 @@ END;
 			echo "Admin has disabled logins for this game (<b class=b1>$gameInfo[name]</b>). Try a Different Game";
 			print_footer();
 			exit;
-		} elseif(!isset($_POST['in_game_name'])){ //fine to join
+		} elseif(!isset($_POST['in_game_name'])) { // Fine to join
 			print_header("Choose Username");
 ?>
 <h1>Join <?php echo esc($gameInfo['name']); ?></h1>
@@ -181,8 +181,8 @@ END;
 <?php
 			print_footer();
 			exit;
-		} else { //confirming details, then adding to game.
-			//validate proposed username
+		} else { // Confirming details, then adding to game.
+			// Validate proposed username
 			$in_game_name = trim($_POST['in_game_name']);
 			if (!valid_name($in_game_name)) {
 				print_header('New Account - ' . $gameInfo['name']);
@@ -194,7 +194,7 @@ END;
 				exit();
 			}
 
-			#determine if that username is already in user by another player in the game, or another player as a server name.
+			// Determine if that username is already in user by another player in the game, or another player as a server name.
 			$nExists = $db->query('SELECT COUNT(*) FROM [game]_users AS u, ' .
 			 'user_accounts AS p WHERE u.login_id != %u AND ' .
 			 'p.login_id != %u AND (u.login_name = \'%s\' OR ' .
@@ -210,7 +210,7 @@ END;
 				exit;
 			}
 
-			//create user's first ship
+			// Create user's first ship
 			$startWith = $db->query('SELECT * FROM [game]_ship_types WHERE ' .
 			 'type_id = %u', array($gameOpt['start_ship']));
 			if (!$firstShip = $db->fetchRow($startWith)) {
@@ -228,18 +228,18 @@ END;
 			$ship_id = make_ship($firstShip, $ship_owner);
 
 
-			//create user account within game
+			// Create user account within game
 			$db->query('INSERT INTO [game]_users (login_id, login_name, ' .
 			 'joined_game, turns, cash, ship_id) VALUES (%u, \'%s\', %u, %u, ' .
 			 '%u, %u)', array($p_user['login_id'], $db->escape($in_game_name),
 			 time(), $gameOpt['start_turns'], $gameOpt['start_cash'],
 			 $ship_id));
 
-			//insert user options
+			// Insert user options
 			$db->query('INSERT INTO [game]_user_options (login_id) ' .
 			 'VALUES (%u)', array($p_user['login_id']));
 
-			//send the intro message (if there is one to send).
+			// Send the intro message (if there is one to send).
 			if(!empty($gameInfo['intro_message'])){
 				$gameInfo['intro_message'] = nl2br($gameInfo['intro_message']);
 				$newId = newId('[game]_messages', 'message_id');
@@ -253,17 +253,21 @@ END;
 			insert_history($login_id, 'Joined Game');
 			post_news(esc($in_game_name) . ' joined the game.');
 
-			//update user game counter, and in-game status
-			$db->query("UPDATE user_accounts SET num_games_joined = num_games_joined + 1, in_game = '$db_name' where login_id = '$p_user[login_id]'");
+			// Update user game counter, and in-game status
+			$db->query('UPDATE user_accounts SET num_games_joined = ' .
+			 'num_games_joined + 1, in_game = \'%s\' WHERE login_id = %u',
+			 array($db->escape($db_name), $p_user['login_id']));
 
 			header('Location: system.php');
+
 			exit();
-		}//end join process
+		}
 	}
+
 	exit();
 }
 
-print_header("Game Listings");
+print_header('Game Listings');
 
 if (IS_OWNER && isset($_REQUEST['newGame'])) {
 	require_once('inc/generator.inc.php');
@@ -279,7 +283,26 @@ if (IS_OWNER && isset($_REQUEST['newGame'])) {
 		}
 	}
 	$db->query('%s', array(str_replace('gamename', $_REQUEST['newGame'], $query)));
+
 	clearImages('img/' . $_REQUEST['newGame'] . '_maps');
+
+	$db->query('INSERT INTO gamename_stars (star_id, star_name, x, y, ' .
+	 'link_1, link_2, link_3, link_4, link_5, link_6, metal, fuel, wormhole, ' .
+	 'planetary_slots) VALUES (1, \'Sol\', 250, 250, 0, 0, 0, 0, 0, 0, 0, 0, ' .
+	 '0, 0)');
+
+	$db->query('DELETE FROM se_games WHERE db_name = \'%s\'', 
+	 array($db->escape($_REQUEST['newGame'])));
+
+	$time = time();
+	$db->query('INSERT INTO se_games (db_name, name, admin, `status`, ' .
+	 'description, intro_message, num_stars, difficulty, started, finishes, ' .
+	 'processed_cleanup, processed_turns, processed_systems, ' .
+	 'processed_ships, processed_planets, processed_government) VALUES '.
+	 '(\'%s\', \'Test Game!\', 1, \'paused\', \'\', \'\', 150, 3, ' .
+	 '%u, %u, %u, %u, %u, %u, %u, %u)', 
+	 array($db->escape($_REQUEST['newGame']), $time, $time + 1728000, $time, 
+	 $time, $time, $time, $time, $time));
 }
 
 ?>
