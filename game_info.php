@@ -16,12 +16,14 @@ function resolve_difficulty($diff)
 require_once('inc/common.inc.php');
 require_once('inc/db.inc.php');
 
+print_header('Game information');
+
 $gameInfo = selectGame(isset($_REQUEST['db_name']) ? $_REQUEST['db_name'] : '');
 if (!$gameInfo) {
-	print_page('Error', 'Invalid game!');
+	echo "<p>Invalid game!</p>\n";
+	print_footer();
+	exit();
 }
-
-print_header('Game information');
 
 $gInfo = $db->query('SELECT COUNT(*), SUM(cash), SUM(turns), ' .
  'SUM(turns_run), SUM(ships_killed), SUM(fighters_lost), ' .

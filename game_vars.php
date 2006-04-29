@@ -3,9 +3,13 @@
 require_once('inc/common.inc.php');
 require_once('inc/db.inc.php');
 
+print_header('Game variables');
+
 $gameInfo = selectGame(isset($_REQUEST['db_name']) ? $_REQUEST['db_name'] : '');
 if (!$gameInfo) {
-	print_page('Error', 'Invalid game!');
+	echo "<p>Invalid game!</p>\n";
+	print_footer();
+	exit();
 }
 
 $vars = $db->query('SELECT name, value, descript FROM [game]_db_vars ' .
@@ -13,10 +17,11 @@ $vars = $db->query('SELECT name, value, descript FROM [game]_db_vars ' .
 
 
 if (!$gameOpt['admin_var_show']) {
-	print_page('Error', 'Admin has disabled public viewing of game vars');
+	echo "<p>Admin has <em>disabled</em> public viewing of game vars.</p>\n";
+	print_footer();
+	exit();
 }
 
-print_header('Game Variables');
 
 echo <<<END
 <h1>{$gameInfo['name']} game variables</h1>
