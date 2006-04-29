@@ -106,7 +106,7 @@ CREATE TABLE user_accounts (
   page_views int unsigned NOT NULL default 0,
   real_name varchar(64) NOT NULL default '',
   total_score bigint NOT NULL default 0,
-  default_color_scheme tinyint unsigned NOT NULL default 1,
+  style varchar(32) NULL default NULL,
   PRIMARY KEY (login_id),
   UNIQUE KEY login_name (login_name),
   UNIQUE KEY email_address (email_address)
