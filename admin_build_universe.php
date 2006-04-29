@@ -102,30 +102,32 @@ if (empty($sure) && isset($build_universe)) {
 		if (!function_exists('imagecreate')) {
 			echo "<h2>Image creation failed</h2>\n<p>Required GD image functions are missing.</p>\n";
 		} else {
-			set_time_limit(60); //another minute to make the images
-			if (!isset($preview)) $out .= "<br />Deleting old images...<br />";
-			if (!isset($preview)) clearImages('img/' . $db_name . '_maps');
-			if (!isset($preview)) $out .= "Rendering global map...<br />";
-			renderGlobal($db_name);
+			set_time_limit(60); // Another minute to make the images
+			if (!isset($preview)) {
+				$out .= "<br />Deleting old images...<br />";
+				clearImages('img/' . $gameInfo['db_name'] . '_maps');
+				$out .= "Rendering global map...<br />";
+			}
+			renderGlobal($gameInfo['db_name']);
 			if (!isset($preview)) $out .= "Rendering local maps...<br />";
-			renderLocal($db_name);
+			renderLocal($gameInfo['db_name']);
 		}
 		if (!isset($preview)) {
 			print_page('Universe generator', $out);
 		}
-	} elseif(isset($gen_new_maps)){ //generating some new maps for some reason
+	} elseif(isset($gen_new_maps)){ // Generating some new maps for some reason
 		if (!isset($preview)) $out .= "<br />Deleting old images...<br />";
-		clearImages('img/' . $db_name . '_maps');
+		clearImages('img/' . $gameInfo['db_name'] . '_maps');
 
 		if (!isset($preview)) $out .= "Rendering global map...<br />";
-		renderGlobal($db_name);
+		renderGlobal($gameInfo['db_name']);
 
 		if (!isset($preview)) $out .= "Rendering local maps...<br />";
-		renderLocal($db_name);
+		renderLocal($gameInfo['db_name']);
 
 		print_footer();
-	} else { //previewing universes
-		renderGlobal($db_name);
+	} else { // Previewing universes
+		renderGlobal($gameInfo['db_name']);
 	}
 
 } else {
