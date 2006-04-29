@@ -302,8 +302,6 @@ CREATE TABLE gamename_stars (
   PRIMARY KEY (star_id)
 ) TYPE=MyISAM;
 --
-INSERT INTO gamename_stars (star_id, star_name, x, y, link_1, link_2, link_3, link_4, link_5, link_6, metal, fuel, wormhole, planetary_slots) VALUES (1, 'Sol', 250, 250, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
---
 DROP TABLE IF EXISTS gamename_user_options;
 --
 CREATE TABLE gamename_user_options (
@@ -358,10 +356,7 @@ CREATE TABLE gamename_users (
   banned_time int unsigned NOT NULL default 0,
   banned_reason tinytext default '' NOT NULL,
   one_brob tinyint NOT NULL default 0,
+  style varchar(32) NULL default NULL,
   PRIMARY KEY (login_id),
   KEY login_name (login_name)
 ) TYPE=MyISAM;
---
-DELETE FROM se_games WHERE db_name = 'gamename';
---
-INSERT INTO se_games (db_name, name, admin, `status`, description, intro_message, num_stars, difficulty, started, finishes, processed_cleanup, processed_turns, processed_systems, processed_ships, processed_planets, processed_government) VALUES ('gamename', 'Test Game!', 1, 'paused', '', '', 150, 3, UNIX_TIMESTAMP(), UNIX_TIMESTAMP() + 1728000, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), UNIX_TIMESTAMP());
