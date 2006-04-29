@@ -164,8 +164,8 @@ END;
 }
 
 db('SELECT login_name, fighters_killed, ships_killed, bounty, ' .
- 'login_id FROM ' . $db_name . '_users WHERE ship_id IS NOT NULL AND ' .
- 'bounty > 0 ORDER BY bounty DESC, login_name ASC');
+ 'login_id FROM [game]_users WHERE ship_id IS NOT NULL ' .
+ 'AND bounty > 0 ORDER BY bounty DESC, login_name ASC');
 
 $player = dbr(1);
 if($player) {
