@@ -82,7 +82,7 @@ function buyEquipment($field, $name, $cost, $amount)
 
 
 // checks
-if(isset($buy)) {
+if (isset($buy)) {
 	if ($buy == 1) { //fighters
 		$error_str .= buyShipItem('fighters', 'max_fighters', 'Fighters', $fighter_cost, 1);
 	} elseif ($buy == 2) { //shields
@@ -115,58 +115,58 @@ if(isset($buy)) {
 	    } else {
 			$error_str .= "<p>Delta bombs are outlawed.</p>\n";
 		}
-	} elseif($buy == 10){
+	} elseif ($buy == 10) {
 		$taken = 0; //Fighters taken from planet so far.
 		$ship_counter = 0;
 		db("select sum(max_fighters-fighters), count(ship_id) from [game]_ships where location = 1 AND login_id='$user[login_id]' AND max_fighters > 0 AND fighters < max_fighters");
 		$maths=dbr();
-		if($user['cash'] < $fighter_cost){
+		if ($user['cash'] < $fighter_cost) {
 			print_page("Failed","You don't have enough money for one fighter, let alone a fleet of them.<br />Come back when you can afford it");
-		} elseif(!$maths[0]) {
+		} elseif (!$maths[0]) {
 			print_page("Failed","This operation failed as there are no ships that have fighter bays empty in this system that belong to you.");
-		} elseif($sure != "yes") {
-			get_var('Load all ships', $self,"There are <b>$maths[0]</b> empty fighter bays in <b>$maths[1]</b> ships in this system. <br />Do you want to fill as many as you can afford to fill?",'sure','yes');
+		} elseif ($sure !== 'yes') {
+			get_var('Load all ships', $self, "There are <b>$maths[0]</b> empty fighter bays in <b>$maths[1]</b> ships in this system. <br />Do you want to fill as many as you can afford to fill?",'sure','yes');
 		} else {
 			db2("select ship_id,fighters,max_fighters,ship_name from [game]_ships where login_id = '$user[login_id]' AND location = 1 AND max_fighters > 0 AND fighters < max_fighters order by max_fighters desc");
 			while($ships = dbr2()) {
-				//player can load ship.
 				$free = $ships['max_fighters'] - $ships['fighters'];
-				if($user['cash'] >= ($free * $fighter_cost)) {
-					$ship_counter++;
+				++$ship_counter;
+
+				// Player can load ship.
+				if ($user['cash'] >= ($free * $fighter_cost)) {
 					dbn("update [game]_ships set fighters = max_fighters where ship_id = '$ships[ship_id]'");
 					$out .= "<br /><b class=b1>$ships[ship_name]</b> had its fighter cargo increased by <b>$free</b> to maximum capacity.";
-					if($ships['ship_id'] == $userShip['ship_id']){
+					if ($ships['ship_id'] == $userShip['ship_id']) {
 						$userShip['fighters'] = $userShip['max_fighters'];
 					}
 					$taken += $free;
 					giveMoneyPlayer(-$free * $fighter_cost);
-				//player will run out of cash.
+				// Player will run out of cash.
 				} else {
-					$ship_counter++;
-					$t868 = $ships['fighters'] + floor($user[cash]/$fighter_cost);
+					$t868 = $ships['fighters'] + floor($user['cash'] / $fighter_cost);
 					dbn("update [game]_ships set fighters = '$t868' where ship_id = '$ships[ship_id]'");
 					if ($ships['ship_id'] == $userShip['ship_id']) {
 						$userShip['fighters'] = $t868;
 					}
 					$taken += $t868 - $ships['fighters'];
 					$q_m = ($t868 - $ships['fighters']) * $fighter_cost;
-					$out .= "<br /><b class=b1>$ships[ship_name]</b>s fighter count was increased to <b>$t868</b>.";
+					$out .= "<p><b class=b1>$ships[ship_name]</b>s fighter count was increased to <b>$t868</b>.</p>\n";
 					giveMoneyPlayer(-$q_m);
 					break;
 				}
 			}
-			if($ship_counter > 0){
-				$cost=$taken*$fighter_cost;
-				print_page("Fighters Loaded","<b>$ship_counter</b> ships had their fighters augmented by new fighters from Sol.<br />Total New Fighters = <b>$taken</b>; Cost = <b>$cost</b><p>More Detailed Statistics :".$out);
+			if ($ship_counter > 0) {
+				$cost = $taken * $fighter_cost;
+				print_page("Fighters Loaded", "<b>$ship_counter</b> ships had their fighters augmented by new fighters from Sol.<br />Total New Fighters = <b>$taken</b>; Cost = <b>$cost</b><p>More Detailed Statistics :".$out);
 			} else {
-				print_page("No Ships","No ships where loaded as all ships in this system are already full of fighters.");
+				print_page("No Ships", "No ships where loaded as all ships in this system are already full of fighters.");
 			}
 		}
 	}
 }
 
-if(isset($fill_fleet)) { //fill fleet functionality
-	if($fill_fleet == 1){ //fighters
+if (isset($fill_fleet)) { //fill fleet functionality
+	if ($fill_fleet == 1) { //fighters
 		$error_str .= fill_fleet("fighters", "max_fighters", "Fighters", $fighter_cost, $self);
 	} else { //shields
 		$error_str .= fill_fleet("shields", "max_shields", "Shields", $shield_cost, $self);
