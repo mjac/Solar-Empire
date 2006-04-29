@@ -21,7 +21,7 @@ $amount = isset($amount) ? round($amount) : 0;
 //function that allows for quick and simple purchase of basic items.
 function buyShipItem($item_sql, $item_max_sql, $item_str, $cost)
 {
-	global $amount, $user, $userShip, $db_name, $self;
+	global $amount, $user, $userShip, $self;
 
 	$amount = round($amount); //security check
 
