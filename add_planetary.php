@@ -95,7 +95,8 @@ if ($planet['login_id'] !== $user['login_id']) {
 			get_var('Launch Confirmation','add_planetary.php',"Please <b>Confirm</b> that you want to fire your <b class=b1>Omega Missile</b> at the planet <b class=b1>$target_planet[planet_name].<p>This destination will require <b>$turns</b> Turns, and <b>$fuel</b> Fuel to prep for Launch?",'sure','');
 		} else {
 			giveTurnsPlayer(-$turns);
-			dbn("update [game]_planets set missile=0, fuel=fuel-'$fuel' where planet_id = '$planet_id'");
+			$db->query('UPDATE [game]_planets SET missile = 0, fuel = ' .
+			 'fuel - %u WHERE planet_id = %u', array($fuel, $planet_id));
 			$out .= "Counting Down to Launch:<p>T Minus: 5... 4... 3... 2... 1...	<b class=b1>Liftoff</b>.";
 			$out .= "<p>The <b class=b1>Omega Missile</b> has been successfully launched, with the target <b class=b1>$target_planet[planet_name]</b> as its destination.";
 			$out .= "<br /><br /><br /><br />Missile has struck the planet <b class=b1>$target_planet[planet_name]</b>. Damage report follows:";

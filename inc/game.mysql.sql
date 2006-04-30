@@ -353,7 +353,7 @@ CREATE TABLE gamename_users (
   last_access_forum int unsigned NOT NULL default 0,
   last_access_clan_forum int unsigned NOT NULL default 0,
   last_access_admin_forum int unsigned NOT NULL default 0,
-  banned_time int unsigned NOT NULL default 0,
+  banned_time int NOT NULL default 0,
   banned_reason tinytext default '' NOT NULL,
   one_brob tinyint NOT NULL default 0,
   style varchar(32) NULL default NULL,

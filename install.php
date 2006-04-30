@@ -76,7 +76,8 @@ if (isset($_REQUEST['dbType'])) {
 <head>
 <title>Solar Empire: System Wars Installation</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/style1.css" />
+<link rel="stylesheet" type="text/css" media="screen" 
+ href="install/clear.css" />
 </head>
 <body>
 <h1>Solar Empire: System Wars Installation</h1>

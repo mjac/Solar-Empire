@@ -4,6 +4,8 @@ require_once('inc/admin.inc.php');
 
 function map_systems(&$map_array, $current_system)
 {
+	global $db;
+
 	array_push($map_array,$current_system);
 
 	// Get the star info
@@ -23,6 +25,8 @@ function map_systems(&$map_array, $current_system)
 
 function add_link($star, $link_to)
 {
+	global $db;
+
 	// Look for an empty link slot
 	for ($linknum = 1; $linknum <= 6; ++$linknum) {
 		if ($star['link_' . $linknum] == $link_to) {

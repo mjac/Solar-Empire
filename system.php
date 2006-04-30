@@ -237,38 +237,9 @@ END;
 	return $bar;
 }
 
-
 $header = "Star System";
 $auto_str = "";
 $out = "";
-
-// retire
-if (isset($retire)) {
-	if($sure != 'yes') {
-		get_var('Retire', $self, '<p><b class=b1>Warning!</b> This will permanently remove your account from this game. Are you sure you want to retire?','sure','yes');
-	} else {
-		if ($user['clan_id'] !== NULL) {
-			print_page('Retire account', "<p>Before you retire disband your " .
-			 "clan</p>\n");
-			exit();
-		}
-
-		retire_user($user['login_id']);
-
-		insert_history($user['login_id'], "Retired From Game");
-
-		print_header("Account Removed");
-		echo <<<END
-<h1>Retire account</h1>
-<p>You have been removed from the Game.</p>
-
-END;
-		print_footer();
-
-		exit();
-	}
-}
-
 
 // command a different ship
 if (isset($command)) {

@@ -1,7 +1,4 @@
 <?php
-#page that contains the SE stories, as shown by the help pages.
-#Created: 26/1/02
-#By: Moriarty
 
 $story = array();
 

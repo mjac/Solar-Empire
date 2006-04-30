@@ -1,18 +1,5 @@
 <?php
 
-function resolve_difficulty($diff)
-{
-	$txt = array(
-		'Training',
-		'Beginner',
-		'Intermediate',
-		'Challenge',
-		'Advanced',
-		'All Levels'
-	);
-	return $txt[($diff - 1) % count($txt)];
-}
-
 require_once('inc/common.inc.php');
 require_once('inc/db.inc.php');
 
@@ -20,8 +7,7 @@ print_header('Game information');
 
 $gameInfo = selectGame(isset($_REQUEST['db_name']) ? $_REQUEST['db_name'] : '');
 if (!$gameInfo) {
-	echo "<p>Invalid game!</p>\n";
-	print_footer();
+	header('Location: game_listing.php');
 	exit();
 }
 

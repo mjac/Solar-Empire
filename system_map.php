@@ -7,7 +7,7 @@ pageStart('Map of the known universe');
 echo "<h1>Star Map</h1>\n";
 
 if(isset($print)) {
-	$map_url = 'img/' . $db_name . '_maps/psm_full.png';
+	$map_url = 'img/' . $gameInfo['db_name'] . '_maps/psm_full.png';
 } elseif(isset($find) && $gameOpt['allow_search_map'] != 0) {
 	$star = $db->query('SELECT COUNT(*) FROM [game]_stars WHERE ' .
 	 'star_id = %u', array($find));
@@ -18,7 +18,7 @@ if(isset($print)) {
 }
 
 if (!isset($map_url)) {
-	$map_url = 'img/' . $db_name . '_maps/sm_full.png';
+	$map_url = 'img/' . $gameInfo['db_name'] . '_maps/sm_full.png';
 }
 
 

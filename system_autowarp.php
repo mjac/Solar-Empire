@@ -10,7 +10,9 @@ if(!isset($dest_sector)) {
 
 $stars = $visit = $pred = $dist = array();
 
-$starList = $db->query("SELECT star_id, link_1, link_2, link_3, link_4, link_5, link_6 FROM {$db_name}_stars");
+// Fetch all stars for speed
+$starList = $db->query('SELECT star_id, link_1, link_2, link_3, link_4, ' .
+ 'link_5, link_6 FROM [game]_stars');
 while ($each = $db->fetchRow($starList, ROW_NUMERIC)) {
 	$stars[(int)$each[0]] = array(
 		(int)$each[1],

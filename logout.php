@@ -5,7 +5,7 @@ require_once('inc/db.inc.php');
 
 if (checkAuth()) {
 	if (isset($logout_single_game) || isset($comp_logout)) {
-		if (isset($logout_single_game) && $p_user['in_game'] === NULL) {
+		if (isset($logout_single_game) && $account['in_game'] === NULL) {
 			header('Location: game_listing.php');
 			exit();
 		}
@@ -16,7 +16,7 @@ if (checkAuth()) {
 
 		// Only logging out to gamelisting
 		if (isset($logout_single_game)) {
-			insert_history($login_id, 'Logged out of ' . $p_user['in_game']);
+			insert_history($login_id, 'Logged out of ' . $account['in_game']);
 			$db->query('UPDATE user_accounts SET in_game = NULL WHERE ' .
 			 'login_id = %u', array($login_id));
 			header('Location: game_listing.php');

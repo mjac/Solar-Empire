@@ -134,23 +134,29 @@ if (isset($buy)) {
 
 				// Player can load ship.
 				if ($user['cash'] >= ($free * $fighter_cost)) {
-					dbn("update [game]_ships set fighters = max_fighters where ship_id = '$ships[ship_id]'");
+					$db->query('UPDATE [game]_ships SET fighters = ' .
+					 'max_fighters WHERE ship_id = %u', 
+					 array($ships['ship_id']));
+
 					$out .= "<br /><b class=b1>$ships[ship_name]</b> had its fighter cargo increased by <b>$free</b> to maximum capacity.";
 					if ($ships['ship_id'] == $userShip['ship_id']) {
 						$userShip['fighters'] = $userShip['max_fighters'];
 					}
 					$taken += $free;
+
 					giveMoneyPlayer(-$free * $fighter_cost);
 				// Player will run out of cash.
 				} else {
-					$t868 = $ships['fighters'] + floor($user['cash'] / $fighter_cost);
-					dbn("update [game]_ships set fighters = '$t868' where ship_id = '$ships[ship_id]'");
+					$newAmount = $ships['fighters'] + 
+					 floor($user['cash'] / $fighter_cost);
+					$db->query('UPDATE [game]_ships SET fighters = %u WHERE ' .
+					 'ship_id = %u', array($newAmount, $ships['ship_id']));
 					if ($ships['ship_id'] == $userShip['ship_id']) {
-						$userShip['fighters'] = $t868;
+						$userShip['fighters'] = $newAmount;
 					}
-					$taken += $t868 - $ships['fighters'];
-					$q_m = ($t868 - $ships['fighters']) * $fighter_cost;
-					$out .= "<p><b class=b1>$ships[ship_name]</b>s fighter count was increased to <b>$t868</b>.</p>\n";
+					$taken += $newAmount - $ships['fighters'];
+					$q_m = ($newAmount - $ships['fighters']) * $fighter_cost;
+					$out .= "<p><b class=b1>$ships[ship_name]</b>s fighter count was increased to <b>$newAmount</b>.</p>\n";
 					giveMoneyPlayer(-$q_m);
 					break;
 				}

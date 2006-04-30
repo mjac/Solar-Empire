@@ -55,18 +55,14 @@ if ($planet === false) {
 }
 
 if (isset($new_pass) && isset($change_pass) && isset($has_pass) && valid_input($new_pass)) {
-	if(levenshtein($new_pass,$p_user['passwd']) < 2) { //password cannot be too similar to account pass
-		$output_str .= "That password is too similar to your account password. Please use a different password.";
-	} else {
-		if($new_pass == -1){
-			$new_pass = 0;
-		}
-
-		dbn("update [game]_planets set pass = '$new_pass' where planet_id = '$planet_id'");
-		$planet['pass'] = $new_pass;
-		$passwd = $new_pass;
-		$output_str .= "The password was changed successfuly.";
+	if($new_pass == -1){
+		$new_pass = 0;
 	}
+
+	$db->query('UPDATE [game]_planets SET pass = \'%s\' WHERE planet_id = %u', 
+	 array($new_pass, $planet_id));
+	checkPlanet($planet['planet_id']);
+	$output_str .= "<p>The password was changed successfuly.</p>\n";
 } elseif(isset($new_pass) && isset($change_pass) && isset($has_pass)){ //invalid password
 	print_page("Password Change","That password is invalid. Only use normal letters and numbers, and no spaces.<p><a href='javascript:back()'>Try Again</a>","?planet=1");
 } elseif(isset($change_pass) && !isset($new_pass)) {
@@ -125,8 +121,11 @@ if(isset($destroy)) {
 	$colonist_cap = $ship_count[1];			#total cargo capacity of fleet in system
 	$colonist = $ship_count[1];				#total cargo capacity of fleet in system
 	$ship_count = $ship_count[0];			#number of ships in system that have cargo capacity
-	db("select ship_id from [game]_ships where login_id = '$user[login_id]' AND location = '$userShip[location]' AND config REGEXP 'ws'");					#ensure there is a transverser with the ws upgrade
-	$lead = dbr();
+
+	$tports = $db->query('SELECT ship_id FROM [game]_ships WHERE ' .
+	 'login_id = %u AND location = %u AND config LIKE \'%%ws%%\'',
+	 array($user['login_id'], $userShip['location']));
+	$lead = $db->fetchRow($tports, ROW_ASSOC);
 
 	#figure out what the user is dealing in.
 	if($autoshift == 1){
@@ -148,9 +147,7 @@ if(isset($destroy)) {
 
 	if(!isset($ship_count)) {#ensure there is some cargo cap
 		$output_str .= "You do not have any ships with free cargo capacity.<p>";
-	} elseif ($user['turns'] < 2) {#ensure there is some cargo cap
-		$output_str.= "Your turn count is less than 2. Thats not going to get you anywere and back!";
-	} elseif (!isset($lead['ship_id'])) { #ensure there is a transverser with the ws upgrade
+	} elseif (!isset($lead['ship_id'])) { // Ensure WS upgrade
 		$output_str .= <<<END
 <p>You <strong>do not</strong> have a <em>transverser</em> in this system 
 that has a <em>wormhole stabiliser</em> upgrade: this is required to 

@@ -29,8 +29,10 @@ if(!(isset($from) && isset($to))) {
 	 $gameOpt['uv_universe_size']);
 }
 
-$fQuery = $db->query('SELECT x, y FROM [game]_stars WHERE star_id = %u', array($from));
-$tQuery = $db->query('SELECT x, y from [game]_stars WHERE star_id = %u', array($to));
+$fQuery = $db->query('SELECT x, y FROM [game]_stars WHERE star_id = %u',
+ array($from));
+$tQuery = $db->query('SELECT x, y from [game]_stars WHERE star_id = %u',
+ array($to));
 
 if ($db->numRows($fQuery) < 1) {
 	imageError('$from is an invalid star', $gameOpt['uv_universe_size'],
@@ -46,7 +48,7 @@ $starTo = $db->fetchRow($tQuery);
 
 $size = $gameOpt['uv_universe_size'] + 50;
 
-$im = imagecreatefrompng('img/' . $db_name . '_maps/sm_full.png');
+$im = imagecreatefrompng('img/' . $gameInfo['db_name'] . '_maps/sm_full.png');
 
 $text = imagecolorallocate($im, 0xFF, 0xFF, 0xFF);
 $colFrom = imagecolorallocate($im, 0xFF, 50, 50);

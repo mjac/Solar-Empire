@@ -1,8 +1,8 @@
 <?php
 
-defined('MCDB_PATH') or exit('Create constant MCDB_PATH!');
+defined('PATH_MCDB') or exit('Create constant PATH_MCDB!');
 
-require_once(MCDB_PATH);
+require_once(PATH_MCDB);
 
 $db = new mcdb;
 

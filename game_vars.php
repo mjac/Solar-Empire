@@ -7,8 +7,7 @@ print_header('Game variables');
 
 $gameInfo = selectGame(isset($_REQUEST['db_name']) ? $_REQUEST['db_name'] : '');
 if (!$gameInfo) {
-	echo "<p>Invalid game!</p>\n";
-	print_footer();
+	header('Location: game_listing.php');
 	exit();
 }
 

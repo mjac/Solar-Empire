@@ -76,21 +76,21 @@ h2 {
 h2.earth {
 	padding-left: 30px;
 	margin-left: 10px;
-	background: url(../img/tn/earth.jpg) no-repeat left top;
+	background: url(tn/earth.jpg) no-repeat left top;
 }
 h2.planet {
 	padding-left: 30px;
 	margin-left: 10px;
-	background: url(../img/tn/planet.jpg) no-repeat left top;
+	background: url(tn/planet.jpg) no-repeat left top;
 }
 h2.port {
 	padding-left: 40px;
-	background: url(../img/tn/port.jpg) no-repeat left top;
+	background: url(tn/port.jpg) no-repeat left top;
 }
 h2.ship {
 	padding-left: 34px;
 	margin-left: 6px;
-	background: url(../img/tn/ship.jpg) no-repeat left top;
+	background: url(tn/ship.jpg) no-repeat left top;
 }
 
 

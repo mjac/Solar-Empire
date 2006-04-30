@@ -81,18 +81,18 @@ END;
 }
 
 
-//The Brob Test!!!
-if($user['one_brob'] > 0 && !isset($duplicate) && !isset($mass)) {
-	db("select ship_id from [game]_ships where login_id = '$user[login_id]' AND config REGEXP 'oo'");
-	$results = dbr();
-	if($results){
+// The Brob Test!
+$got_a_brob = 0;
+if ($user['one_brob'] > 0 && !isset($duplicate) && !isset($mass)) {
+	$hasBrob = $db->query('SELECT COUNT(*) FROM [game]_ships WHERE ' .
+	 'login_id = %u AND config REGEXP \'oo\'', array($user['login_id']));
+	$result = $db->fetchRow($hasBrob, ROW_NUMERIC);
+
+	if ($result[0] > 0) {
 		$got_a_brob = 1;
 	} else {
-		$got_a_brob = 0;
 		$ship_stats['cost'] = $ship_stats['cost'] * $user['one_brob'];
 	}
-} else {
-	$got_a_brob = 0;
 }
 
 

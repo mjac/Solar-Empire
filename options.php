@@ -60,7 +60,7 @@ if (isset($retire)) {
 		get_var("Retire","options.php","<p><b class=b1>Warning!</b> This will permanently remove your account from this game. <br />Are you sure you want to retire?", "sure", "yes");
 	} else {
 		retire_user($user['login_id']);
-		insert_history($user['login_id'], 'Retired From Game');
+		insert_history($user['login_id'], 'Retired from game');
 		print_header('Account Removed');
 		echo <<<END
 <p>You have been removed from the Game.</p>
@@ -103,9 +103,9 @@ END;
 		$oldPass = sha256::hash($oldpass);
 		$newPass = sha256::hash($newpass);
 
-		if ($oldPass !== $p_user['passwd']) {
+		if ($oldPass !== $account['passwd']) {
 			$temp_str = "<p>The old password is wrong.</p>\n$back";
-		} elseif ($newPass === $p_user['passwd']) {
+		} elseif ($newPass === $account['passwd']) {
 		   $temp_str = <<<END
 <p>Really. You want your new pass to be the same as your old one? Are you 
 just wasting my bandwith?</p>
@@ -115,7 +115,7 @@ END;
 		} else {
 			$db->query('UPDATE user_accounts SET passwd = \'%s\' WHERE ' .
 			 'login_id = %u', array($db->escape($newPass), $user['login_id']));
-			$p_user['passwd'] = $newPass;
+			$account['passwd'] = $newPass;
 			$temp_str = "<p>Password changed successfully.</p>\n";
 			insert_history($user['login_id'], "Password Changed");
 		}

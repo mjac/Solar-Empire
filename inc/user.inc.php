@@ -5,7 +5,7 @@ require_once('inc/common.inc.php');
 require_once('inc/db.inc.php');
 
 // Check and update the authentication.
-if (!(checkAuth() && $db_name !== NULL)) {
+if (!(checkAuth() && $account['in_game'] !== NULL)) {
 	require('logout.php');
 	exit();
 }

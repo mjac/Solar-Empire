@@ -32,18 +32,16 @@ function print_header($title)
 {
 	global $user_options, $directories;
 
-	$style = esc(URL_SHORT . '/css/style' . (isset($user_options['color_scheme']) ?
-	 $user_options['color_scheme'] : 1) . '.css');
 	$title = esc($title);
-	$js = esc(URL_SHORT . '/js/common.js');
+	$js = esc(URL_BASE . '/js/common.js');
 
 	echo <<<END
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>$title &laquo; Solar Empire</title>
+<title>$title &#8212; Solar Empire</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link type="text/css" rel="stylesheet" href="$style" />
+<link type="text/css" rel="stylesheet" href="tpl/generic/css/generic.css" />
 <script type="text/javascript" src="$js"></script>
 </head>
 <body>
@@ -230,13 +228,13 @@ function insert_history($userId, $text)
 //post an entry into the news
 function post_news($headline)
 {
-	global $p_user, $db;
+	global $account, $db;
 
 	$newId = newId('[game]_news', 'news_id');
 
 	$db->query('INSERT INTO [game]_news (news_id, timestamp, headline, ' .
 	 'login_id) VALUES (%u, %u, \'%s\', %u)', array($newId, time(),
-	 $db->escape($headline), $p_user['login_id']));
+	 $db->escape($headline), $account['login_id']));
 }
 
 
@@ -261,26 +259,25 @@ function discern_size($hull)
 Authorisation Checking Functions
 ********************/
 
-//function that will check to see if a player is logged in using session_id's.
-//if user is the admin, it will set db_name, and game_info
+// Function that will check to see if a player is logged in using session_id's
+// If user is the admin, it will set db_name, and game_info
 function checkAuth()
 {
-	global $session_id, $login_id, $db_name, $p_user, $gameInfo, $db;
+	global $session_id, $login_id, $account, $gameInfo, $db;
 
 	//get all details for the user with that sessionid/login_id combo
 	//if the admin, don't use the session_id as a key
 	$info = $db->query('SELECT * FROM user_accounts WHERE ' .
 	 'login_id = %u AND session_id = \'%s\'', array($login_id,
 	 $db->escape($session_id)));
-	$p_user = $db->fetchRow($info);
+	$account = $db->fetchRow($info);
 
-	//echo $p_user['session_exp']."<br />".time();
 	$next_exp = time() + SESSION_TIME_LIMIT;
 
-	//session is invalid.
-	if ($session_id == '' || $login_id == 0 || $session_id != $p_user['session_id'] ||
-	     $p_user['session_exp'] < time()) {//session expired or invalid
-		unset($p_user, $login_id, $session_id, $db_name, $gameInfo);
+	// Session is invalid.
+	if ($session_id == '' || $login_id == 0 || $session_id != $account['session_id'] ||
+	     $account['session_exp'] < time()) {//session expired or invalid
+		unset($account, $login_id, $session_id, $gameInfo);
 		return false;
 	}
 
@@ -288,21 +285,21 @@ function checkAuth()
 	 'page_views = page_views + 1 WHERE login_id = %u',
 	 array($next_exp, $login_id));
 
-	define('IS_OWNER', $p_user['login_id'] == OWNER_ID);
+	define('IS_OWNER', $account['login_id'] == OWNER_ID);
 
-	++$p_user['page_views'];
-	$db_name = $p_user['in_game'];
+	++$account['page_views'];
 
-	if ($db_name !== NULL) {
-		if (!$gameInfo = selectGame($db_name)) {
+	if ($account['in_game'] !== NULL) {
+		if (!$gameInfo = selectGame($account['in_game'])) {
 			$db->query('UPDATE user_accounts SET in_game = NULL WHERE ' .
 			 'login_id = %u', array($login_id));
+			$account['in_game'] = NULL;
 		    return false;
 		}
 
-		define('IS_ADMIN', $p_user['login_id'] == $gameInfo['admin']);
+		define('IS_ADMIN', $account['login_id'] == $gameInfo['admin']);
 
-		$p_user['session_exp'] = $next_exp;
+		$account['session_exp'] = $next_exp;
 	}
 
 	return true;

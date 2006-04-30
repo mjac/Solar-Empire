@@ -173,32 +173,31 @@ if(isset($sell_all)) {
 				get_var('Sell all cargo',$self,"Are you sure you want to sell all cargo from this ship?<p>This will cost you <b>1</b> turn, and add <b>$sold_worth</b> Credits to your funds.",'sure','yes');
 			}
 		} else {
-			dbn("update [game]_ships set elect = 0, metal = 0, fuel = 0, organ = 0 where ship_id = '$user[ship_id]'");
+			$db->query('UPDATE [game]_ships SET elect = 0, metal = 0, ' .
+			 'fuel = 0, organ = 0 WHERE ship_id = %u', array($user['ship_id']));
+
 			$elect_sold = $elect_sold + $userShip['elect'];
 			$fuel_sold = $fuel_sold + $userShip['fuel'];
 			$metal_sold = $metal_sold + $userShip['metal'];
 			$organ_sold = $organ_sold + $userShip['organ'];
-#			if ($userShip[metal] > 0) { $error_str .= "You sold $userShip[metal] units of metal.<p>"; }
-#			if ($userShip[fuel] > 0) { $error_str .= "You sold $userShip[fuel] units of fuel.<p>";
-#			if ($userShip[elect] > 0) { $error_str .= "You sold $userShip[elect] units of electronics.<p>";
+
 	 		giveTurnsPlayer(-1);
+
+			$total_goods = $metal_sold + $fuel_sold + $elect_sold + $organ_sold;
 			$error_str .= "All cargo from this ship sold.<p>";
 			$error_str .= "<p>Metal Sold: <b>$metal_sold</b><br />Fuel Sold: <b>$fuel_sold</b><br />Electronics Sold: <b>$elect_sold</b><br />Organics Sold: <b>$organ_sold</b>";
 			$error_str .= "<p>Total goods sold: <b>";
-			$total_goods = $metal_sold + $fuel_sold + $elect_sold + $organ_sold;
 			$error_str .= "$total_goods</b>";
 			$error_str .= "<br />Total income: <b>$sold_worth</b>.<p>";
 		}
 	}
+
 	if (!IS_ADMIN) {
 		dbn("update [game]_users set cash = cash + $sold_worth where login_id = $user[login_id]");
 		$user['cash'] += $sold_worth;
 	}
-	$userShip['metal'] = 0;
-	$userShip['fuel'] = 0;
-	$userShip['elect'] = 0;
-	$userShip['organ'] = 0;
-#		$userShip[colon] = 0;
+
+	checkShip();
 }
 
 
