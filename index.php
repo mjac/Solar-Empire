@@ -2,69 +2,13 @@
 
 require_once('inc/common.inc.php');
 require_once('inc/db.inc.php');
+require_once('inc/template.inc.php');
 
 if (checkAuth()) {
 	header('Location: game_listing.php');
 	exit();
 }
 
-print_header('Welcome to Solar Empire');
-
-?>
-<div id="splash">
-<div id="logo"><img src="img/se_logo.jpg" alt="Solar Empire" /></div>
-
-<form id="login" action="game_listing.php" method="post">
-	<h2><a href="register.php">Create an account</a></h2>
-
-	<h2>Continue the war</h2>
-	<dl>
-		<dt><label for="handle">Account name</label></dt>
-		<dd><input type="text" name="handle" id="handle" class="text" /></dd>
-	
-		<dt><label for="password">Password</label></dt>
-		<dd><input type="password" name="password" id="password" class="text" /></dd>
-
-		<dt><input type="submit" value="Enter" class="button" /></dt>
-	</dl>
-</form>
-
-<div id="loginContent">
-
-<h1>Solar Empire</h1>
-
-<h2>Introduction</h2>
-<p>Solar Empire is a highly competitive, web based, <strong>space combat 
-game</strong>.  Master the arts of colonisation and exploration while playing 
-a noble but precarious game of warfare to ensure survival.</p>
-<p>A quote from a player: <q>I sure wish work would quit cutting into my
-gaming time</q>.</p>
-
-<h2>Project information</h2>
-<p><a href="http://sourceforge.net/projects/solar-empire/">Solar Empire</a> 
-is an open source project hosted on SourceForge; look at the 
-<a href="http://sourceforge.net/news/?group_id=16534">news section</a> for 
-the latest updates.  The <a href="credits.php">credits</a> page contains a 
-list of all the contributors to the game</a>.</p>
-<p>Visit the <a href="http://forum.solar-empire.net/">global forums</a> to
-learn more and help develop this open-source game.</p>
-
-<h2>Operational Servers</h2>
-<p><a href="http://sourceforge.net/projects/solar-empire/"><img 
- src="http://sourceforge.net/sflogo.php?group_id=16534&amp;type=3"
- width="125" height="37" alt="Solar Empire sourceforge project" 
- style="float: right; padding: 1em;" /></a></p>
-<ul>
-	<li><a href="http://www.solar-empire.net/">Endless War</a></li>
-	<li><a href="http://qse.tradelair.com/">Tradelair</a></li>
-	<li><a href="http://www.gegn.net/">Galactic Empire</a></li>
-	<li><a href="http://www.imperial-empire-se.com/">Imperial Empire</a></li>
-	<li><a href="http://solarempire.fuoriradio.com/">Italian Server</a></li>
-</ul>
-</div>
-</div>
-<?php
-
-print_footer();
+$tpl->display('index.tpl.php');
 
 ?>
