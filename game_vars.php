@@ -2,49 +2,31 @@
 
 require_once('inc/common.inc.php');
 require_once('inc/db.inc.php');
-
-print_header('Game variables');
+require_once('inc/template.inc.php');
 
 $gameInfo = selectGame(isset($_REQUEST['db_name']) ? $_REQUEST['db_name'] : '');
-if (!$gameInfo) {
-	header('Location: game_listing.php');
+
+$tpl->assign('gameExists', $gameInfo ? true : false);
+$tpl->assign('viewVars', $gameInfo ? $gameOpt['admin_var_show'] == 1 : false);
+
+if (!($gameInfo && $gameOpt['admin_var_show'] == 1)) {
+	$tpl->display('game_vars.tpl.php');
 	exit();
 }
+
+$tpl->assign('gameName', $gameInfo['name']);
+
+$gameVars = array();
 
 $vars = $db->query('SELECT name, value, descript FROM [game]_db_vars ' .
  'ORDER BY name');
-
-
-if (!$gameOpt['admin_var_show']) {
-	echo "<p>Admin has <em>disabled</em> public viewing of game vars.</p>\n";
-	print_footer();
-	exit();
+while ($var = $db->fetchRow($vars, ROW_ASSOC)) {
+	$gameVars[] = $var;
 }
 
+$tpl->assign('gameVars', $gameVars);
 
-echo <<<END
-<h1>{$gameInfo['name']} game variables</h1>
-<table class="simple">
-	<tr>
-	    <th>Name</th>
-	    <th>Value</th>
-	    <th>Description</th>
-	</tr>
-
-END;
-
-while ($var = $db->fetchRow($vars)) {
-	echo <<<END
-    <tr>
-		<td>{$var['name']}</td>
-		<td>{$var['value']}</td>
-		<td>{$var['descript']}</td>
-	</tr>
-
-END;
-}
-
-echo "</table>";
-print_footer();
+$tpl->display('game_vars.tpl.php');
+exit();
 
 ?>
