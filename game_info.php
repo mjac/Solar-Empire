@@ -18,7 +18,7 @@ $gInfo = $db->query('SELECT COUNT(*), SUM(cash), SUM(turns), ' .
 $playerStats = $db->fetchRow($gInfo, ROW_NUMERIC);
 
 $gInfo = $db->query('SELECT g.name, g.description, g.status, ' .
- 'g.started, g.difficulty, u.login_name FROM se_games AS g ' .
+ 'g.started, g.difficulty, u.login_name AS admin FROM se_games AS g ' .
  'LEFT JOIN user_accounts AS u ON g.admin = u.login_id WHERE ' .
  'g.db_name = \'[game]\'');
 $info = $db->fetchRow($gInfo);
@@ -29,7 +29,7 @@ $info = $db->fetchRow($gInfo);
 <table class="simple">
 	<tr>
 	    <th>Admin name</th>
-	    <td><?php echo esc($info['login_name']); ?></td>
+	    <td><?php echo esc($info['admin']); ?></td>
 	</tr>
 	<tr>
 	    <th>Status</th>
