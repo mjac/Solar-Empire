@@ -12,7 +12,7 @@ function login_to_server($handle, $password)
 	require_once('inc/external/sha256/sha256.class.php');
 	$password = sha256::hash($password);
 
-	$uQuery = $db->query('SELECT login_id, passwd, last_login FROM ' .
+	$uQuery = $db->query('SELECT login_id, passwd, login_count FROM ' .
 	 'user_accounts WHERE login_name = \'%s\'', array($db->escape($handle)));
 	$userInfo = $db->fetchRow($uQuery);
 
@@ -54,7 +54,7 @@ function login_to_server($handle, $password)
 
 	insert_history($userInfo['login_id'], 'Logged into game-list');
 
-	if ($userInfo['last_login'] == 0) { // first login. show them the story.
+	if ($userInfo['login_count'] == 0) { // first login. show them the story.
 		$tpl->display('story.tpl.php');
 	} else {
 	    header('Location: game_listing.php');
