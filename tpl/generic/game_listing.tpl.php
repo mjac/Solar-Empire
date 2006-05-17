@@ -1,6 +1,10 @@
 <?php
 if (!defined('PATH_SAVANT')) exit();
 
+if (!function_exists('popupHelp')) {
+	include_once('inc/popup_help.inc.php');
+}
+
 function formatGameList(&$tpl, $gList)
 {
 	$list = "\t<ul>\n";
@@ -9,13 +13,17 @@ function formatGameList(&$tpl, $gList)
 		 '?game_selected=' . $game['db_name']) . "\">" . 
 		 $tpl->escape($game['name']) . "</a> (" . 
 		 $tpl->escape($game['status']) . ') - ' . 
-		 popup_help('game_info.php?db_name=' . $game['db_name'], 600, 450) . 
-		 "</li>\n";
+		 popupHelp('game_info.php?db_name=' . $game['db_name'], 600, 450, 
+		 'Info', $tpl) . "</li>\n";
 	}
 	$list .= "\t</ul>\n";
 
 	return $list;
 }
+
+$title = 'Game listing';
+
+include('inc/header_splash.tpl.php');
 
 $joined = array();
 $unjoined = array();
@@ -26,10 +34,6 @@ foreach ($this->gameList as $game) {
 		$unjoined[] = $game;
 	}
 }
-
-$title = 'Game listing';
-
-include('inc/header_splash.tpl.php');
 
 ?>
 
