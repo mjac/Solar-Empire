@@ -26,39 +26,6 @@ $session_id = isset($_REQUEST['session_id']) ? $_REQUEST['session_id'] : NULL;
 $self = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
 
 
-// OUTPUT FUNCTIONS
-
-function print_header($title)
-{
-	global $user_options, $directories;
-
-	$title = esc($title);
-	$js = esc(URL_BASE . '/js/common.js');
-
-	echo <<<END
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>$title &#8212; Solar Empire</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link type="text/css" rel="stylesheet" href="tpl/generic/css/generic.css" />
-<script type="text/javascript" src="$js"></script>
-</head>
-<body>
-
-END;
-}
-
-//prints the bottom of a page.
-function print_footer()
-{
-	echo <<<END
-
-</body>
-</html>
-END;
-}
-
 /**********************
 Input Checking Functions
 **********************/
@@ -411,14 +378,6 @@ function clanName($name, $symbol, $colour)
 /*********************
 Misc Functions
 *********************/
-
-//function that will create a help-link.
-function popup_help($topic, $height, $width, $string = "Info")
-{
-	return '<a href="' . esc($topic) . '" onclick="popup(\'' . esc($topic) .
-	 '\', ' . (int)$height . ',' . $width . '); return false;">' . $string .
-	 '</a>';
-}
 
 
 function create_rand_string($length,
