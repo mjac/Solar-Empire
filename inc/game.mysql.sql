@@ -37,10 +37,10 @@ CREATE TABLE gamename_clan_invites (
 DROP TABLE IF EXISTS gamename_db_vars;
 --
 CREATE TABLE gamename_db_vars (
-  `name` varchar(30) NOT NULL default '',
-  `value` int unsigned NOT NULL default 0,
-  min int unsigned NOT NULL default 1,
-  max int unsigned NOT NULL default 1,
+  `name` varchar(32) NOT NULL default '',
+  `value` int NOT NULL default 0,
+  min int NOT NULL default 1,
+  max int NOT NULL default 1,
   descript text NOT NULL,
   PRIMARY KEY (`name`)
 ) TYPE=MyISAM;
