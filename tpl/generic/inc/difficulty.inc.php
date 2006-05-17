@@ -1,18 +1,17 @@
 <?php
 
-$difficulties = array(
-	'Training',
-	'Beginner',
-	'Intermediate',
-	'Challenge',
-	'Advanced',
-	'All Levels'
-);
-
-function resolve_difficulty($diff)
+function resolveDifficulty($diff)
 {
-	global $difficulties;
-	return $difficulties[($diff - 1) % count($txt)];
+	static $difficulties = array(
+		'Training',
+		'Beginner',
+		'Intermediate',
+		'Challenge',
+		'Advanced',
+		'All Levels'
+	);
+
+	return $difficulties[($diff - 1) % count($difficulties)];
 }
 
 ?>
