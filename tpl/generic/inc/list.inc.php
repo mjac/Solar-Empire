@@ -1,5 +1,4 @@
 <?php
-
 if (!defined('PATH_SAVANT')) exit();
 
 function makeList(&$tpl, $title, $data, $ordered = false)
