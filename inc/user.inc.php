@@ -20,321 +20,18 @@ $db->query('UPDATE [game]_users SET last_request = %u WHERE ' .
 // load the ship present usership
 checkShip();
 
-function pageStart($title)
-{
-	$data = ob_get_contents();
-	if (!empty($data)) {
-		ob_end_clean();
-	}
-
-	ob_start('ob_gzhandler');
-
-	echo $data;
-	print_header($title);
-
-	echo "<div id=\"gameMenu\">\n" . statusBar(). "</div>\n" .
-	 "<div id=\"gameBody\">\n";
-}
-
-function pageStop()
-{
-	echo "</div>\n";
-	print_footer();
-	exit();
-}
-
-
-
-// function that will print the left column
-function statusBar()
-{
-	global $db, $user, $userShip, $gameInfo, $gameOpt;
-
-	$menu = "<h1><em>" . popup_help("game_info.php?db_name=$gameInfo[db_name]", 
-	 600, 450, $gameInfo['name']) . ($gameInfo['status'] === 'running' ? '' : 
-	 (" (" . esc($gameInfo['status']) . ")")) . "</em></h1>\n";
-
-	$uAmount = $db->query('SELECT COUNT(login_id) FROM [game]_users WHERE ' .
-	 'login_id > 1 AND last_request > %u', array(time() - 300));
-	$activeUsers = (int)current($db->fetchRow($uAmount));
-	if (IS_ADMIN || IS_OWNER) {
-		$start = '<a href="admin.php?show_active=1">';
-		$end = '</a>';
-	} else {
-		$start = $end = '';
-	}
-	$menu .= "<p>{$start}$activeUsers active user(s){$end}</p>\n";
-
-	$menu .= "<p>" . date('<\a \t\i\t\l\e="T">M d - H:i</\a>') . "</p>\n";
-
-	if ($gameInfo['status'] === 'running') {
-		$menu .= "<p>" . ceil(($gameInfo['finishes'] - time()) / 86400) . 
-		 " day(s) left</p>\n";
-	}
-
-
-	/**************
-	* Left Links
-	**************/
-	$menu .= <<<END
-<h2><em>Places</em></h2>
-<ul>
-	<li><a href="system.php">Star system</a></li>
-	<li><a href="news.php">Game news</a></li>
-
-END;
-
-	if ($gameOpt['max_clans'] > 0 || IS_ADMIN) {
-		$menu .= "\t<li><a href=\"clan.php\">Clan control</a></li>\n";
-	}
-
-	$menu .= <<<END
-	<li><a href="player_stat.php">Player ranking</a></li>
-</ul>
-<ul>
-	<li><a href="diary.php">Fleet diary</a></li>
-
-END;
-
-	$mAmount = $db->query('SELECT COUNT(*) FROM [game]_messages WHERE ' .
-	 'login_id = %u', array($user['login_id']));
-	$counted = (int)current($db->fetchRow($mAmount));
-
-	$menu .= "\t<li><a href=\"message_inbox.php\">$counted msg(s)</a> - <a href=\"message.php\">send</a></li>\n";
-
-	$fAmount = $db->query('SELECT COUNT(*) FROM [game]_messages WHERE ' .
-	 'timestamp > %u AND login_id = -1 AND sender_id != %u',
-	 array($user['last_access_forum'], $user['login_id']));
-	$counted = (int)current($db->fetchRow($fAmount));
-
-	$temp_forum_text = "";
-	if ($counted > 0) {
-		$temp_forum_text = " ($counted <a href=\"forum.php?last_time=" .
-		 $user['last_access_forum'] . "&amp;find_last=1\">new</a>)";
-	}
-
-	$menu .= "\t<li><a href=\"forum.php\">Game forum</a>$temp_forum_text</li>\n";
-
-	if (IS_ADMIN || IS_OWNER) {
-		$aForum = $db->query('SELECT last_access_admin_forum FROM ' .
-		 '[game]_users WHERE login_id = %u', array($user['login_id']));
-		$time_from = (int)current($db->fetchRow($aForum));
-
-		$mCount = $db->query('SELECT COUNT(*) FROM se_central_forum WHERE ' .
-		 'timestamp > %u', array($time_from));
-		$messageCount = (int)current($db->fetchRow($mCount));
-		$adminForumNew = '';
-		if($messageCount > 0){
-			$adminForumNew = ' (' . $messageCount . ' <a href="forum.php?' .
-			 'last_time=' . $time_from . '&amp;view_a_forum=1">new</a>)';
-		}
-		$menu .= "\t<li><a href=\"forum.php?view_a_forum=1\">Admin forum</a>$adminForumNew</li>\n";
-	}
-
-	if (IS_ADMIN) {
-		$menu .= "\t<li><a href=\"forum.php?clan_forum=1\">Clan forums</a></li>\n";
-	} elseif ($user['clan_id'] !== NULL) {
-		$cCount = $db->query('SELECT COUNT(*) FROM [game]_messages WHERE ' .
-		 'timestamp > %u AND login_id = -5 AND clan_id = %u AND ' .
-		 'sender_id != %u', array($user['last_access_clan_forum'],
-		 $user['clan_id'], $user['login_id']));
-		$messageCount = (int)current($db->fetchRow($cCount));
-		$newMsgs = '';
-		if($messageCount > 0){
-			 $newMsgs = ' (' . $messageCount . ' <a href="forum.php?' .
-			  'clan_forum=1&amp;last_time=' . $user['last_access_clan_forum'] .
-			  '&amp;find_last=1">new</a>)';
-		}
-		$menu .= "\t<li><a href=\"forum.php?clan_forum=1\">" .
-		 clanSymbol($user['clan_sym'], $user['clan_sym_color']) .
-		 " Forum</a>$newMsgs</li>\n";
-	}
-
-	$menu .= <<<END
-	<li><a href="http://forum.solar-empire.net/">Global forum</a></li>
-</ul>
-
-END;
-
-
-	$menu .= "<h2><em>" . formatName($user['login_id'], $user['login_name'],
-	 $user['clan_id'], $user['clan_sym'], $user['clan_sym_color']) . "</em></h2>\n";
-
-	if (!IS_ADMIN) {
-		if ($user['turns_run'] < $gameOpt['turns_safe']) {
-			$s_turns = $gameOpt['turns_safe'] - $user['turns_run'];
-			$menu .= "<p>$s_turns safe turn(s) left</p>\n";
-		} elseif ($user['turns_run'] == $gameOpt['turns_safe']) {
-			$menu .= "<p><em>Leaving</em> newbie safety!</p>\n";
-		}
-	}
-
-	$credits = number_format($user['cash']);
-
-	$menu .= <<<END
-<div><table>
-	<tr>
-		<th>Turns</th>
-		<td>$user[turns] / $gameOpt[max_turns]</td>
-	</tr>
-	<tr>
-		<th>Credits</th>
-		<td>$credits</td>
-	</tr>
-	<tr>
-		<th>Kills</th>
-		<td>$user[ships_killed] / $user[ships_lost]</td>
-	</tr>
-	<tr>
-		<th>Score</th>
-		<td>$user[score]</td>
-	</tr>
-</table></div>
-<ul>
-	<li><a href="help.php">Help files</a></li>
-	<li><a href="options.php">Player options</a></li>
-
-END;
-
-	if (IS_ADMIN || IS_OWNER) {
-		$menu .= "\t<li><a href=\"admin.php\">Game admin</a></li>\n";
-		if (IS_OWNER) {
-			$menu .= "\t<li><a href=\"owner.php\">Server info</a></li>\n";
-		}
-	}
-
-	$menu .= <<<END
-	<li><a href="logout.php?logout_single_game=1">Game list</a></li>
-	<li><a href="logout.php?comp_logout=1">Logout</a></li>
-</ul>
-
-END;
-
-	if ($user['ship_id'] === NULL) {
-		$menu .= <<<END
-<h2><em>Your ship is destroyed!</em></h2>
-<p><a href="http://localhost/dev/se/syswars/earth.php">Buy one</a> to 
-continue playing.</p>
-
-END;
-	} else {
-		$popup = popup_help('help.php?popup=1&ship_info=1&shipno=' .
-		 $userShip['type_id'], 300, 600, $userShip['ship_name']);
-		$config = empty($userShip['config']) ? '<em>none</em>' :
-		 $userShip['config'];
-		$storage = bay_storage($userShip);
-
-		$menu .= <<<END
-<h2><em>$popup</em></h2>
-<div><table>
-	<tr>
-		<th>Class</th>
-		<td>$userShip[class_name]</td>
-	</tr>
-	<tr>
-		<th>Hull</th>
-		<td>$userShip[hull] / $userShip[max_hull]</td>
-	</tr>
-	<tr>
-		<th>Shields</th>
-		<td>$userShip[shields] / $userShip[max_shields]</td>
-	</tr>
-	<tr>
-		<th>Fighters</th>
-		<td>$userShip[fighters] / $userShip[max_fighters]</td>
-	</tr>
-	<tr>
-		<th>Specials</th>
-		<td>$config</td>
-	</tr>
-	<tr>
-		<th>Storage</th>
-		<td>$storage</td>
-	</tr>
-</table></div>
-
-END;
-	}
-
-
-	return $menu;
-}
-
-
-#function that calls many other functions to result in a printed out page..
-function print_page($title, $text)
-{
-	pageStart($title);
-	echo $text;
-	pageStop();
-}
-
-
-
-//function that can be used create a viable input form. Adds hidden vars.
-function get_var($title, $page_name, $text, $var_name, $var_default)
-{
-	pageStart($title);
-	echo <<<END
-<div>$text</div>
-<form action="$page_name" method="post">
-END;
-	echo "<p style=\"display: none;\">";
-	foreach ($_REQUEST as $var => $value) {
-		echo "\t<input type=\"hidden\" name=\"" . esc($var) . "\" value=\"" .
-		 esc($value) . "\" />\n";
-	}
-	echo "</p>\n";
-
-	switch ($var_name) {
-	    case 'sure':
-	    	echo <<<END
-	<p><input type="hidden" name="sure" value="yes" />
-	<input type="submit" value="Yes" class="button" /> -
-	<input type="button" onclick="history.back()" value="No" class="button" /></p>
-
-END;
-	        break;
-	    case 'passwd':
-	    case 'passwd2':
-	    case 'passwd_verify':
-	    	echo <<<END
-	<p><input type="password" name="$var_name" value="$var_default" />
-	<input type="submit" value="Submit" class="button" /></p>
-
-END;
-	        break;
-	    case 'text':
-	    	echo <<<END
-	<p><textarea name="$var_name" cols="50" rows="20">$var_default</textarea></p>
-	<p><input type="submit" value="Submit" class="button" /></p>
-
-END;
-	        break;
-	    default:
-	    	echo <<<END
-	<p><input type="text" name="$var_name" value="$var_default" class="text" />
-	<input type="submit" value="Submit" class="button" /></p>
-
-END;
-	}
-	echo "</form>\n";
-
-	pageStop();
-}
-
 function checkShip()
 {
 	global $db, $user, $userShip;
 
-	$userShip = userShip($user['ship_id']);
+	$userShip = getShip($user['ship_id']);
 	if ($userShip === NULL) {
 		$oQuery = $db->query('SELECT ship_id FROM [game]_ships WHERE ' .
 		 'login_id = %u ORDER BY RAND()', array($user['login_id']));
 
 		if ($other = $db->fetchRow($oQuery)) {
 			$user['ship_id'] = $other['ship_id'];
-			$userShip = userShip($user['ship_id']);
+			$userShip = getShip($user['ship_id']);
 			$db->query('UPDATE [game]_users SET ship_id = %u WHERE ' .
 			 'login_id = %u', array($user['ship_id'], $user['login_id']));
 		} elseif ($user['ship_id'] !== NULL) {
@@ -787,18 +484,7 @@ function load_ship_types()
 	return $ship_types;
 }
 
-//A function that gets all the details for the user's new ship, and returns the completed user_ship array.
-function userShip($id)
-{
-	global $db, $user;
-
-	if ($id === NULL) {
-	    return false;
-	}
-
-	return getShip($id);
-}
-
+// A function that gets all the details a ship
 function getShip($id)
 {
 	global $db;
@@ -1084,5 +770,80 @@ function closestShip($playerId, $x, $y)
 
 	return $db->numRows($new) > 0 ? (int)current($db->fetchRow($new)) : false;
 }
+
+
+function assignCommon($tpl)
+{
+	global $db, $userShip, $user, $gameOpt, $gameInfo;
+
+	// ASSUME THESE ARE ALREADY REFRESHED IF CHANGED
+	// checkPlayer();
+	// checkShip();
+
+	$uAmount = $db->query('SELECT COUNT(login_id) FROM [game]_users WHERE ' .
+	 'login_id > 1 AND last_request > %u', array(time() - 300));
+	$activeUsers = $db->fetchRow($uAmount, ROW_NUMERIC);
+
+	$tpl->assign('activeUsers', $activeUsers ? (int)$activeUsers[0] : 0);
+	$tpl->assign('viewActiveUsers', IS_ADMIN || IS_OWNER);
+	
+	$tpl->assign('gameStarted', $gameInfo['started']);
+	$tpl->assign('gameFinishes', $gameInfo['finishes']);
+	$tpl->assign('gameStatus', $gameInfo['status']);
+	$tpl->assign('gameClans', $gameOpt['max_clans'] > 0);
+}
+
+/*
+//function that can be used create a viable input form. Adds hidden vars.
+function get_var($title, $page_name, $text, $var_name, $var_default)
+{
+	pageStart($title);
+	echo <<<END
+<div>$text</div>
+<form action="$page_name" method="post">
+END;
+	echo "<p style=\"display: none;\">";
+	foreach ($_REQUEST as $var => $value) {
+		echo "\t<input type=\"hidden\" name=\"" . esc($var) . "\" value=\"" .
+		 esc($value) . "\" />\n";
+	}
+	echo "</p>\n";
+
+	switch ($var_name) {
+	    case 'sure':
+	    	echo <<<END
+	<p><input type="hidden" name="sure" value="yes" />
+	<input type="submit" value="Yes" class="button" /> -
+	<input type="button" onclick="history.back()" value="No" class="button" /></p>
+
+END;
+	        break;
+	    case 'passwd':
+	    case 'passwd2':
+	    case 'passwd_verify':
+	    	echo <<<END
+	<p><input type="password" name="$var_name" value="$var_default" />
+	<input type="submit" value="Submit" class="button" /></p>
+
+END;
+	        break;
+	    case 'text':
+	    	echo <<<END
+	<p><textarea name="$var_name" cols="50" rows="20">$var_default</textarea></p>
+	<p><input type="submit" value="Submit" class="button" /></p>
+
+END;
+	        break;
+	    default:
+	    	echo <<<END
+	<p><input type="text" name="$var_name" value="$var_default" class="text" />
+	<input type="submit" value="Submit" class="button" /></p>
+
+END;
+	}
+	echo "</form>\n";
+
+	pageStop();
+}*/
 
 ?>
