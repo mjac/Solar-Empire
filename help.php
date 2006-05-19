@@ -593,11 +593,11 @@ game, and vary from game to game. For this game they are at
 	</tr>
 	<tr>
 		<td>Attack ship</td>
-		<td>$attack_turn_cost_ship</td>
+		<td>$gameOpt[attack_turn_cost_ship]</td>
 	</tr>
 	<tr>
 		<td>Attack planet</td>
-		<td>$attack_turn_cost_planet</td>
+		<td>$gameOpt[attack_turn_cost_planet]</td>
 	</tr>
 	<tr>
 		<td>Self destruct</td>
