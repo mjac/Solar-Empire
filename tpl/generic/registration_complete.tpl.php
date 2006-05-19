@@ -1,8 +1,6 @@
 <?php
 if (!defined('PATH_SAVANT')) exit();
 
-require_once('inc/list.inc.php');
-
 $title = 'Registration complete';
 
 include('inc/header_splash.tpl.php');
