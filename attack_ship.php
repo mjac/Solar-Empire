@@ -28,6 +28,9 @@ if (!canAttackShip($tShip)) {
 	if (shipHas($tShip, 'hs') && !shipHas($userShip, 'sc')) {
 		$reasons[] = 'you cannot see this ship';
 	}
+	if (!giveTurnsPlayer(-$gameOpt['attack_turn_cost_ship'])) {
+		$reasons[] = 'you do not have enough turns';
+	}
 
 	$out .= "<h2>You may not attack this ship</h2>\n";
 	if (!empty($reasons)) {
