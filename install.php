@@ -66,6 +66,33 @@ if (isset($_REQUEST['dbType'])) {
 			 $db->error($result);
 			break;
 
+		case 'postgresql':
+			if (!(isset($_REQUEST['dbHostname']) && 
+			     isset($_REQUEST['dbName']) && 
+			     isset($_REQUEST['dbUsername']) && 
+			     isset($_REQUEST['dbPassword']))) {
+				$problems[] = 'PostgreSQL requires a hostname, ' .
+				 'database name, username and password.';
+				break;
+			}
+
+			$dbDsn = 'postgresql://' . rawurlencode($_REQUEST['dbUsername']) .
+			 ':' . rawurlencode($_REQUEST['dbPassword']) . '@' . 
+			 rawurlencode($_REQUEST['dbHostname']) . 
+			 (isset($_REQUEST['dbPort']) ? (':' . (int)$_REQUEST['dbPort']) : 
+			 '') . '/' . rawurlencode($_REQUEST['dbName']);
+
+			$result = $db->connect($dbDsn);
+
+			if (!$db->hasError($result)) {
+				$dbFine = true;
+				break;
+			}
+
+			$problems[] = 'Could not connect to the database: ' . 
+			 $db->error($result);
+			break;
+
 		default:
 			$problems[] = 'That database type is not supported.';
 	}

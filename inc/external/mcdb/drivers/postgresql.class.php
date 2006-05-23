@@ -29,7 +29,7 @@ class mcdb_driver_postgresql extends mcdb_driver
 
 	function connArg($name, $value)
 	{
-		if (gettype($data) === 'string') {
+		if (gettype($value) === 'string') {
 			$value = '\'' . addslashes($value) . '\'';
 		}
 		return "$name=$value";
