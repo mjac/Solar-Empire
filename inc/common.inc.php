@@ -308,13 +308,6 @@ function calc_perc($num, $den)
 	 number_format(($num / $den) * 100, 2, '.', '') .' %)';
 }
 
-//function to figure out how many empty cargo bays there are on the ship.
-function empty_bays(&$ship)
-{
-	$ship['empty_bays'] = $ship['cargo_bays'] - $ship['metal'] -
-	 $ship['fuel'] - $ship['elect'] - $ship['colon'] - $ship['organ'];
-}
-
 
 /*
 //print clickable name of $player
