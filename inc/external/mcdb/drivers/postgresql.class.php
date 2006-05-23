@@ -84,7 +84,7 @@ class mcdb_driver_postgresql extends mcdb_driver
 		return @pg_num_rows($res);
 	}
 
-	function fetchRow($res, $options = ROW_NUMERIC)
+	function fetchRow($res, $type = ROW_NUMERIC)
 	{
 		switch ($type) {
 			case ROW_ASSOC:
