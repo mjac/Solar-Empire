@@ -6,6 +6,7 @@ if (!(file_exists('install') && is_dir('install'))) {
 
 require_once('inc/config.inc.php');
 require_once('inc/db.inc.php');
+require_once('install/data.inc.php');
 
 function runSchema($file)
 {
@@ -77,7 +78,17 @@ while (!feof($stars)) {
 }
 
 ?>
-<p><?php echo $count; ?> star names have been inserted.</p>
+<h2>Adding daily tips</h2>
+<?php
+
+$tipId = 0;
+foreach ($dat['tips'] as $tips) {
+	$db->query('INSERT INTO daily_tips (tip_id, tip_content) VALUES ' .
+	 '(%u, \'%s\')', array(++$tipId, $db->escape($tips)));
+}
+
+?>
+<p><?php echo $tipId; ?> star names have been inserted.</p>
 <h2>Adding administrator account</h2>
 <p><?php
 
