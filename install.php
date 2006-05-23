@@ -115,8 +115,8 @@ if (is_dir('doc') && is_readable('doc/licence.txt') &&
 	<dt>Type</dt>
 	<dd><select name="dbType">
 		<option value="mysql"<?php checkOption('dbType', 'mysql'); ?>>MySQL</option>
-		<!--<option value="postgresql"<?php checkOption('dbType', 'postgresql'); ?>>PostgreSQL</option>
-		<option value="sqlite"<?php checkOption('dbType', 'sqlite'); ?>>Sqlite</option>-->
+		<option value="postgresql"<?php checkOption('dbType', 'postgresql'); ?>>PostgreSQL</option>
+		<!--<option value="sqlite"<?php checkOption('dbType', 'sqlite'); ?>>Sqlite</option>-->
 	</select></dd>
 
 	<dt>Hostname or file</dt>

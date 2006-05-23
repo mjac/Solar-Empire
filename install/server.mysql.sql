@@ -1,12 +1,16 @@
 DROP TABLE IF EXISTS daily_tips;
+DROP TABLE IF EXISTS option_list;
+DROP TABLE IF EXISTS se_central_forum;
+DROP TABLE IF EXISTS se_games;
+DROP TABLE IF EXISTS se_star_names;
+DROP TABLE IF EXISTS user_accounts;
+DROP TABLE IF EXISTS user_history;
 
 CREATE TABLE daily_tips (
   tip_id smallint unsigned NOT NULL,
   tip_content text NOT NULL,
   PRIMARY KEY (tip_id)
 ) TYPE=MyISAM;
-
-DROP TABLE IF EXISTS option_list;
 
 CREATE TABLE option_list (
   option_name varchar(32) NOT NULL default '',
@@ -17,8 +21,6 @@ CREATE TABLE option_list (
   PRIMARY KEY  (option_name)
 ) TYPE=MyISAM;
 
-DROP TABLE IF EXISTS se_central_forum;
-
 CREATE TABLE se_central_forum (
   message_id int unsigned NOT NULL,
   `timestamp` int unsigned NOT NULL default 0,
@@ -28,8 +30,6 @@ CREATE TABLE se_central_forum (
   `text` text NOT NULL,
   PRIMARY KEY (message_id)
 ) TYPE=MyISAM;
-
-DROP TABLE IF EXISTS se_games;
 
 CREATE TABLE se_games (
   db_name varchar(16) NOT NULL default '',
@@ -50,8 +50,6 @@ CREATE TABLE se_games (
   processed_government int unsigned NOT NULL default 0,
   PRIMARY KEY (db_name)
 ) TYPE=MyISAM;
-
-DROP TABLE IF EXISTS user_accounts;
 
 CREATE TABLE user_accounts (
   login_id int unsigned NOT NULL,
@@ -75,8 +73,6 @@ CREATE TABLE user_accounts (
   UNIQUE KEY email_address (email_address)
 ) TYPE=MyISAM;
 
-DROP TABLE IF EXISTS user_history;
-
 CREATE TABLE user_history (
   login_id int unsigned NOT NULL,
   `timestamp` int NOT NULL default 0,
@@ -85,8 +81,6 @@ CREATE TABLE user_history (
   user_IP varchar(16) NOT NULL default '',
   other_info text NOT NULL
 ) TYPE=MyISAM;
-
-DROP TABLE IF EXISTS se_star_names;
 
 CREATE TABLE se_star_names (
   `name` varchar(32) NOT NULL
