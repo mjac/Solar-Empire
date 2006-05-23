@@ -15,6 +15,7 @@ $this->eprint(isset($this->title) ? $this->title :
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link type="text/css" rel="stylesheet" href="<?php 
 $this->eprint($this->url['tpl']); ?>/css/generic.css" />
-<script type="text/javascript" src="js/common.js"></script>
+<script type="text/javascript" src="<?php 
+$this->eprint($this->url['tpl']); ?>/js/common.js"></script>
 </head>
 <body>
