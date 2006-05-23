@@ -42,6 +42,13 @@ function checkShip()
 	}
 }
 
+// Figure out how many empty cargo bays there are on the ship.
+function empty_bays(&$ship)
+{
+	return $ship['cargo_bays'] - $ship['metal'] - $ship['fuel'] - 
+	 $ship['elect'] - $ship['colon'] - $ship['organ'];
+}
+
 
 // ACCOUNT UPDATING FUNCTIONS
 
@@ -653,39 +660,6 @@ function fill_fleet($item_sql, $item_max_sql, $item_str, $item_cost, $script_nam
 	return $ret_str; //return the result string.
 }
 
-
-//function that will return a list of the contents of the ships cargo bays.
-function bay_storage($ship)
-{
-	if(empty($ship['cargo_bays'])) {
-		return "none";
-	}
-
-	empty_bays($ship);
-
-	$types = array();
-	if(!empty($ship['metal'])) {
-		$types[] = $ship['metal'] . ' metals';
-	}
-	if(!empty($ship['fuel'])) {
-		$types[] = $ship['fuel'] . ' fuels';
-	}
-	if(!empty($ship['organ'])) {
-		$types[] = $ship['organ'] . ' organics';
-	}
-	if(!empty($ship['elect'])) {
-		$types[] = $ship['elect'] . ' electronics';
-	}
-	if(!empty($ship['colon'])) {
-		$types[] = $ship['colon'] . ' colonists';
-	}
-	if ($ship['empty_bays'] > 0) {
-		$types[] = $ship['empty_bays'] . ' empty';
-	}
-
-	return implode("<br />\n", $types);
-}
-
 function shipHas($ship, $config)
 {
 	return strpos($ship['config'], $config) !== false;
@@ -780,17 +754,107 @@ function assignCommon($tpl)
 	// checkPlayer();
 	// checkShip();
 
+	// General game information
+	$tpl->assign('game', array(
+		'name' => $gameInfo['name'],
+		'dbName' => $gameInfo['db_name'],
+		'started' => $gameInfo['started'],
+		'finishes' => $gameInfo['finishes'],
+		'status' => $gameInfo['status'],
+		'clans' => $gameOpt['max_clans'] > 0
+	));
+
 	$uAmount = $db->query('SELECT COUNT(login_id) FROM [game]_users WHERE ' .
 	 'login_id > 1 AND last_request > %u', array(time() - 300));
 	$activeUsers = $db->fetchRow($uAmount, ROW_NUMERIC);
 
 	$tpl->assign('activeUsers', $activeUsers ? (int)$activeUsers[0] : 0);
 	$tpl->assign('viewActiveUsers', IS_ADMIN || IS_OWNER);
-	
-	$tpl->assign('gameStarted', $gameInfo['started']);
-	$tpl->assign('gameFinishes', $gameInfo['finishes']);
-	$tpl->assign('gameStatus', $gameInfo['status']);
-	$tpl->assign('gameClans', $gameOpt['max_clans'] > 0);
+
+	// Game forum
+	$fAmount = $db->query('SELECT COUNT(*) FROM [game]_messages WHERE ' .
+	 'timestamp > %u AND login_id = -1 AND sender_id != %u',
+	 array($user['last_access_forum'], $user['login_id']));
+	$counted = $db->fetchRow($fAmount);
+	$tpl->assign('forumNewMsgs', $counted ? (int)current($counted) : 0);
+	$tpl->assign('forumLastAccess', $user['last_access_forum']);
+
+	// Clan forum(s)
+	$tpl->assign('viewClanForums', IS_ADMIN);
+	if ($user['clan_id'] !== NULL) {	
+		$cCount = $db->query('SELECT COUNT(*) FROM [game]_messages WHERE ' .
+		 'timestamp > %u AND login_id = -5 AND clan_id = %u AND ' .
+		 'sender_id != %u', array($user['last_access_clan_forum'],
+		 $user['clan_id'], $user['login_id']));
+		$messageCount = $db->fetchRow($cCount);
+
+		$tpl->assign('clanForumNewMsgs', $messageCount ? 
+		 (int)current($messageCount) : 0);
+		$tpl->assign('clanForumLastAccess', $user['last_access_clan_forum']);
+	}
+
+	// Player
+	$tpl->assign('player', array(
+		'id' => $user['login_id'],
+		'name' => $user['login_name'],
+		'clanId' => $user['clan_id'],
+		'clanSymbol' => $user['clan_sym'],
+		'clanSymbolColour' => $user['clan_sym_color'],
+		'turns' => $user['turns'],
+		'turnsUsed' => $user['turns_run'],
+		'credits' => $user['cash'],
+		'score' => $user['score'],
+		'shipId' => $user['ship_id'],
+		'shipsLost' => $user['ships_lost'],
+		'shipsKilled' => $user['ships_killed']
+	));
+
+	$tpl->assign('turnsSafe', IS_ADMIN ? -1 : $gameOpt['turns_safe']);
+	$tpl->assign('turnsMax', $gameOpt['max_turns']);
+
+	if ($user['ship_id'] !== NULL) {
+		$tpl->assign('ship', array(
+			'name' => $userShip['ship_name'],
+			'class' => $userShip['class_name'],
+			'typeId' => $userShip['type_id'],
+			'hull' => $userShip['hull'],
+			'maxHull' => $userShip['max_hull'],
+			'shields' => $userShip['shields'],
+			'maxShields' => $userShip['max_shields'],
+			'fighters' => $userShip['fighters'],
+			'maxFighters' => $userShip['max_fighters'],
+			'config' => $userShip['config'],
+			'cargo' => array(
+				'metal' => $userShip['metal'],
+				'fuel' => $userShip['fuel'],
+				'organics' => $userShip['organ'],
+				'electronics' => $userShip['elect'],
+				'colonists' => $userShip['colon'],
+				'free' => empty_bays($userShip)
+			)
+		));
+	}
+
+	// Player messages
+	$mAmount = $db->query('SELECT COUNT(*) FROM [game]_messages WHERE ' .
+	 'login_id = %u', array($user['login_id']));
+	$counted = $db->fetchRow($mAmount);
+	$tpl->assign('messageAmount', $counted ? (int)current($counted) : 0);
+
+	// Administration
+	$tpl->assign('viewAdminPanel', IS_ADMIN || IS_OWNER);
+	$tpl->assign('viewOwnerPanel', IS_OWNER);
+
+	$tpl->assign('viewAdminForum', IS_ADMIN || IS_OWNER);
+	if (IS_ADMIN || IS_OWNER) {
+		$mCount = $db->query('SELECT COUNT(*) FROM se_central_forum WHERE ' .
+		 'timestamp > %u', array($user['last_access_admin_forum']));
+		$messageCount = $db->fetchRow($mCount);
+
+		$tpl->assign('adminForumNewMsgs', $messageCount ? 
+		 (int)current($messageCount) : 0);
+		$tpl->assign('adminForumLastAccess', $user['last_access_admin_forum']);
+	}
 }
 
 /*
@@ -815,15 +879,6 @@ END;
 	<p><input type="hidden" name="sure" value="yes" />
 	<input type="submit" value="Yes" class="button" /> -
 	<input type="button" onclick="history.back()" value="No" class="button" /></p>
-
-END;
-	        break;
-	    case 'passwd':
-	    case 'passwd2':
-	    case 'passwd_verify':
-	    	echo <<<END
-	<p><input type="password" name="$var_name" value="$var_default" />
-	<input type="submit" value="Submit" class="button" /></p>
 
 END;
 	        break;
