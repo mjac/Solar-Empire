@@ -10,5 +10,6 @@ if (checkAuth()) {
 }
 
 $tpl->display('index.tpl.php');
+exit();
 
 ?>
