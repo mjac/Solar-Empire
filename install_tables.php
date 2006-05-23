@@ -7,39 +7,6 @@ if (!(file_exists('install') && is_dir('install'))) {
 require_once('inc/config.inc.php');
 require_once('inc/db.inc.php');
 require_once('install/data.inc.php');
-
-function runSchema($file)
-{
-	global $db;
-
-	$results = array();
-
-	if (!file_exists($file)) {
-		$results[] = 'Unsupported database type: could not find schema (' . 
-		 $file . ').';
-		return $results;
-	}
-
-	$fp = fopen($file, 'r');
-	$query = '';
-
-	while (!feof($fp)) {
-		$line = fgets($fp);
-		if (strpos(ltrim($line), '--') === 0) {
-			$result = $db->action($db->query($query));
-			$results[] = $result->result;
-			$query = '';
-		} else {
-			$query .= $line;
-		}
-	}
-
-	$action = $db->action($db->query($query));
-	$results[] = $action->result;
-
-	return $results;
-}
-
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -54,18 +21,23 @@ function runSchema($file)
 <?php
 
 if (isset($_REQUEST['sure'])) {
-	$result = runSchema('install/server.' . $db->type . '.sql');
 ?>
-<h2>Executing queries</h2>
-<ol>
-<?php
-	foreach ($result as $query) {
+<h2>Creating structure</h2><?php 
+
+$schema = fopen('install/server.' . $db->type . '.sql', 'r');
+$all = fread($schema, filesize('install/server.' . $db->type . '.sql'));
+fclose($schema);
+
+$queries = explode(';', $all);
+
+$count = 0;
+foreach ($queries as $query) {
+	$done = $db->query('%s', $query);
+	++$count;
+}
+
 ?>
-	<li><?php echo htmlentities($query); ?></li>
-<?php
-	}
-?>
-</ol>
+<p><?php echo $count; ?> queries executed.</p>
 
 <h2>Inserting star-names</h2>
 <?php
