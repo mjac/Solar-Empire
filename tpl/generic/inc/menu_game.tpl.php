@@ -5,11 +5,19 @@ if (!function_exists('popupHelp')) {
 	include('popup_help.inc.php');
 }
 
+if (!function_exists('formatName')) {
+	include('format_names.inc.php');
+}
+
+if (!function_exists('shipCargoReport')) {
+	include('format_ships.inc.php');
+}
+
 ?><h1><em><?php 
 
-echo popupHelp("game_info.php?db_name=$gameInfo[db_name]", 600, 450, 
- $gameInfo['name']) . ($gameInfo['status'] === 'running' ? '' : 
- (" (" . esc($gameInfo['status']) . ")"));
+echo popupHelp('game_info.php?db_name=' . $this->game['dbName'], 600, 450, 
+ $this->game['name'], $this) . ($this->game['status'] === 'running' ? '' : 
+ (" (" . $this->escape($this->game['status']) . ")"));
 
 ?></em></h1>
 
@@ -25,8 +33,8 @@ if (IS_ADMIN || IS_OWNER) {
 echo "<p>$start" . $this->escape($this->activeUsers) . " active user(s)$end" .
  "</p>\n<p>" . date('<\a \t\i\t\l\e="T">M d - H:i</\a>') . "</p>\n";
 
-if ($this->gameStatus === 'running') {
-	echo "<p>" . ceil(($this->gameFinishes - time()) / 86400) . 
+if ($this->game['status'] === 'running') {
+	echo "<p>" . ceil(($this->game['finishes'] - time()) / 86400) . 
 	 " day(s) left</p>\n";
 }
 
@@ -40,168 +48,158 @@ if ($this->gameStatus === 'running') {
 	<li><a href="diary.php">Fleet journal</a></li>
 <?php
 
-	if ($this->gameClans) {
-?>	<li><a href=\"clan.php\">Clan control</a></li>
+if ($this->game['clans']) {
+?>	<li><a href="clan.php">Clan control</a></li>
 <?php
+}
+?>	<li><a href="message_inbox.php"><?php $this->eprint($this->messageAmount); 
+	?> msg(s)</a> - 
+	<a href="message.php">send</a></li>
+	<li><a href="forum.php">Game forum</a><?php 
+
+if ($this->forumNewMsgs > 0) {
+	echo ' (' . $this->escape($this->forumNewMsgs) . ' <a href="' . 
+	 $this->escape("forum.php?find_last=1&last_time=" . 
+	  $this->forumLastAccess) . '">new</a>)';
+}
+
+
+?></li>
+<?php
+
+if ($this->viewAdminForum) {
+?>
+	<li><a href="forum.php?view_a_forum=1">Admin forum</a><?php 
+	if ($this->adminForumNewMsgs > 0) {
+		echo ' (' . $this->escape($this->adminForumNewMsgs) . ' <a href="' .
+		 $this->escape('forum.php?view_a_forum=1&last_time=' . 
+		 $this->adminForumLastAccess) . '">new</a>)';
 	}
+?></li>
+<?php
+}
 
-	$mAmount = $db->query('SELECT COUNT(*) FROM [game]_messages WHERE ' .
-	 'login_id = %u', array($user['login_id']));
-	$counted = (int)current($db->fetchRow($mAmount));
-
-	$menu .= "\t<li><a href=\"message_inbox.php\">$counted msg(s)</a> - <a href=\"message.php\">send</a></li>\n";
-
-	$fAmount = $db->query('SELECT COUNT(*) FROM [game]_messages WHERE ' .
-	 'timestamp > %u AND login_id = -1 AND sender_id != %u',
-	 array($user['last_access_forum'], $user['login_id']));
-	$counted = (int)current($db->fetchRow($fAmount));
-
-	$temp_forum_text = "";
-	if ($counted > 0) {
-		$temp_forum_text = " ($counted <a href=\"forum.php?last_time=" .
-		 $user['last_access_forum'] . "&amp;find_last=1\">new</a>)";
+if ($this->viewClanForums) { // View all forums (admin etc)
+?>	<li><a href="forum.php?clan_forum=1">Clan forums</a></li>
+<?php
+} elseif ($this->player['clanId'] !== NULL) {
+?>	<li><a href="forum.php?clan_forum=1"><?php
+	echo clanSymbol($this->player['clanSymbol'], 
+	 $this->player['clanSymbolColour']);
+?> Forum</a><?php
+	if ($this->clanForumNewMsgs > 0) {
+		echo ' (' . $this->escape($this->clanForumNewMsgs) . ' <a href="' .
+		 $this->escape('forum.php?clan_forum=1&find_last=1&last_time=' . 
+		 $this->clanForumLastAccess) . '">new</a>)';
 	}
+?></li>
+<?php
+}
 
-	$menu .= "\t<li><a href=\"forum.php\">Game forum</a>$temp_forum_text</li>\n";
-
-	if (IS_ADMIN || IS_OWNER) {
-		$aForum = $db->query('SELECT last_access_admin_forum FROM ' .
-		 '[game]_users WHERE login_id = %u', array($user['login_id']));
-		$time_from = (int)current($db->fetchRow($aForum));
-
-		$mCount = $db->query('SELECT COUNT(*) FROM se_central_forum WHERE ' .
-		 'timestamp > %u', array($time_from));
-		$messageCount = (int)current($db->fetchRow($mCount));
-		$adminForumNew = '';
-		if($messageCount > 0){
-			$adminForumNew = ' (' . $messageCount . ' <a href="forum.php?' .
-			 'last_time=' . $time_from . '&amp;view_a_forum=1">new</a>)';
-		}
-		$menu .= "\t<li><a href=\"forum.php?view_a_forum=1\">Admin forum</a>$adminForumNew</li>\n";
-	}
-
-	if (IS_ADMIN) {
-		$menu .= "\t<li><a href=\"forum.php?clan_forum=1\">Clan forums</a></li>\n";
-	} elseif ($user['clan_id'] !== NULL) {
-		$cCount = $db->query('SELECT COUNT(*) FROM [game]_messages WHERE ' .
-		 'timestamp > %u AND login_id = -5 AND clan_id = %u AND ' .
-		 'sender_id != %u', array($user['last_access_clan_forum'],
-		 $user['clan_id'], $user['login_id']));
-		$messageCount = (int)current($db->fetchRow($cCount));
-		$newMsgs = '';
-		if($messageCount > 0){
-			 $newMsgs = ' (' . $messageCount . ' <a href="forum.php?' .
-			  'clan_forum=1&amp;last_time=' . $user['last_access_clan_forum'] .
-			  '&amp;find_last=1">new</a>)';
-		}
-		$menu .= "\t<li><a href=\"forum.php?clan_forum=1\">" .
-		 clanSymbol($user['clan_sym'], $user['clan_sym_color']) .
-		 " Forum</a>$newMsgs</li>\n";
-	}
-
-	$menu .= <<<END
+?>
 	<li><a href="http://forum.solar-empire.net/">Global forum</a></li>
 </ul>
 
-END;
+<h2><em><?php
 
+echo formatName($this->player['id'], $this->player['name'], 
+ $this->player['clanId'], $this->player['clanSymbol'], 
+ $this->player['clanSymbolColour']) . "</em></h2>\n";
 
-	$menu .= "<h2><em>" . formatName($user['login_id'], $user['login_name'],
-	 $user['clan_id'], $user['clan_sym'], $user['clan_sym_color']) . "</em></h2>\n";
+if ($this->player['turnsUsed'] < $this->turnsSafe) {
+	echo "<p>" . ($this->turnsSafe - $this->player['turnsUsed']) . 
+	 " safe turn(s) left</p>\n";
+} elseif ($this->player['turnsUsed'] == $this->turnsSafe) {
+	echo "<p><em>Leaving</em> newbie safety!</p>\n";
+}
 
-	if (!IS_ADMIN) {
-		if ($user['turns_run'] < $gameOpt['turns_safe']) {
-			$s_turns = $gameOpt['turns_safe'] - $user['turns_run'];
-			$menu .= "<p>$s_turns safe turn(s) left</p>\n";
-		} elseif ($user['turns_run'] == $gameOpt['turns_safe']) {
-			$menu .= "<p><em>Leaving</em> newbie safety!</p>\n";
-		}
-	}
-
-	$credits = number_format($user['cash']);
-
-	$menu .= <<<END
-<div><table>
+?><div><table>
 	<tr>
 		<th>Turns</th>
-		<td>$user[turns] / $gameOpt[max_turns]</td>
+		<td><?php $this->eprint($this->player['turns'] . ' / ' . 
+ $this->turnsMax); 
+?></td>
 	</tr>
 	<tr>
 		<th>Credits</th>
-		<td>$credits</td>
+		<td><?php $this->eprint(number_format($this->player['credits'], 0));
+?></td>
 	</tr>
 	<tr>
 		<th>Kills</th>
-		<td>$user[ships_killed] / $user[ships_lost]</td>
+		<td><?php $this->eprint($this->player['shipsKilled'] . ' / ' . 
+ $this->player['shipsLost']); ?></td>
 	</tr>
 	<tr>
 		<th>Score</th>
-		<td>$user[score]</td>
+		<td><?php $this->eprint($this->player['score']); ?></td>
 	</tr>
 </table></div>
 <ul>
 	<li><a href="help.php">Help files</a></li>
 	<li><a href="options.php">Player options</a></li>
+<?php
 
-END;
-
-	if (IS_ADMIN || IS_OWNER) {
-		$menu .= "\t<li><a href=\"admin.php\">Game admin</a></li>\n";
-		if (IS_OWNER) {
-			$menu .= "\t<li><a href=\"owner.php\">Server info</a></li>\n";
-		}
+	if ($this->viewAdminPanel) {
+?>	<li><a href="admin.php">Game admin</a></li>
+<?php
+	}
+	if ($this->viewOwnerPanel) {
+?>	<li><a href="owner.php">Server info</a></li>
+<?php
 	}
 
-	$menu .= <<<END
+?>
 	<li><a href="logout.php?logout_single_game=1">Game list</a></li>
 	<li><a href="logout.php?comp_logout=1">Logout</a></li>
 </ul>
 
-END;
+<?php
 
-	if ($user['ship_id'] === NULL) {
-		$menu .= <<<END
-<h2><em>Your ship is destroyed!</em></h2>
-<p><a href="http://localhost/dev/se/syswars/earth.php">Buy one</a> to 
-continue playing.</p>
+if ($this->player['shipId'] === NULL) {
 
-END;
-	} else {
-		$popup = popupHelp('help.php?popup=1&ship_info=1&shipno=' .
-		 $userShip['type_id'], 300, 600, $userShip['ship_name']);
-		$config = empty($userShip['config']) ? '<em>none</em>' :
-		 $userShip['config'];
-		$storage = bay_storage($userShip);
+?><h2><em>Your ship is destroyed!</em></h2>
+<p><a href="earth.php">Buy one</a> to continue playing.</p>
+<?php
 
-		$menu .= <<<END
-<h2><em>$popup</em></h2>
+} else {
+
+?><h2><em><?php 
+echo popupHelp('help.php?popup=1&ship_info=1&shipno=' .
+ $this->ship['typeId'], 300, 600, $this->ship['name'], $this);
+?></em></h2>
 <div><table>
 	<tr>
 		<th>Class</th>
-		<td>$userShip[class_name]</td>
+		<td><?php $this->eprint($this->ship['class']); ?></td>
 	</tr>
 	<tr>
 		<th>Hull</th>
-		<td>$userShip[hull] / $userShip[max_hull]</td>
+		<td><?php $this->eprint($this->ship['hull'] . ' / ' . 
+ $this->ship['maxHull']); ?></td>
 	</tr>
 	<tr>
 		<th>Shields</th>
-		<td>$userShip[shields] / $userShip[max_shields]</td>
+		<td><?php $this->eprint($this->ship['shields'] . ' / ' . 
+ $this->ship['maxShields']); ?></td>
 	</tr>
 	<tr>
 		<th>Fighters</th>
-		<td>$userShip[fighters] / $userShip[max_fighters]</td>
+		<td><?php $this->eprint($this->ship['fighters'] . ' / ' . 
+ $this->ship['maxFighters']); ?></td>
 	</tr>
 	<tr>
 		<th>Specials</th>
-		<td>$config</td>
+		<td><?php echo empty($this->ship['config']) ? '<em>none</em>' :
+ $this->escape($this->ship['config']); ?></td>
 	</tr>
 	<tr>
 		<th>Storage</th>
-		<td>$storage</td>
+		<td><?php echo shipCargoReport($this->ship['cargo']); ?></td>
 	</tr>
 </table></div>
+<?php
 
-END;
-	}
+}
+
 ?>
