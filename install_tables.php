@@ -66,6 +66,7 @@ if (isset($_REQUEST['sure'])) {
 	}
 ?>
 </ol>
+
 <h2>Inserting star-names</h2>
 <?php
 
@@ -78,6 +79,8 @@ while (!feof($stars)) {
 }
 
 ?>
+<p><?php echo $count; ?> star-names have been inserted.</p>
+
 <h2>Adding daily tips</h2>
 <?php
 
@@ -88,7 +91,21 @@ foreach ($dat['tips'] as $tips) {
 }
 
 ?>
-<p><?php echo $tipId; ?> star names have been inserted.</p>
+<p><?php echo $tipId; ?> daily tips have been inserted.</p>
+<h2>Adding user options</h2>
+<?php
+
+$count = 0;
+foreach ($dat['options'] as $option) {
+	$db->query('INSERT INTO option_list (option_name, option_min, ' .
+	 'option_max, option_desc, option_type) VALUES (\'%s\', %d, %d, \'%s\', ' .
+	 '%u)', array($option[0], $option[1], $option[2], $option[3], $option[4]));
+	++$count;
+}
+
+?>
+<p><?php echo $count; ?> user options have been inserted.</p>
+
 <h2>Adding administrator account</h2>
 <p><?php
 
