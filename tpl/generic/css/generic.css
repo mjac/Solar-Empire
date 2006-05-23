@@ -304,3 +304,27 @@ select {
 	margin: 0.5em 2em;
 	padding: 1em;
 }
+
+#newsSearch {
+	padding: 0.25em;
+}
+
+#newsSearch dt, #newsSearch dd {
+	display: inline;
+}
+
+#newsSearch dt {
+	margin: 0;
+	padding: 0.25em;
+}
+
+#newsSearch dd {
+	margin: 0;
+	padding: 0.25em;
+	padding-right: 0.5em;
+}
+
+#news em {
+	text-decoration: underline;
+	font-style: normal;
+}
