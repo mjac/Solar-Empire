@@ -47,7 +47,7 @@ $tpl->assign('articles', $articles);
 
 assignCommon($tpl);
 
-$tpl->display('news.tpl.php');
+$tpl->display('game/news.tpl.php');
 exit();
 
 ?>
