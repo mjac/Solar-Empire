@@ -6,7 +6,7 @@ pageStart('Message code guide');
 
 if(!isset($try)) {
 ?>
-<h1>Message Code Guide</h1>
+<h1>Message code guide</h1>
 <p><a href="message_codes.php?try=1">Practice</a> your new skills!</p>
 
 <h2>Colours</h2>
@@ -48,7 +48,7 @@ print $table;
 <h2>Basic Formatting</h2>
 <p>[b]BOLD TEXT[/b] = <b>BOLD TEXT</b></p>
 <p>[i]ITALIC TEXT[/i] = <i>ITALIC TEXT</i></p>
-<p>[hr] produces a horizontal line accross the screen:<br />
+<p>[hr] produces a horizontal line across the screen:<br />
 <hr /></p>
 <?php
 } else {
@@ -57,7 +57,7 @@ print $table;
 ?>
 <p><a href="message_codes.php">Return</a> to guide.</p>
 
-<h1>Message-code tester</h1>
+<h1>Message code tester</h1>
 <form name="get_var_form" action="message_codes.php" method="post">
 	<p><textarea name="text" cols=30 rows=10 wrap="soft">
 <?php
