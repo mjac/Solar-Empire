@@ -2,21 +2,16 @@
 
 require_once('inc/user.inc.php');
 
-$planet_id = 1;
-
-$rs = "<p><a href=earth.php>Return to Earth</a>";
-
 if (!deathCheck($user) && $userShip['location'] != 1) {
 	print_page('Not in Sol', '<p>You are not in Star System #1</p>');
 }
 
-
 $out = '';
 
 // Load fleet with colonists.
-if(isset($all_colon) && $user['ship_id'] !== NULL){
+if (isset($all_colon) && $user['ship_id'] !== NULL) {
 	$out .= fill_fleet("colon", "(cargo_bays-metal-fuel-elect-organ-colon)", "Colonists", $gameOpt['cost_colonist'], $self, 1)."<p>";
-} elseif(isset($colonist) && $user['ship_id'] !== NULL) { #individual ship load
+} elseif (isset($colonist) && $user['ship_id'] !== NULL) { #individual ship load
 	$max = floor($user['cash'] / $gameOpt['cost_colonist']);
 	$fill = $userShip['empty_bays'] < $max ? $userShip['empty_bays'] : $max;
 
@@ -54,7 +49,7 @@ END;
 
 if ($user['ship_id'] !== NULL) {
 	$out .= <<<END
-	<dt><a href="shop_equipment.php?planet_id=$planet_id">Equipment 
+	<dt><a href="shop_equipment.php?planet_id=1">Equipment 
 	shop</a></dt>
 	<dd>For that competitive advantage</dd>
 
