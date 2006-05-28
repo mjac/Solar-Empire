@@ -260,56 +260,7 @@ END;
 	insert_history($user['login_id'], 'Changed the game description.');
 }
 
-
-$out .= <<<END
-<h1>Administration</h1>
-
-<h2>Game Functions</h2>
-<ul>
-	<li><a href="admin_edit_vars.php">Edit variables</a></li>
-	<li>Set status to <a href="$self?status=hidden">hidden</a>, 
-	<a href="$self?status=paused">paused</a> or 
-	<a href="$self?status=running">running</a></li>
-	<li><a href="$self?reset=1">Reset game</a></li>
-	<li><a href="$self?difficulty=1">Change stated difficulty</a></li>
-	<li><form method="post" action="$self">
-		<p><input type="text" name="finishes" value="YYYY-MM-DD HH:MM:SS"
-		 class="text" />
-		<input type="submit" value="Change finish date" class="button" /></p>
-	</form></li>
-</ul>
-
-<h2>Godlike Abilities</h2>
-<ul>
-	<li><a href="admin_build_universe.php?build_universe=1&amp;process=1">Create
-	the universe</a></li>
-	<li><a href="$self?preview=1">Preview a universe</a></li>
-	<li><a href="admin_build_universe.php?gen_new_maps=1&amp;process=1">Generate
-	maps</a></li>
-	<li><a href="admin_edit_links.php">Edit star links</a></li>
-	<li><a href="admin_unlink_scan.php">Link star islands</a></li>
-</ul>
-
-<h2>Communications</h2>
-<ul>
-	<li><a href="message.php?target=-4">Message everyone</a></li>
-	<li><a href="$self?post_game_news=1">Post news</a></li>
-</ul>
-
-<h2>Players</h2>
-<ul>
-	<li><a href="admin_ban_player.php">Ban player</a></li>
-	<li><a href="$self?show_active=1">View online players</a></li>
-	<li><a href="$self?more_money=1">Give money</a></li>
-</ul>
-
-<h2>General</h2>
-<ul>
-	<li><a href="$self?descr=1">Change the game description</a></li>
-	<li><a href="$self?messag=1">Change the introduction message</a></li>
-</ul>
-END;
-
-print_page("Admin", $out);
+$tpl->display('game/admin_panel.tpl.php');
+exit();
 
 ?>
