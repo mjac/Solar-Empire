@@ -11,9 +11,10 @@ include('inc/header_splash.tpl.php');
 <p>Developed by <a href="http://www.mjac.co.uk/">Mjac</a>, originally based on 
 the public domain Generic 2.2.2 release.</p>
 <h3>Other contributors</h3>
-<ul>
-	<li><a href="http://www.imod.ca/">Joshua Eaton</a> (Lex Luthor)</li>
-</ul>
+<dl>
+	<dt>Ship images and free hosting</dt>
+	<dd><a href="http://www.imod.ca/">Joshua Eaton</a> (Lex Luthor)</dd>
+</dl>
 
 <h2>Generic 2.2.2</h2>
 <dl>
