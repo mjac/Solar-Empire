@@ -92,6 +92,9 @@ h2.ship {
 	margin-left: 6px;
 	background: url(tn/ship.jpg) no-repeat left top;
 }
+h3 {
+	font-size: 115%;
+}
 
 
 a:link, a:visited {
