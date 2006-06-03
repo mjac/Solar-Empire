@@ -251,7 +251,7 @@ if (isset($_REQUEST['game_selected'])) {
 	exit();
 }
 
-if (IS_OWNER && isset($_REQUEST['newGame'])) {
+if (IS_OWNER && isset($_REQUEST['newGame']) && ctype_alnum($_REQUEST['newGame'])) {
 	require_once('inc/generator.inc.php');
 	$query = '';
 	$fp = fopen('inc/game.' . $db->type . '.sql', 'r');
