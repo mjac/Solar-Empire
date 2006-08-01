@@ -313,6 +313,8 @@ while ($game = $db->fetchRow($games, ROW_ASSOC)) {
 $tpl->assign('gameList', $gameList);
 $tpl->assign('canCreateGame', IS_OWNER);
 
+$tpl->assign('serverNews', file_get_contents('inc/server_news.inc.html'));
+
 $tpl->display('game_listing.tpl.php');
 exit();
 
