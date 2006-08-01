@@ -3,7 +3,7 @@ if (!defined('PATH_SAVANT')) exit();
 
 $title = 'News and events';
 
-include('../inc/header_game.tpl.php');
+include('inc/header_game.tpl.php');
 
 ?><h1>News and events</h1>
 
@@ -57,6 +57,6 @@ foreach ($this->articles as $article) {
 ?></table>
 <?php
 
-include('../inc/footer_game.tpl.php');
+include('inc/footer_game.tpl.php');
 
 ?>
