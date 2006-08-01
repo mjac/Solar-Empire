@@ -1,6 +1,7 @@
 <?php
 
 require_once('inc/admin.inc.php');
+require_once('inc/template.inc.php');
 
 $out = '';
 
@@ -260,7 +261,7 @@ END;
 	insert_history($user['login_id'], 'Changed the game description.');
 }
 
-$tpl->display('game/admin_panel.tpl.php');
+$tpl->display('game/admin/panel.tpl.php');
 exit();
 
 ?>
