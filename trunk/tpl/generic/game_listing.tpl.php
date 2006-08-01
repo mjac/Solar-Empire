@@ -2,7 +2,7 @@
 if (!defined('PATH_SAVANT')) exit();
 
 if (!function_exists('popupHelp')) {
-	include($this->loadTemplate('inc/popup_help.inc.php'));
+	include($this->loadTemplate('inc/popupHelp.inc.php'));
 }
 
 function formatGameList(&$tpl, $gList)
