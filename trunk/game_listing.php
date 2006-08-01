@@ -55,6 +55,8 @@ function login_to_server($handle, $password)
 	insert_history($userInfo['login_id'], 'Logged into game-list');
 
 	if ($userInfo['login_count'] == 0) { // first login. show them the story.
+		include('inc/story.inc.php');
+		$tpl->assign('story', $story['The_Solar_Empire_Story']);
 		$tpl->display('story.tpl.php');
 	} else {
 	    header('Location: game_listing.php');

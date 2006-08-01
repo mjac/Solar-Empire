@@ -29,11 +29,14 @@ deleted.</p>
 	</dl>
 </form>
 
-<?php
+<div><?php
 
-include('inc/rules.inc.html');
+echo $this->rules;
 
-?><h2>Return to <a href="index.php">sign-in screen</a></h2>
+?>
+</div>
+
+<h2>Return to <a href="index.php">sign-in screen</a></h2>
 <?php
 
 include($this->loadTemplate('inc/footer_splash.tpl.php'));

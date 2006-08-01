@@ -8,6 +8,7 @@ $problems = array();
 
 if (!(isset($_POST['handle']) && isset($_POST['name']) &&
 	 isset($_POST['email']) && isset($_POST['email2']))) {
+	$tpl->assign('rules', file_get_contents('inc/rules.inc.html'));
 	$tpl->display('register.tpl.php');
 	exit();
 }
