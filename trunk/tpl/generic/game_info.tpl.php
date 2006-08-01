@@ -2,7 +2,7 @@
 if (!defined('PATH_SAVANT')) exit();
 
 if (!function_exists('formatName')) {
-	include($this->loadTemplate('inc/format_names.inc.php'));
+	include($this->loadTemplate('game/inc/formatNames.inc.php'));
 }
 
 if (!function_exists('resolveDifficulty')) {
