@@ -2,21 +2,21 @@
 if (!defined('PATH_SAVANT')) exit();
 
 if (!function_exists('formatName')) {
-	include('inc/format_names.inc.php');
+	include($this->loadTemplate('inc/format_names.inc.php'));
 }
 
 if (!function_exists('resolveDifficulty')) {
-	include('inc/difficulty.inc.php');
+	include($this->loadTemplate('inc/difficulty.inc.php'));
 }
 
 $title = 'Game information';
 
-include('inc/header.tpl.php');
+include($this->loadTemplate('inc/header.tpl.php'));
 
 if (!$this->gameExists) {
 ?><p>This game does not exist.</p>
 <?php	
-	include('inc/footer.tpl.php');
+	include($this->loadTemplate('inc/footer.tpl.php'));
 	return;
 }
 
@@ -213,6 +213,6 @@ if (!empty($this->topPlayers)) {
 
 }
 
-include('inc/footer.tpl.php');
+include($this->loadTemplate('inc/footer.tpl.php'));
 
 ?>

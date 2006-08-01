@@ -3,7 +3,7 @@ if (!defined('PATH_SAVANT')) exit();
 
 $title = 'Game administration panel';
 
-include('../inc/header_game.tpl.php');
+include($this->loadTemplate('game/inc/header_game.tpl.php'));
 
 ?><h1>Administration</h1>
 
@@ -53,6 +53,6 @@ include('../inc/header_game.tpl.php');
 </ul>
 <?php
 
-include('../inc/footer_game.tpl.php');
+include($this->loadTemplate('game/inc/footer_game.tpl.php'));
 
 ?>

@@ -3,7 +3,7 @@ if (!defined('PATH_SAVANT')) exit();
 
 $title = 'Join game';
 
-include('inc/header_splash.tpl.php');
+include($this->loadTemplate('inc/header_splash.tpl.php'));
 
 ?><h1>Join <?php $this->eprint($this->gameName); ?></h1>
 
@@ -27,6 +27,6 @@ $this->eprint($this->gameSelected); ?>" /></dt>
 ?><h2>Return to <a href="game_listing.php">game listing</a></h2>
 <?php
 
-include('inc/footer_splash.tpl.php');
+include($this->loadTemplate('inc/footer_splash.tpl.php'));
 
 ?>

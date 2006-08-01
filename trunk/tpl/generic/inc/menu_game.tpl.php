@@ -2,15 +2,15 @@
 if (!defined('PATH_SAVANT')) exit();
 
 if (!function_exists('popupHelp')) {
-	include('popup_help.inc.php');
+	include($this->loadTemplate('inc/popup_help.inc.php'));
 }
 
 if (!function_exists('formatName')) {
-	include('format_names.inc.php');
+	include($this->loadTemplate('game/inc/formatNames.inc.php'));
 }
 
 if (!function_exists('shipCargoReport')) {
-	include('format_ships.inc.php');
+	include($this->loadTemplate('game/inc/formatShips.inc.php'));
 }
 
 ?><h1><em><?php 

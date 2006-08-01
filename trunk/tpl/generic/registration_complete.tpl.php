@@ -3,7 +3,7 @@ if (!defined('PATH_SAVANT')) exit();
 
 $title = 'Registration complete';
 
-include('inc/header_splash.tpl.php');
+include($this->loadTemplate('inc/header_splash.tpl.php'));
 
 ?><h1>Register an account</h1>
 <h2>Your account has been created</h2>
@@ -12,6 +12,6 @@ include('inc/header_splash.tpl.php');
 <h2><a href="index.php">Start playing!</a></p>
 <?php
 
-include('inc/footer_splash.tpl.php');
+include($this->loadTemplate('inc/footer_splash.tpl.php'));
 
 ?>

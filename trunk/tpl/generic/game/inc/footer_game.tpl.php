@@ -3,6 +3,6 @@ if (!defined('PATH_SAVANT')) exit();
 ?></div>
 <?php
 
-include('footer.tpl.php');
+include($this->loadTemplate('inc/footer.tpl.php'));
 
 ?>

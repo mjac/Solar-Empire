@@ -7,7 +7,7 @@ if (!function_exists('makeList')) {
 
 $title = 'Problems logging in';
 
-include('inc/header_splash.tpl.php');
+include($this->loadTemplate('inc/header_splash.tpl.php'));
 
 ?><h1>Sign-in failed</h1>
 <?php
@@ -18,6 +18,6 @@ echo makeList($this, 'Problems', $this->problems);
 <a href="index.php" onclick="history.back(); return false;">Try Again</a></h2>
 <?php
 
-include('inc/footer_splash.tpl.php');
+include($this->loadTemplate('inc/footer_splash.tpl.php'));
 
 ?>

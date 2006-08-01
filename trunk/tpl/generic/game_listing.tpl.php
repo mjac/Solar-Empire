@@ -2,7 +2,7 @@
 if (!defined('PATH_SAVANT')) exit();
 
 if (!function_exists('popupHelp')) {
-	include('inc/popup_help.inc.php');
+	include($this->loadTemplate('inc/popup_help.inc.php'));
 }
 
 function formatGameList(&$tpl, $gList)
@@ -23,7 +23,7 @@ function formatGameList(&$tpl, $gList)
 
 $title = 'Game listing';
 
-include('inc/header_splash.tpl.php');
+include($this->loadTemplate('inc/header_splash.tpl.php'));
 
 $joined = array();
 $unjoined = array();
@@ -42,11 +42,8 @@ foreach ($this->gameList as $game) {
 	<p><?php echo $this->tip; ?></p>
 
 	<h2>Recent news</h2>
-	<?php
-
-include('inc/server_news.inc.html');
-
-?></div>
+	<div><?php echo $this->serverNews; ?></div>
+</div>
 
 <h1>Game Listing for <?php $this->eprint($this->accountName); ?></h1>
 <p>To enter or join a game, click its name below:</p>
@@ -98,6 +95,6 @@ if ($this->canCreateGame) {
 </ul>
 <?php
 
-include('inc/footer_splash.tpl.php');
+include($this->loadTemplate('inc/footer_splash.tpl.php'));
 
 ?>

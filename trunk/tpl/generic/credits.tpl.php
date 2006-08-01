@@ -3,7 +3,7 @@ if (!defined('PATH_SAVANT')) exit();
 
 $title = 'Credits, a list of contributors to System Wars';
 
-include('inc/header_splash.tpl.php');
+include($this->loadTemplate('inc/header_splash.tpl.php'));
 
 ?><h1>Credits, contributors to System Wars</h1>
 
@@ -41,6 +41,6 @@ the public domain Generic 2.2.2 release.</p>
 <h2><a href="index.php">Continue playing</a></h2>
 <?php
 
-include('inc/footer_splash.tpl.php');
+include($this->loadTemplate('inc/footer_splash.tpl.php'));
 
 ?>

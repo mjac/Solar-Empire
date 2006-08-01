@@ -3,7 +3,7 @@ if (!defined('PATH_SAVANT')) exit();
 
 $title = 'Register and start playing';
 
-include('inc/header_splash.tpl.php');
+include($this->loadTemplate('inc/header_splash.tpl.php'));
 
 ?><h1>Register an account</h1>
 
@@ -36,6 +36,6 @@ include('inc/rules.inc.html');
 ?><h2>Return to <a href="index.php">sign-in screen</a></h2>
 <?php
 
-include('inc/footer_splash.tpl.php');
+include($this->loadTemplate('inc/footer_splash.tpl.php'));
 
 ?>

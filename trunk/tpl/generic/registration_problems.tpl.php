@@ -7,7 +7,7 @@ if (!function_exists('makeList')) {
 
 $title = 'Problems while registering';
 
-include('inc/header_splash.tpl.php');
+include($this->loadTemplate('inc/header_splash.tpl.php'));
 
 ?><h1>Register an account</h1>
 <?php
@@ -18,6 +18,6 @@ echo makeList($this, 'Problems', $this->problems);
 again</a></h2>
 <?php
 
-include('inc/footer_splash.tpl.php');
+include($this->loadTemplate('inc/footer_splash.tpl.php'));
 
 ?>

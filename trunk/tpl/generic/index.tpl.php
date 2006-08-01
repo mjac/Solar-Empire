@@ -3,7 +3,7 @@ if (!defined('PATH_SAVANT')) exit();
 
 $title = 'Competitive, web based, space combat game';
 
-include('inc/header_splash.tpl.php');
+include($this->loadTemplate('inc/header_splash.tpl.php'));
 
 ?><form id="login" action="game_listing.php" method="post">
 	<h2><a href="register.php">Create an account</a></h2>
@@ -55,6 +55,6 @@ learn more and help develop this open-source game.</p>
 </div>
 <?php
 
-include('inc/footer_splash.tpl.php');
+include($this->loadTemplate('inc/footer_splash.tpl.php'));
 
 ?>

@@ -3,7 +3,7 @@ if (!defined('PATH_SAVANT')) exit();
 
 $title = 'Game variables';
 
-include('inc/header.tpl.php');
+include($this->loadTemplate('inc/header.tpl.php'));
 
 if (!$this->gameExists) {
 ?><p>This game does not exist.</p>
@@ -33,6 +33,6 @@ if (!$this->gameExists) {
 <?php
 }
 
-include('inc/footer.tpl.php');
+include($this->loadTemplate('inc/footer.tpl.php'));
 
 ?>
