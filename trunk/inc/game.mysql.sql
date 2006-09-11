@@ -119,30 +119,45 @@ INSERT INTO gamename_db_vars (name, value, min, max, descript) VALUES ('admin_va
 ('process_planets', 86400, 1, 604800, 'The frequency of this processed task.'),
 ('process_government', 43200, 1, 604800, 'The frequency of this processed task.');
 --
-DROP TABLE IF EXISTS gamename_diary;
+DROP TABLE IF EXISTS gamename_msg_forum;
 --
-CREATE TABLE gamename_diary (
-  entry_id int unsigned NOT NULL,
-  `timestamp` int unsigned NOT NULL default 0,
-  login_id int unsigned NOT NULL default 0,
-  entry text NOT NULL,
-  PRIMARY KEY (entry_id),
-  KEY `timestamp` (`timestamp`)
+CREATE TABLE gamename_msg_forum (
+  message_id int unsigned NOT NULL,
+  sender_id int unsigned NULL default NULL,
+  sender_name varchar(32) NULL default NULL,
+  sent int unsigned NOT NULL default 0,
+  message text NOT NULL,
+  PRIMARY KEY (message_id),
+  KEY login_id (login_id),
+  KEY sent (sent)
 ) TYPE=MyISAM;
 --
-DROP TABLE IF EXISTS gamename_messages;
+DROP TABLE IF EXISTS gamename_msg_clan;
 --
-CREATE TABLE gamename_messages (
+CREATE TABLE gamename_msg_clan (
+  message_id int unsigned NOT NULL,
+  clan_id int NOT NULL,
+  sender_id int unsigned NULL default NULL,
+  sender_name varchar(32) NULL default NULL,
+  sent int unsigned NOT NULL default 0,
+  message text NOT NULL,
+  PRIMARY KEY (message_id),
+  KEY login_id (login_id),
+  KEY sent (sent)
+) TYPE=MyISAM;
+--
+DROP TABLE IF EXISTS gamename_msg_player;
+--
+CREATE TABLE gamename_msg_player (
   message_id int unsigned NOT NULL,
   login_id int NOT NULL,
   sender_id int unsigned NULL default NULL,
   sender_name varchar(32) NULL default NULL,
-  `timestamp` int unsigned NOT NULL default 0,
-  `text` text NOT NULL,
-  clan_id int unsigned NOT NULL default 0,
+  sent int unsigned NOT NULL default 0,
+  message text NOT NULL,
   PRIMARY KEY (message_id),
   KEY login_id (login_id),
-  KEY `timestamp` (`timestamp`)
+  KEY sent (sent)
 ) TYPE=MyISAM;
 --
 DROP TABLE IF EXISTS gamename_news;

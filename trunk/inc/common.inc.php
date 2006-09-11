@@ -338,14 +338,14 @@ Misc Functions
 *********************/
 
 
-function create_rand_string($length,
- $salt = 'abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ123456789')
+function randomString($length, 
+ $characters = 'abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ123456789')
 {
-	$saltMax = strlen($salt) - 1;
+	$cMax = strlen($characters) - 1;
 
 	$str = '';
 	while (--$length >= 0) { // loop and create password
-		$str .= $salt[mt_rand(0, $saltMax)];
+		$str .= $characters[mt_rand(0, $cMax)];
 	}
 
 	return $str;

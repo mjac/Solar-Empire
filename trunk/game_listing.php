@@ -39,8 +39,7 @@ function login_to_server($handle, $password)
 	}
 
 	/*****************User successfully logged in***********************/
-	$session = create_rand_string(32);
-
+	$session = randomString(32);
 	$expires = time() + COOKIE_LENGTH;
 
 	setcookie('login_id', $userInfo['login_id'], $expires);

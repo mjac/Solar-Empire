@@ -261,6 +261,8 @@ END;
 	insert_history($user['login_id'], 'Changed the game description.');
 }
 
+assignCommon($tpl);
+
 $tpl->display('game/admin/panel.tpl.php');
 exit();
 

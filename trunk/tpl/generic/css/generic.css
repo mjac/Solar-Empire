@@ -1,8 +1,8 @@
 html {
-	background: Black;
+	background: #000;
 	color: #F0F0F0;
-	font-family: sans-serif;
-	font-size: small;
+	font-family: Verdana, sans-serif;
+	font-size: 80%;
 	margin: 0;
 }
 
@@ -33,14 +33,20 @@ body {
 
 #login h2 {
 	margin: 0.5em;
+	border: 0px none;
+	padding: 0;
 }
 
 #login dl {
-	margin: 0.2em;
+	margin: 0.25em;
 }
 
 #login dd, #login dt {
-	margin: 0.2em;
+	margin: 0.125em;
+}
+
+#login dt {
+	margin-top: 0.5em;
 }
 
 #login label {
@@ -52,17 +58,14 @@ body {
 	text-align: justify;
 }
 
-#gameExtras {
-	float: right;
-	width: 18%;
-	padding: 10px;
-}
-
 #gameList {
-	border: Thin outset #666666;
+	border: 2px outset #666;
 	padding: 2em;
 	background: #102033 url(dark_gradient.png) repeat-x;
-	margin-right: 22%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: sans-serif;
 }
 
 h1 {
@@ -71,27 +74,10 @@ h1 {
 }
 h2 {
 	font-size: 131%;
+	border-bottom: 1px solid #CCCCCC;
+	padding: 0.125em 0;
 }
 
-h2.earth {
-	padding-left: 30px;
-	margin-left: 10px;
-	background: url(tn/earth.jpg) no-repeat left top;
-}
-h2.planet {
-	padding-left: 30px;
-	margin-left: 10px;
-	background: url(tn/planet.jpg) no-repeat left top;
-}
-h2.port {
-	padding-left: 40px;
-	background: url(tn/port.jpg) no-repeat left top;
-}
-h2.ship {
-	padding-left: 34px;
-	margin-left: 6px;
-	background: url(tn/ship.jpg) no-repeat left top;
-}
 h3 {
 	font-size: 115%;
 }
@@ -104,6 +90,67 @@ a:link, a:visited {
 }
 a:link:hover, a:visited:hover {
 	text-decoration: underline;
+}
+
+
+input.text {
+	background: #364045 url(blue_input_text.png) repeat-x;
+	border: 1px inset #CCCCFF;
+}
+
+textarea {
+	background: #121619;
+	border: 1px inset #666666;
+}
+
+input.text, textarea {
+	padding: 0.25em;
+	color: #FFF;
+	font-family: monospace;
+	font-size: 1.125em;
+}
+
+input.button {
+	cursor: pointer;
+	background: #56828D url(blue_button.jpg) repeat-x;
+	font-weight: bold;
+	text-decoration: none;
+	color: black;
+	padding: 0.25em;
+	border: 1px outset #CCCCFF;
+}
+input.button:hover {
+	border: 1px outset white;
+}
+input.button:active {
+	background: #A7C5C7 url(blue_button_over.jpg) repeat-x;
+	border: 1px inset white;
+}
+
+select {
+	background: #A7C5C7 url(blue_button_over.jpg) repeat-x;
+}
+
+.figure {
+	margin: 0.5em 2em;
+	padding: 1em;
+}
+
+a img {
+	border: none;
+}
+
+dt {
+	font-weight: bold;
+	margin: 10px 0;
+	color: #999999;
+}
+dd {
+	margin-bottom: 5px;
+}
+
+b {
+	color: #CCCCCC;
 }
 
 
@@ -125,6 +172,7 @@ a:link:hover, a:visited:hover {
 	margin: 0.5em 0 0 0;
 	background: #334566 url(sidebar-box.png) top left;
 	padding: 0 0 0 20px;
+	border: 0 none;
 }
 #gameMenu h1 em, #gameMenu h2 em {
 	background: #334566 url(sidebar-box.png) top right;
@@ -182,23 +230,6 @@ a:link:hover, a:visited:hover {
 
 #miniMap {
 	border: Thin outset White;
-}
-
-a img {
-	border: none;
-}
-
-dt {
-	font-weight: bold;
-	margin: 10px 0;
-	color: #999999;
-}
-dd {
-	margin-bottom: 5px;
-}
-
-b {
-	color: #CCCCCC;
 }
 
 .cloaked {
@@ -266,47 +297,29 @@ table.attackReport td {
 }
 
 
-input.text {
-	background: #364045 url(blue_input_text.png) repeat-x;
-	border: 1px inset #CCCCFF;
+
+
+h2.earth {
+	padding-left: 30px;
+	margin-left: 10px;
+	background: url(tn/earth.jpg) no-repeat left top;
+}
+h2.planet {
+	padding-left: 30px;
+	margin-left: 10px;
+	background: url(tn/planet.jpg) no-repeat left top;
+}
+h2.port {
+	padding-left: 40px;
+	background: url(tn/port.jpg) no-repeat left top;
+}
+h2.ship {
+	padding-left: 34px;
+	margin-left: 6px;
+	background: url(tn/ship.jpg) no-repeat left top;
 }
 
-textarea {
-	background: #121619;
-	border: 1px inset #666666;
-}
 
-input.text, textarea {
-	padding: 0.25em;
-	color: white;
-	font-family: monospace;
-}
-
-input.button {
-	cursor: pointer;
-	background: #56828D url(blue_button.jpg) repeat-x;
-	font-weight: bold;
-	text-decoration: none;
-	color: black;
-	padding: 0.25em;
-	border: 1px outset #CCCCFF;
-}
-input.button:hover {
-	border: 1px outset white;
-}
-input.button:active {
-	background: #A7C5C7 url(blue_button_over.jpg) repeat-x;
-	border: 1px inset white;
-}
-
-select {
-	background: #A7C5C7 url(blue_button_over.jpg) repeat-x;
-}
-
-.figure {
-	margin: 0.5em 2em;
-	padding: 1em;
-}
 
 #newsSearch {
 	padding: 0.25em;

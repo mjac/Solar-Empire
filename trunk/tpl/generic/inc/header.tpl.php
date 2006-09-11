@@ -10,14 +10,15 @@ echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 <head>
 <title><?php
 
-$this->eprint(isset($this->title) ? $this->title :
- (isset($title) ? $title : 'Untitled'));
+$this->eprint((isset($this->title) ? $this->title :
+ (isset($title) ? $title : 'Untitled')) . ' (Solar Empire' . 
+ (isset($this->pageName) ? ", $this->pageName" : '') . ')');
 
-?> &#8212; Solar Empire</title>
+?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link type="text/css" rel="stylesheet" href="<?php 
-$this->eprint($this->url['tpl']); ?>/css/generic.css" />
+$this->eprint("$this->url[tpl]/css/generic.css"); ?>" />
 <script type="text/javascript" src="<?php 
-$this->eprint($this->url['tpl']); ?>/js/common.js"></script>
+$this->eprint("$this->url[tpl]/js/common.js"); ?>"></script>
 </head>
 <body>

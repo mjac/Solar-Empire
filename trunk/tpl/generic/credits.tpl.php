@@ -7,9 +7,16 @@ include($this->loadTemplate('inc/header_splash.tpl.php'));
 
 ?><h1>Credits, contributors to System Wars</h1>
 
+<p>People who have contributed to the development of System Wars, both directly 
+and indirectly.  Return to the <a href="<?php 
+$this->eprint($this->url['base'] . '/index.php');
+?>">sign-in form</a> when you 
+have finished reading.</p>
+
 <h2>System Wars</h2>
-<p>Developed by <a href="http://www.mjac.co.uk/">Mjac</a>, originally based on 
-the public domain Generic 2.2.2 release.</p>
+<p>Developed by <a href="http://www.mjac.co.uk/">Michael J.A. Clark</a> 
+(<a href="http://www.mjac.co.uk/">Mjac</a>) from the public domain Generic 
+2.2.2 release.</p>
 <h3>Other contributors</h3>
 <dl>
 	<dt>Ship images and free hosting</dt>
@@ -37,8 +44,6 @@ the public domain Generic 2.2.2 release.</p>
 	<dt>Opening story</dt>
 	<dd><a href="http://www.quantum-star.com/">Maugrim_The_Reaper</a></dd>
 </dl>
-
-<h2><a href="index.php">Continue playing</a></h2>
 <?php
 
 include($this->loadTemplate('inc/footer_splash.tpl.php'));

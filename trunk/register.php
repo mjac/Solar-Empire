@@ -56,7 +56,7 @@ if (!empty($problems)) {
 }
 
 require_once('inc/external/sha256/sha256.class.php');
-$password = create_rand_string(6);
+$password = randomString(6);
 
 $newId = newId('user_accounts', 'login_id');
 $db->query('INSERT INTO user_accounts (login_id, login_name, passwd, ' .

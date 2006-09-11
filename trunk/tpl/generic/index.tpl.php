@@ -5,10 +5,12 @@ $title = 'Competitive, web based, space combat game';
 
 include($this->loadTemplate('inc/header_splash.tpl.php'));
 
-?><form id="login" action="game_listing.php" method="post">
+?><form id="login" action="<?php 
+$this->eprint($this->url['base'] . '/game_listing.php'); 
+?>" method="post">
 	<h2><a href="register.php">Create an account</a></h2>
 
-	<h2>Continue the war</h2>
+	<h2>Continue the War</h2>
 	<dl>
 		<dt><label for="handle">Account name</label></dt>
 		<dd><input type="text" name="handle" id="handle" class="text" /></dd>
@@ -16,7 +18,7 @@ include($this->loadTemplate('inc/header_splash.tpl.php'));
 		<dt><label for="password">Password</label></dt>
 		<dd><input type="password" name="password" id="password" class="text" /></dd>
 
-		<dt><input type="submit" value="Enter" class="button" /></dt>
+		<dt><input type="submit" value="Enter game" class="button" /></dt>
 	</dl>
 </form>
 

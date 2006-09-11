@@ -37,14 +37,6 @@ foreach ($this->gameList as $game) {
 
 ?>
 
-<div id="gameExtras">
-	<h2>Random tip</h2>
-	<p><?php echo $this->tip; ?></p>
-
-	<h2>Recent news</h2>
-	<div><?php echo $this->serverNews; ?></div>
-</div>
-
 <h1>Game Listing for <?php $this->eprint($this->accountName); ?></h1>
 <p>To enter or join a game, click its name below:</p>
 
@@ -70,6 +62,12 @@ if (empty($joined) && empty($unjoined)) {
 
 ?>
 </div>
+
+<h2>Random tip</h2>
+<p><?php echo $this->tip; ?></p>
+
+<h2>Recent news</h2>
+<div><?php echo $this->serverNews; ?></div>
 
 <h2>Options</h2>
 <ul>
