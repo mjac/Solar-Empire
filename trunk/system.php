@@ -10,7 +10,9 @@ if (!deathCheck($user)) {
 
 get_star();
 if (!$star) {
-	print_page('Error', 'This star-system does not exist.');
+	assignCommon();
+	$tpl->display('game/system_missing.tpl.php');
+	exit;
 }
 
 function getStarLinks()
