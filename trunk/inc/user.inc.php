@@ -412,22 +412,53 @@ function get_star_dist($s1,$s2)
 	return $dist;
 }
 
-//function to check if a player is dead and out during sudden death.
+function playerDead($user)
+{
+	return $user['ship_id'] === NULL;
+}
+
 function deathCheck($user)
 {
 	global $gameOpt, $gameInfo;
 
 	if ($user['ship_id'] === NULL) {
 		if ($gameOpt['sudden_death'] && $user['login_id'] != $gameInfo['admin']) {
-		    pageStart('Sudden death');
-		    echo "You have no ship, and this game is Sudden Death. <br />As such you are out of the game. <br />You may still access the Forum, and send/recieve private messages though.";
-		    pageStop();
+			global $tpl;
+
+			$tpl->assign('suddenDeath', true);
+			$tpl->assign('attackedAt', $user['last_attack']);
+			$tpl->assign('attackedBy', $user['last_attack_by']);
+
+			assignCommon();
+
+			$tpl->display('game/dead.tpl.php');
+
+		    exit;
 		}
 
 		return true;
 	}
 
 	return false;
+}
+
+function deathInfo()
+{
+	global $user;
+
+	if ($user['ship_id'] === NULL) {
+		global $tpl;
+
+		$tpl->assign('suddenDeath', false);
+		$tpl->assign('attackedAt', $user['last_attack']);
+		$tpl->assign('attackedBy', $user['last_attack_by']);
+
+		assignCommon();
+
+		$tpl->display('game/dead.tpl.php');
+
+		exit;
+	}
 }
 
 //Choose a system at random

@@ -1,22 +1,11 @@
 <?php
 
 require_once('inc/user.inc.php');
+require_once('inc/template.inc.php');
 require_once('inc/attack.inc.php');
 
-deathCheck($user);
-
-// check for being dead
-if ($user['ship_id'] === NULL) {
-	pageStart('End of the road');
-
-	$diedAt = date("M d - H:s", $user['last_attack']);
-	echo <<<END
-<p>Your ship was destroyed by <b class=b1>$user[last_attack_by]</b> at <b>$diedAt</b></p>
-<p><a href=earth.php>Buy a ship to continue playing</a></p>
-
-END;
-
-	pageStop();
+if (!deathCheck($user)) {
+	deathInfo($user);
 }
 
 get_star();
