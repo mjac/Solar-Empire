@@ -450,7 +450,7 @@ function deathInfo($user)
 	$tpl->assign('attackedAt', $user['last_attack']);
 	$tpl->assign('attackedBy', $user['last_attack_by']);
 
-	assignCommon();
+	assignCommon($tpl);
 
 	$tpl->display('game/dead.tpl.php');
 
