@@ -9,9 +9,19 @@ include($this->loadTemplate('game/inc/header_game.tpl.php'));
 
 ?><h1>Your ship has been destroyed</h1>
 
-<p>Your ship was destroyed by <strong><?php 
+<p>Your ship was destroyed<?php
+
+if ($this->attackedBy) {
+?> by <strong><?php
 $this->eprint($this->attackedBy); 
-?></strong> at <em><?php $this->eprint(date('M d - H:s', $this->attackedAt)); ?></em>.</p>
+?></strong><?php
+}
+
+if ($this->attackedAt) {
+?> at <em><?php $this->eprint(date('M d - H:s', $this->attackedAt)); ?></em><?php
+}
+
+?>.</p>
 <?php
 
 if (isset($this->suddenDeath) && $this->suddenDeath) {
