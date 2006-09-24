@@ -76,9 +76,9 @@ if (!$star) {
 getStarLinks();
 
 
-function assignEquip()
+function assignEquip(&$tpl)
 {
-	global $tpl, $user;
+	global $user;
 
 	$tpl->assign('equip', array(
 		'genesis' => $user['genesis'],
@@ -88,9 +88,9 @@ function assignEquip()
 	));
 }
 
-function assignStar()
+function assignStar(&$tpl)
 {
-	global $tpl, $links, $star, $gameInfo;
+	global $links, $star, $gameInfo;
 
 	$tpl->assign('star', array(
 		'id' => $star['id'],
@@ -163,9 +163,9 @@ END;
 	return $bar;
 }
 
-assignStar();
-assignEquip();
-assignCommon();
+assignStar($tpl);
+assignEquip($tpl);
+assignCommon($tpl);
 
 $tpl->display('game/system.tpl.php');
 
