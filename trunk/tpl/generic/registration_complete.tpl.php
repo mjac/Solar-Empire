@@ -1,5 +1,5 @@
 <?php
-if (!defined('PATH_SAVANT')) exit();
+defined('PATH_SAVANT') || exit();
 
 $title = 'Registration complete';
 

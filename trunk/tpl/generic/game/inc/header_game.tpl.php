@@ -1,5 +1,5 @@
 <?php
-if (!defined('PATH_SAVANT')) exit();
+defined('PATH_SAVANT') || exit();
 
 include($this->loadTemplate('inc/header.tpl.php'));
 

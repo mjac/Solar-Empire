@@ -1,5 +1,5 @@
 <?php
-if (!defined('PATH_SAVANT')) exit();
+defined('PATH_SAVANT') || exit();
 
 if (!function_exists('formatName')) {
 	include($this->loadTemplate('game/inc/formatNames.inc.php'));

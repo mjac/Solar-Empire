@@ -1,5 +1,5 @@
 <?php
-if (!defined('PATH_SAVANT')) exit();
+defined('PATH_SAVANT') || exit();
 
 // Function that will create a help-link
 function popupHelp($topic, $height, $width, $string, &$tpl)

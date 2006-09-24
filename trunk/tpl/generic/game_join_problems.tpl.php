@@ -1,5 +1,5 @@
 <?php
-if (!defined('PATH_SAVANT')) exit();
+defined('PATH_SAVANT') || exit();
 
 if (!function_exists('makeList')) {
 	include($this->loadTemplate('inc/list.inc.php'));
