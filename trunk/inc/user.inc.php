@@ -442,23 +442,19 @@ function deathCheck($user)
 	return false;
 }
 
-function deathInfo()
+function deathInfo($user)
 {
-	global $user;
+	global $tpl;
 
-	if ($user['ship_id'] === NULL) {
-		global $tpl;
+	$tpl->assign('suddenDeath', false);
+	$tpl->assign('attackedAt', $user['last_attack']);
+	$tpl->assign('attackedBy', $user['last_attack_by']);
 
-		$tpl->assign('suddenDeath', false);
-		$tpl->assign('attackedAt', $user['last_attack']);
-		$tpl->assign('attackedBy', $user['last_attack_by']);
+	assignCommon();
 
-		assignCommon();
+	$tpl->display('game/dead.tpl.php');
 
-		$tpl->display('game/dead.tpl.php');
-
-		exit;
-	}
+	exit;
 }
 
 //Choose a system at random

@@ -1,20 +1,5 @@
 <?php
 
-require_once('inc/user.inc.php');
-require_once('inc/template.inc.php');
-require_once('inc/attack.inc.php');
-
-if (!deathCheck($user)) {
-	deathInfo($user);
-}
-
-get_star();
-if (!$star) {
-	assignCommon();
-	$tpl->display('game/system_missing.tpl.php');
-	exit;
-}
-
 function getStarLinks()
 {
 	global $links, $star;
@@ -27,7 +12,6 @@ function getStarLinks()
 		}
 	}
 }
-getStarLinks();
 
 function isLinked(&$star, $linkNo)
 {
@@ -44,6 +28,22 @@ function isLinked(&$star, $linkNo)
 
 	return false;
 }
+
+require_once('inc/user.inc.php');
+require_once('inc/template.inc.php');
+require_once('inc/attack.inc.php');
+
+if (!deathCheck($user)) {
+	deathInfo($user);
+}
+
+get_star();
+if (!$star) {
+	assignCommon();
+	$tpl->display('game/system_missing.tpl.php');
+	exit;
+}
+getStarLinks();
 
 //this will show any remaining autowarps the player is trying to perform.
 function getAutowarp()
@@ -345,8 +345,9 @@ if(!empty($subspace)) {
 if(isset($toloc)) {
 	$toloc = (int)$toloc;
 
-	if ($gameOpt['ship_warp_cost'] < 0) { #warp cost is determined by largest ship in fleet.
-		$db->query("select move_turn_cost from [game]_ships where (login_id = '$user[login_id]' AND location = '$userShip[location]' AND (towed_by = '$user[ship_id]') OR ship_id = '$user[ship_id]') order by move_turn_cost desc limit 1");
+	// Determined by largest ship in fleet
+	if ($gameOpt['ship_warp_cost'] < 0) {
+		$db->query("SELECT move_turn_cost FROM [game]_ships WHERE (login_id = '$user[login_id]' AND location = '$userShip[location]' AND (towed_by = '$user[ship_id]') OR ship_id = '$user[ship_id]') order by move_turn_cost desc limit 1");
 		$move_turn_cost_fleet = dbr();
 		$warp_cost = $move_turn_cost_fleet['move_turn_cost']; #set it to warp_cost so can keep generic
 	} else {#warp cost is set by admin
