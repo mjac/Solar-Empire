@@ -2,7 +2,7 @@
 defined('PATH_SAVANT') || exit();
 
 if (!function_exists('makeList')) {
-	include($this->loadTemplate('inc/list.inc.php'));
+	require($this->loadTemplate('inc/list.inc.php'));
 }
 
 $title = 'Problems joining game';

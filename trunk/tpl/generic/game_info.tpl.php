@@ -2,11 +2,11 @@
 defined('PATH_SAVANT') || exit();
 
 if (!function_exists('formatName')) {
-	include($this->loadTemplate('game/inc/formatNames.inc.php'));
+	require($this->loadTemplate('game/inc/formatNames.inc.php'));
 }
 
 if (!function_exists('resolveDifficulty')) {
-	include($this->loadTemplate('inc/difficulty.inc.php'));
+	require($this->loadTemplate('inc/difficulty.inc.php'));
 }
 
 $title = 'Game information';

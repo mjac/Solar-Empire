@@ -2,7 +2,7 @@
 defined('PATH_SAVANT') || exit();
 
 if (!function_exists('makeList')) {
-	include('inc/list.inc.php');
+	require('inc/list.inc.php');
 }
 
 $title = 'Problems logging in';
