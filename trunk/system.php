@@ -97,7 +97,7 @@ function assignStar()
 		'map' => URL_BASE . '/img/' . $gameInfo['db_name'] . '_maps/sm' . 
 		 $star['id'] . '.png',
 		'links' => $links
-	);
+	));
 }
 
 function systemInfo()
