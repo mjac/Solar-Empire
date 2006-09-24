@@ -69,7 +69,7 @@ if (!deathCheck($user)) {
 
 get_star();
 if (!$star) {
-	assignCommon();
+	assignCommon($tpl);
 	$tpl->display('game/system_missing.tpl.php');
 	exit;
 }
