@@ -773,7 +773,7 @@ function closestShip($playerId, $x, $y)
 }
 
 
-function assignCommon($tpl)
+function assignCommon(&$tpl)
 {
 	global $db, $userShip, $user, $gameOpt, $gameInfo;
 
@@ -858,7 +858,9 @@ function assignCommon($tpl)
 				'electronics' => $userShip['elect'],
 				'colonists' => $userShip['colon'],
 				'free' => empty_bays($userShip)
-			)
+			),
+			'transwarp' => shipHas($userShip, 'tw'),
+			'subspace' => shipHas($userShip, 'sj')
 		));
 	}
 

@@ -7,9 +7,13 @@ $this->description = '';
 
 include($this->loadTemplate('game/inc/header_game.tpl.php'));
 
-?><h1>Missing star system</h1>
+include($this->loadTemplate('game/inc/location.tpl.php'));
 
-<p>This star system does not exist.  The universe should be recreated.</p>
+?><div id="locInfo">
+<h1>Star system <?php $this->eprint($this->star['id']); ?></h1>
+
+<p>Star system information</p>
+</div>
 <?php
 
 include($this->loadTemplate('game/inc/footer_game.tpl.php'));

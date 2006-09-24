@@ -1,7 +1,9 @@
 <?php
 defined('PATH_SAVANT') || exit();
 
-$title = 'News and events';
+$this->pageName = 'News';
+$this->title = 'News and events';
+$this->description = '';
 
 include($this->loadTemplate('game/inc/header_game.tpl.php'));
 

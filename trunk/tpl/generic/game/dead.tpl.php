@@ -1,7 +1,6 @@
 <?php
 defined('PATH_SAVANT') || exit();
 
-
 $this->pageName = 'Game over';
 $this->title = 'All of your ships have been destroyed';
 $this->description = '';

@@ -4,12 +4,23 @@ function getStarLinks()
 {
 	global $links, $star;
 
-	$links = array();
+	$num = array();
 	for ($i = 1; $i <= 6; ++$i) {
 		$to = $star['link_' . $i];
-		if ($to != 0) { // to NULL later
-			$links[] = $to;
+		if ($to != 0) {
+			$num[] = $to;
 		}
+	}
+
+	$info = $db->query('SELECT star_id, x, y FROM [game]_stars WHERE star_id = ' . 
+	 implode(' OR star_id = ', $num));
+
+	$links = array();
+	while ($s = $db->fetchRow($info)) {
+		$linkTo =& $links[];
+		$linkTo['id'] = (int)$s['id'];
+		$linkTo['x'] = (double)$s['x'] - (double)$star['x'] + (200 / 2);
+		$linkTo['y'] = (double)$s['y'] - (double)$star['y'] + (200 / 2);
 	}
 }
 
@@ -28,24 +39,6 @@ function isLinked(&$star, $linkNo)
 
 	return false;
 }
-
-require_once('inc/user.inc.php');
-require_once('inc/template.inc.php');
-require_once('inc/attack.inc.php');
-
-if (!deathCheck($user)) {
-	deathInfo($user);
-}
-
-get_star();
-if (!$star) {
-	assignCommon();
-	$tpl->display('game/system_missing.tpl.php');
-	exit;
-}
-getStarLinks();
-
-//this will show any remaining autowarps the player is trying to perform.
 function getAutowarp()
 {
 	global $autowarp, $star;
@@ -66,104 +59,46 @@ function getAutowarp()
 	return $path;
 }
 
-function locationBar()
-{
-	global $db, $user, $userOpt, $userShip, $gameInfo, $self;
+require_once('inc/user.inc.php');
+require_once('inc/template.inc.php');
+require_once('inc/attack.inc.php');
 
-	$bar = <<<END
-<div id="locBar">
-	<h2><a href="system_map.php">Map of galaxy</a></h2>
-
-END;
-
-	if ($userOpt['show_minimap']) {
-		$mapImg = esc('img/' . $gameInfo['db_name'] . '_maps/sm' .
-		 $userShip['location'] . '.png');
-		$bar .= <<<END
-	<p><img id="miniMap" src="$mapImg" width="200" height="200"
-	 alt="Map of systems around $userShip[location]" usemap="#systemMap" /></p>
-
-END;
-
-		global $links;
-		if (!empty($links)) {
-			global $star, $self;
-			$bar .= "\t<map name=\"systemMap\" id=\"#systemMap\">\n";
-
-			$linkInfo = array();
-			$info = $db->query('SELECT star_id, x, y FROM [game]_stars ' .
-			 'WHERE star_id = ' . implode(' OR star_id = ', $links));
-			while ($s = $db->fetchRow($info)) {
-				$s['x'] = $s['x'] - $star['x'] + (200 / 2);
-				$s['y'] = $s['y'] - $star['y'] + (200 / 2);
-
-				$linkInfo[(int)$s['star_id']] = $s;
-			}
-
-			foreach ($linkInfo as $id => $s) {
-				$bar .= "\t\t<area shape=\"rect\" coords=\"" .
-				 ($s['x'] - 10) . "," . ($s['y'] - 10) .
-				 "," . ($s['x'] + 10) . "," . ($s['y'] + 10) .
-				 "\" href=\"$self?toloc=$id\" alt=\"System $id\" />\n";
-			}
-
-			$bar .= "\t</map>\n";
-		}
-	}
-
-	if ($user['ship_id'] !== NULL) {
-		if ($userShip['empty_bays'] != $userShip['cargo_bays']) {
-			$bar .= "\t<p><a href=\"$self?jettison=1\">Jettison Cargo</a></p>\n";
-		}
-	}
-
-	$bar .= "\t<h2>Equipment</h2>\n";
-
-	if($user['genesis'] > 0) {
-		$bar .= "\t<p><a href=\"planet_build.php?location=$userShip[location]\">Genesis Device</a> ($user[genesis])</p>\n";
-	}
-
-	if($user['alpha'] > 0) {
-		$bar .= "\t<p><a href=\"bombs.php?alpha=1\">Alpha Bomb</a> ($user[alpha])</p>\n";
-	}
-	if($user['gamma'] > 0) {
-		$bar .= "\t<p><a href=\"bombs.php?bomb_type=1\">Gamma Bomb</a> ($user[gamma])</p>\n";
-	}
-	if($user['delta'] > 0) {
-		$bar .= "\t<p><a href=\"bombs.php?bomb_type=2\">Delta Bomb</a> ($user[delta])</p>\n";
-	}
-
-	if ($userShip !== NULL) {
-		if (shipHas($userShip, 'tw')) {
-			$bar .= <<<END
-	<form id="transwarp_form" action="$self" method="post">
-		<h3 title="Travel a short-distance instantly">Transwarp Jump</h3>
-		<h4><a href="$self?transburst=1">Burst</a> to a random location</h4>
-		<h4 title="Maximum 15 light years at 5+ turns">Travel to a certain destination</h4>
-		<p>Destination: <input type="text" size="3" maxlength="3" name="transwarp"  class="text" /></p>
-		<p><input type="submit" value="Engage" class="button" /></p>
-	</form>
-
-END;
-		}
-
-		if (shipHas($userShip, 'sj')) {
-			$bar .= <<<END
-	<form id="subspace_form" action="$self" method="post">
-		<h3 title="Travel quickly to anywhere in the Galaxy">SubSpace Jump</h3>
-		<p>Destination: <input type="text" size="3" maxlength="3" name="subspace"  class="text" /></p>
-		<p><input type="submit" value="Engage" class="button" /></p>
-	</form>
-
-END;
-		}
-	}
-
-	$bar .= "</div>\n";
-
-	return $bar;
+if (!deathCheck($user)) {
+	deathInfo($user);
 }
 
+get_star();
+if (!$star) {
+	assignCommon();
+	$tpl->display('game/system_missing.tpl.php');
+	exit;
+}
+getStarLinks();
+
+
+function assignEquip()
+{
+	global $tpl, $user;
+
+	$tpl->assign('equip', array(
+		'genesis' => $user['genesis'],
+		'alpha' => $user['alpha'],
+		'gamma' => $user['gamma'],
+		'delta' => $user['delta']
+	));
+}
+
+function assignStar()
+{
+	global $tpl, $links, $star, $gameInfo;
+
+	$tpl->assign('star', array(
+		'id' => $star['id'],
+		'map' => URL_BASE . '/img/' . $gameInfo['db_name'] . '_maps/sm' . 
+		 $star['id'] . '.png',
+		'links' => $links
+	);
+}
 
 function systemInfo()
 {
@@ -228,9 +163,13 @@ END;
 	return $bar;
 }
 
-$header = "Star System";
-$auto_str = "";
-$out = "";
+assignStar();
+assignEquip();
+assignCommon();
+
+$tpl->display('game/system.tpl.php');
+
+exit;
 
 // command a different ship
 if (isset($command)) {
