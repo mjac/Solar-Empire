@@ -346,7 +346,7 @@ CREATE TABLE gamename_users (
   turns_run int unsigned NOT NULL default 0,
   ship_id int unsigned default NULL,
   cash bigint unsigned NOT NULL default 10000,
-  last_attack int unsigned NOT NULL default 1,
+  last_attack int unsigned NOT NULL default 0,
   last_attack_by varchar(32) NOT NULL default '',
   ships_killed int unsigned NOT NULL default 0,
   ships_lost int unsigned NOT NULL default 0,
