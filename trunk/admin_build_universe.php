@@ -56,20 +56,20 @@ $UNI['link_dist'] = $gameOpt['uv_max_link_dist']; // Maximum distance between li
 $UNI['minlinks'] = 2; // Miniumum number of links a system may have.
 $UNI['maxlinks'] = 6; // Maximum number of links a system may have.
 
-if (isset($_REQUEST['action'])) {
-	$action = isset($_REQUEST['action']) ? strtolower($_REQUEST['action']) : '';
+$action = isset($_REQUEST['action']) ? strtolower($_REQUEST['action']) : '';
 
-	switch ($action) {
-		case 'create':
-		case 'preview':
-			break;
-		default:
-			$tpl->display('game/admin/generate.tpl.php');
-			return;
-	}
+switch ($action) {
+	case 'create':
+	case 'preview':
+		break;
+	default:
+		$tpl->display('game/admin/generate.tpl.php');
+		return;
 }
 
-$tpl->assign('action', $action);exit;
+$tpl->assign('action', $action);
+
+exit;
 
 if (empty($sure) && isset($build_universe)) {
 	$sure_str = "Are you sure you want to build a new universe?<p>This may take some time.";
