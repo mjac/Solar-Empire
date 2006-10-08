@@ -19,7 +19,7 @@ $this->eprint($this->url['self'] . '?action=maps');
 ?>">recreate the maps</a> using the current univerese schema without resetting the entire universe.</p>
 <?php
 
-if (isset($this->action)) {
+if (!isset($this->action)) {
 	include($this->loadTemplate('game/inc/footer_game.tpl.php'));
 	return;
 }

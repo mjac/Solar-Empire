@@ -55,21 +55,23 @@ $UNI['minlinks'] = 2; // Miniumum number of links a system may have.
 $UNI['maxlinks'] = 6; // Maximum number of links a system may have.
 
 $action = isset($_REQUEST['action']) ? strtolower($_REQUEST['action']) : '';
+$tpl->assign('action', $action);
 
 switch ($action) {
 	case 'maps':
 	case 'create':
-	case 'preview':
+	case 'imagepreview':
 		break;
+	case 'preview':
 	default:
 		assignCommon($tpl);
 		$tpl->display('game/admin/generate.tpl.php');
 		return;
 }
 
-$tpl->assign('action', $action);
+exit;
 
-if (!isset($gen_new_maps)) {//don't make a new uni for map making
+if (!isset($gen_new_maps)) { // Don't make a new uni for map making
 	$systems = array(array(
 		'num' => 0,
 		'x' => $UNI['size'] / 2,
@@ -86,10 +88,9 @@ if (!isset($gen_new_maps)) {//don't make a new uni for map making
 }
 
 if (isset($build_universe) || isset($preview) || isset($gen_new_maps)) {
-	 //only output text for html page. not map preview png
+	//only output text for html page. not map preview png
 	if(isset($build_universe)){
 		if (!isset($preview)) $out .= "Generating Systems...<br />";
-
 	}
 	if(!isset($gen_new_maps)){ //don't make a new uni for map making
 		make_systems($systems);
