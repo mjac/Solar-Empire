@@ -14,8 +14,10 @@ universe variables, until you find a good combination of settings.  After this
 <label for="actCreate">generate the universe</label> to create all the stars, 
 ports and graphics.</p>
 <form action="<?php $this->eprint($this->url['self']); ?>" method="get">
-	<p><input type="submit" id="actPreview" name="action" value="Preview" /> #
-	then <input type="submit" id="actCreate" name="action" value="Create" /></p>
+	<p><input type="submit" id="actPreview" name="action" value="Preview"
+	 class="button" /> then 
+	<input type="submit" id="actCreate" name="action" value="Create"
+	 class="button" /></p>
 </form>
 <?php
 
