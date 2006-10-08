@@ -6,14 +6,13 @@ require_once('inc/generator.inc.php');
 
 set_time_limit(30);
 
-$out = '';
-
-
 $UNI = array();
+
 $UNI['size'] = $gameOpt['uv_universe_size'];
 $UNI['numsystems'] = $gameOpt['uv_num_stars'];
 $UNI['map_border'] = 25;
 $UNI['num_size'] = 1; // font number size
+$UNI['graphics'] = (bool)$gameOpt['uv_map_graphics'];
 
 $UNI['bg_color'] = array(0x00, 0x00, 0x00);
 $UNI['link_color'] = array(0x66, 0x66, 0x66);
@@ -50,7 +49,6 @@ $UNI['uv_planet_slots'] = $gameOpt['uv_planet_slots'];
 $UNI['wormholes'] = $gameOpt['wormholes'];
 $UNI['num_ports'] = $gameOpt['uv_num_ports'];
 $UNI['num_bms'] = $gameOpt['uv_num_bmrkt'];
-$UNI['graphics'] = (bool)$gameOpt['uv_map_graphics'];
 $UNI['link_dist'] = $gameOpt['uv_max_link_dist']; // Maximum distance between linked systems
 
 $UNI['minlinks'] = 2; // Miniumum number of links a system may have.
