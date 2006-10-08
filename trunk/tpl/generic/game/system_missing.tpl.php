@@ -9,7 +9,7 @@ include($this->loadTemplate('game/inc/header_game.tpl.php'));
 
 ?><h1>Missing star system</h1>
 
-<p>This star system does not exist.  The universe should be recreated.</p>
+<p>This star system does not exist.  The universe should be created.</p>
 <?php
 
 include($this->loadTemplate('game/inc/footer_game.tpl.php'));

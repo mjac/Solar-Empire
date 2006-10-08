@@ -63,7 +63,7 @@ require_once('inc/user.inc.php');
 require_once('inc/template.inc.php');
 require_once('inc/attack.inc.php');
 
-if (!deathCheck($user)) {
+if (deathCheck($user)) {
 	deathInfo($user);
 }
 
