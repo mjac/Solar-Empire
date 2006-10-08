@@ -57,6 +57,7 @@ $UNI['maxlinks'] = 6; // Maximum number of links a system may have.
 $action = isset($_REQUEST['action']) ? strtolower($_REQUEST['action']) : '';
 
 switch ($action) {
+	case 'maps':
 	case 'create':
 	case 'preview':
 		break;
@@ -68,104 +69,84 @@ switch ($action) {
 
 $tpl->assign('action', $action);
 
-exit;
+if (!isset($gen_new_maps)) {//don't make a new uni for map making
+	$systems = array(array(
+		'num' => 0,
+		'x' => $UNI['size'] / 2,
+		'y' => $UNI['size'] / 2,
+		'links' => '',
+		'name' => 'Sol',
+		'fuel' => 0,
+		'metal' => 0,
+		'wormhole' => 0,
+		'planetary_slots' => 0
+	));
+	$ports = array(0);
+	$bmarks = array();
+}
 
-if (empty($sure) && isset($build_universe)) {
-	$sure_str = "Are you sure you want to build a new universe?<p>This may take some time.";
-	get_var('Build Uni', $self, $sure_str, 'sure', 'yes');
-} elseif(isset($process)) {
-	if (!isset($gen_new_maps)) {//don't make a new uni for map making
-		$systems = array(array(
-			'num' => 0,
-			'x' => $UNI['size'] / 2,
-			'y' => $UNI['size'] / 2,
-			'links' => '',
-			'name' => 'Sol',
-			'fuel' => 0,
-			'metal' => 0,
-			'wormhole' => 0,
-			'planetary_slots' => 0
-		));
-		$ports = array(0);
-		$bmarks = array();
+if (isset($build_universe) || isset($preview) || isset($gen_new_maps)) {
+	 //only output text for html page. not map preview png
+	if(isset($build_universe)){
+		if (!isset($preview)) $out .= "Generating Systems...<br />";
+
+	}
+	if(!isset($gen_new_maps)){ //don't make a new uni for map making
+		make_systems($systems);
 	}
 
-	if (isset($build_universe) || isset($preview) || isset($gen_new_maps)) {
-		 //only output text for html page. not map preview png
-		if(isset($build_universe)){
-			if (!isset($preview)) $out .= "Generating Systems...<br />";
+	 //only output text for html page. not map preview png
+	if(isset($build_universe)) {
+		if (!isset($preview)) $out .= "Linking Systems...<br />";
 
-		}
-		if(!isset($gen_new_maps)){ //don't make a new uni for map making
-			make_systems($systems);
-		}
+	}
+	if(!isset($gen_new_maps)){//don't make a new uni for map making
+		link_systems($systems);
+	}
 
-		 //only output text for html page. not map preview png
-		if(isset($build_universe)) {
-			if (!isset($preview)) $out .= "Linking Systems...<br />";
+	if(isset($build_universe)){//generating a new universe
+		if (!isset($preview)) $out .= "Adding Minerals...<br />";
+		add_minerals($systems);
 
-		}
-		if(!isset($gen_new_maps)){//don't make a new uni for map making
-			link_systems($systems);
-		}
+		if (!isset($preview)) $out .= "Adding Starports...<br />";
+		add_starports($ports);
 
-		if(isset($build_universe)){//generating a new universe
-			if (!isset($preview)) $out .= "Adding Minerals...<br />";
-			add_minerals($systems);
+		if (!isset($preview)) $out .= "Saving Universe...<br />";
+		save_universe($systems, $ports);
 
-			if (!isset($preview)) $out .= "Adding Starports...<br />";
-			add_starports($ports);
+		if (!isset($preview)) $out .= "Creating pre-genned planets...<br />";
+		planet_functionality();
+	}
 
-			if (!isset($preview)) $out .= "Saving Universe...<br />";
-			save_universe($systems, $ports);
-
-			if (!isset($preview)) $out .= "Creating pre-genned planets...<br />";
-			planet_functionality();
-		}
-
-		if (!function_exists('imagecreate')) {
-			echo "<h2>Image creation failed</h2>\n<p>Required GD image functions are missing.</p>\n";
-		} else {
-			set_time_limit(60); // Another minute to make the images
-			if (!isset($preview)) {
-				$out .= "<br />Deleting old images...<br />";
-				clearImages('img/' . $gameInfo['db_name'] . '_maps');
-				$out .= "Rendering global map...<br />";
-			}
-			renderGlobal($gameInfo['db_name']);
-			if (!isset($preview)) $out .= "Rendering local maps...<br />";
-			renderLocal($gameInfo['db_name']);
-		}
+	if (!function_exists('imagecreate')) {
+		echo "<h2>Image creation failed</h2>\n<p>Required GD image functions are missing.</p>\n";
+	} else {
+		set_time_limit(60); // Another minute to make the images
 		if (!isset($preview)) {
-			print_page('Universe generator', $out);
+			$out .= "<br />Deleting old images...<br />";
+			clearImages('img/' . $gameInfo['db_name'] . '_maps');
+			$out .= "Rendering global map...<br />";
 		}
-	} elseif(isset($gen_new_maps)){ // Generating some new maps for some reason
-		if (!isset($preview)) $out .= "<br />Deleting old images...<br />";
-		clearImages('img/' . $gameInfo['db_name'] . '_maps');
-
-		if (!isset($preview)) $out .= "Rendering global map...<br />";
 		renderGlobal($gameInfo['db_name']);
-
 		if (!isset($preview)) $out .= "Rendering local maps...<br />";
 		renderLocal($gameInfo['db_name']);
-
-		print_footer();
-	} else { // Previewing universes
-		renderGlobal($gameInfo['db_name']);
 	}
+	if (!isset($preview)) {
+		print_page('Universe generator', $out);
+	}
+} elseif(isset($gen_new_maps)){ // Generating some new maps for some reason
+	if (!isset($preview)) $out .= "<br />Deleting old images...<br />";
+	clearImages('img/' . $gameInfo['db_name'] . '_maps');
 
-} else {
-	pageStart('Build a new universe');
-	echo <<<END
-<h1>Build a new universe</h1>
-<p><a href="$self?preview=1&process=1">Preview</a> a universe that 
-uses your present variable settings. This <strong>will not affect</strong> the 
-present game.</p>
-<p>Generate a <a href="$self?build_universe=1&process=1">new universe</a> 
-for this game.</p>
+	if (!isset($preview)) $out .= "Rendering global map...<br />";
+	renderGlobal($gameInfo['db_name']);
 
-END;
-	pageStop();
+	if (!isset($preview)) $out .= "Rendering local maps...<br />";
+	renderLocal($gameInfo['db_name']);
+
+	print_footer();
+} else { // Previewing universes
+	renderGlobal($gameInfo['db_name']);
 }
 
 ?>
