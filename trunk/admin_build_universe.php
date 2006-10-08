@@ -61,6 +61,7 @@ switch ($action) {
 	case 'preview':
 		break;
 	default:
+		assignCommon($tpl);
 		$tpl->display('game/admin/generate.tpl.php');
 		return;
 }
