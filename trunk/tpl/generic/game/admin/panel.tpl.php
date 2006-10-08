@@ -1,7 +1,9 @@
 <?php
 defined('PATH_SAVANT') || exit();
 
-$title = 'Game administration panel';
+$this->pageName = 'Administration';
+$this->title = 'Game administration panel';
+$this->description = '';
 
 include($this->loadTemplate('game/inc/header_game.tpl.php'));
 
