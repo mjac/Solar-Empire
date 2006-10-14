@@ -43,7 +43,7 @@ $queries = explode(';', $all);
 
 $count = 0;
 foreach ($queries as $query) {
-	$done = $db->query('%s', $query);
+	$done = $db->query($query);
 	++$count;
 }
 
@@ -90,7 +90,7 @@ foreach ($dat['options'] as $option) {
 <h2>Adding administrator account</h2>
 <p><?php
 
-$newAdmin = $db->query('INSERT INTO user_accounts (login_id, login_name, passwd, session_exp, session_id, in_game, email_address, signed_up, login, login_count, last_ip, num_games_joined, page_views, real_name, total_score, style) VALUES (1, \'Admin\', \'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\', 0, \'\', NULL, \'Tyrant of the Universe\', 1, 1, 1, \'\', 0, 0, \'Game Administrator\', 0, NULL)');
+$newAdmin = $db->query('INSERT INTO user_accounts (login_id, login_name, passwd, session_exp, session_id, in_game, email_address, signed_up, last_login, login_count, last_ip, num_games_joined, page_views, real_name, total_score, style) VALUES (1, \'Admin\', \'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\', 0, \'\', NULL, \'Tyrant of the Universe\', 1, 1, 1, \'\', 0, 0, \'Game Administrator\', 0, NULL)');
 
 echo $db->hasError($newAdmin) ? 'Failure' : 'Success';
 
