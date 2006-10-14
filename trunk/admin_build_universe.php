@@ -45,8 +45,8 @@ $uni->options['width'] = $uni->options['height'] = $gameOpt['uv_universe_size'];
 $uni->options['starAmount'] = $gameOpt['uv_num_stars'];
 
 if ($gameOpt['uv_map_graphics']) {
-	$uni->appearance['earth'] = PATH_BASE . '/img/map/earth.png';
-	$uni->appearance['star'] = PATH_BASE . '/img/map/star.png';
+	$uni->appearance['graphics']['earth'] = PATH_BASE . '/img/map/earth.png';
+	$uni->appearance['graphics']['star'] = PATH_BASE . '/img/map/star.png';
 }
 
 $uni->options['localWidth'] = $uni->options['localHeight'] = 200;
