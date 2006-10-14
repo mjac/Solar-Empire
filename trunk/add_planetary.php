@@ -9,7 +9,7 @@ $planet = $db->fetchRow($pQuery);
 
 if (!($planet = checkPlanet($planet_id))) {
 	header('Location: system.php');
-	exit();
+	exit;
 }
 
 $shield_gen_cost = 50000;
@@ -77,7 +77,7 @@ if ($planet['login_id'] !== $user['login_id']) {
 		$target_planet = getPlanet($destination);
 		if (!$target_planet) {
 			print_page('Invalid planet', 'Invalid planet');
-			exit();
+			exit;
 		}
 
 		$turns = ceil(get_star_dist($userShip['location'], $target_planet['location'])) + 1;

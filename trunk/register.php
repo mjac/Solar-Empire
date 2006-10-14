@@ -10,7 +10,7 @@ if (!(isset($_POST['handle']) && isset($_POST['name']) &&
 	 isset($_POST['email']) && isset($_POST['email2']))) {
 	$tpl->assign('rules', file_get_contents('inc/rules.inc.html'));
 	$tpl->display('register.tpl.php');
-	exit();
+	exit;
 }
 
 // check non-optionals
@@ -30,7 +30,7 @@ if (!(strlen($_POST['email']) < 65 && isEmailAddr($_POST['email']))) {
 if (!empty($problems)) {
 	$tpl->assign('problems', $problems);
 	$tpl->display('registration_problems.tpl.php');
-	exit();
+	exit;
 }
 
 // check for existing username
@@ -52,7 +52,7 @@ if (current($db->fetchRow($emailUsage)) > 0) {
 if (!empty($problems)) {
 	$tpl->assign('problems', $problems);
 	$tpl->display('registration_problems.tpl.php');
-	exit();
+	exit;
 }
 
 require_once('inc/external/sha256/sha256.class.php');
@@ -89,6 +89,6 @@ mail("$_POST[name] <$_POST[email]>", "New account at $location", $message,
  "From: System Wars Mailer <game@$_SERVER[HTTP_HOST]>");
 
 $tpl->display('registration_complete.tpl.php');
-exit();
+exit;
 
 ?>

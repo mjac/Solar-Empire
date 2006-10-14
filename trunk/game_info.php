@@ -10,7 +10,7 @@ $tpl->assign('gameExists', $gameInfo ? true : false);
 
 if (!$gameInfo) {
 	$tpl->display('game_info.tpl.php');
-	exit();
+	exit;
 }
 
 $tpl->assign('name', $gameInfo['name']);
@@ -81,6 +81,6 @@ if ($db->numRows($topPlayers) > 0) {
 $tpl->assign('topPlayers', $topArr);
 
 $tpl->display('game_info.tpl.php');
-exit();
+exit;
 
 ?>

@@ -8,7 +8,7 @@ deathCheck($user);
 
 if (!isset($planet_id)) {
 	header('Location: system.php');
-	exit();
+	exit;
 }
 
 

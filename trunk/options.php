@@ -67,7 +67,7 @@ if (isset($retire)) {
 <p><a href=game_listing.php>Go to Game List</a></p>
 END;
 		print_footer();
-		exit();
+		exit;
 	}
 }
 

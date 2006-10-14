@@ -6,10 +6,10 @@ require_once('inc/template.inc.php');
 
 if (checkAuth()) {
 	header('Location: game_listing.php');
-	exit();
+	exit;
 }
 
 $tpl->display('index.tpl.php');
-exit();
+exit;
 
 ?>

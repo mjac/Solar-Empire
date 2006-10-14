@@ -11,7 +11,7 @@ $tpl->assign('viewVars', $gameInfo ? $gameOpt['admin_var_show'] == 1 : false);
 
 if (!($gameInfo && $gameOpt['admin_var_show'] == 1)) {
 	$tpl->display('game_vars.tpl.php');
-	exit();
+	exit;
 }
 
 $tpl->assign('gameName', $gameInfo['name']);
@@ -27,6 +27,6 @@ while ($var = $db->fetchRow($vars, ROW_ASSOC)) {
 $tpl->assign('gameVars', $gameVars);
 
 $tpl->display('game_vars.tpl.php');
-exit();
+exit;
 
 ?>

@@ -7,7 +7,7 @@ require_once('inc/planet.inc.php');
 if (!(isset($target) && ($planet = getPlanet($target)) && 
      canAttackPlanet($planet))) {
 	header('Location: system.php');
-	exit();
+	exit;
 }
 
 $out = "<h1>Planet assault</h1>\n";
@@ -15,7 +15,7 @@ $out = "<h1>Planet assault</h1>\n";
 if (!giveTurnsPlayer(-$gameOpt['attack_turn_cost_planet'])) {
 	$out .= "<p>You do not have enough turns to attack this planet.</p>\n";
 	print_page('Planet assault', $out);
-	exit();
+	exit;
 }
 
 $pName = print_name($userShip);

@@ -48,6 +48,6 @@ $tpl->assign('articles', $articles);
 assignCommon($tpl);
 
 $tpl->display('game/news.tpl.php');
-exit();
+exit;
 
 ?>

@@ -7,7 +7,7 @@ require_once('inc/db.inc.php');
 // Check and update the authentication.
 if (!(checkAuth() && $account['in_game'] !== NULL)) {
 	require('logout.php');
-	exit();
+	exit;
 }
 
 
@@ -98,7 +98,7 @@ function checkPlayer($id)
 
 	if (!is_array($user)) {
 		header('Location: index.php');
-		exit();
+		exit;
 	}
 
 	$oQuery = $db->query('SELECT * FROM [game]_user_options WHERE login_id = %[1]',

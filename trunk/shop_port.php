@@ -143,7 +143,7 @@ if(isset($sell_all)) {
 			print_page("Port","You do not have any cargo in any ships in this star system.");
 		} elseif($ship_count == 1 && $user['turns'] > 0){
 			header('Location: shop_port.php?sell_all=1&changed=1');
-			exit();
+			exit;
 		} elseif ($user['turns'] < 5) {
 			print_page("Port","You do not have enough turns to trade using this method. You will have to sell everything manually.");
 		} elseif(!isset($sure)) {

@@ -4,7 +4,7 @@ require_once('inc/user.inc.php');
 
 if($user['ship_id'] !== NULL && $userShip['location'] != 1) {
 	 print_page("Access Denied","You are not in system #1.");
-	 exit();
+	 exit;
 }
 
 $commission = 7;

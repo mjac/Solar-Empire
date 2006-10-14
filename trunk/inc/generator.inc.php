@@ -589,7 +589,7 @@ function renderGlobal($game_id)
 		header("Content-type: image/png");
 		imagepng($im);
 		imagedestroy($im);
-		exit();
+		exit;
 	}
 
 	//Create buffer image

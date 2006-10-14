@@ -205,7 +205,7 @@ if (isset($reset)) {
 		
 		insert_history($user['login_id'], 'Reset game');
 		header('Location: game_listing.php');
-		exit();
+		exit;
 	}
 
 	print_page('Reset game', "<p>Are you sure you want to reset the game? " .
@@ -264,6 +264,6 @@ END;
 assignCommon($tpl);
 
 $tpl->display('game/admin/panel.tpl.php');
-exit();
+exit;
 
 ?>

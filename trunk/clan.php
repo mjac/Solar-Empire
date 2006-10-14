@@ -303,7 +303,7 @@ if (isset($leave)) { // Leave clan
 	insert_history($user['login_id'],"Left $clan[clan_name] clan.");
 
 	header('Location: system.php');
-	exit();
+	exit;
 } elseif (isset($kick)) { // Kick a clan member
 	db("select leader_id,clan_name from [game]_clans where clan_id = $user[clan_id]");
 	$clan = dbr(1);

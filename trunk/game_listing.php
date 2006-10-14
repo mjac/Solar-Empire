@@ -25,7 +25,7 @@ function login_to_server($handle, $password)
 		$tpl->assign('problems', $problems);
 		$tpl->display('login_problems.tpl.php');
 
-		exit();
+		exit;
 	}
 
 	if ($password !== $userInfo['passwd']) { // Incorrect password
@@ -35,7 +35,7 @@ function login_to_server($handle, $password)
 		$tpl->assign('problems', $problems);
 		$tpl->display('login_problems.tpl.php');
 
-		exit();
+		exit;
 	}
 
 	/*****************User successfully logged in***********************/
@@ -59,26 +59,26 @@ function login_to_server($handle, $password)
 	    header('Location: game_listing.php');
 	}
 
-	exit();
+	exit;
 }
 
 // User logging into server.
 if (isset($_POST['handle']) && isset($_POST['password'])) {
 	login_to_server($_POST['handle'], $_POST['password']);
-	exit();
+	exit;
 }
 
 
 // User must be logged in to get past this point
 if (!checkAuth()) {
 	require_once('logout.php');
-	exit();
+	exit;
 }
 
 // Logout of the game
 if ($account['in_game'] !== NULL) {
 	header('Location: logout.php?logout_single_game=1');
-	exit();
+	exit;
 }
 
 
@@ -89,7 +89,7 @@ if (isset($_REQUEST['game_selected'])) {
 
 	if ($db->numRows($gQuery) < 1) {
 		header('Location: game_listing.php');
-		exit();
+		exit;
 	}
 
 	$gameInfo = $db->fetchRow($gQuery);
@@ -112,7 +112,7 @@ if (isset($_REQUEST['game_selected'])) {
 			$tpl->assign('bannedUntil', $banned['banned_time']);
 			$tpl->assign('banReason', $banned['banned_reason']);
 			$tpl->display('game_banned.tpl.php');
-			exit();
+			exit;
 		}
 
 		// Not banned from game, so may continue.
@@ -126,7 +126,7 @@ if (isset($_REQUEST['game_selected'])) {
 
 		header('Location: system.php');
 
-		exit();
+		exit;
 	} else { // User joining selected game
 		$pCount = $db->query('SELECT COUNT(*) FROM [game]_users WHERE login_id != %[1]',
 		 $gameInfo['admin']);
@@ -148,7 +148,7 @@ if (isset($_REQUEST['game_selected'])) {
 			$tpl->assign('problems', $problems);
 			$tpl->assign('returnTo', 'game_listing.php');
 			$tpl->display('game_join_problems.tpl.php');
-			exit();
+			exit;
 		}
 
 		if (!(isset($_POST['in_game_name']) && isset($_POST['ship_name']))) {
@@ -156,7 +156,7 @@ if (isset($_REQUEST['game_selected'])) {
 			$tpl->assign('gameSelected', $db_name);
 			$tpl->assign('accountName', $account['login_name']);
 			$tpl->display('game_join.tpl.php');
-			exit();
+			exit;
 		} else {
 			$in_game_name = trim($_POST['in_game_name']);
 			if (!valid_name($in_game_name)) {
@@ -173,7 +173,7 @@ if (isset($_REQUEST['game_selected'])) {
 				$tpl->assign('returnTo', 'game_listing.php?game_selected=' . 
 				 $db_name);
 				$tpl->display('game_join_problems.tpl.php');
-				exit();
+				exit;
 			}
 
 			// Determine if that username is already in user by another player in the game, or another player as a server name.
@@ -187,7 +187,7 @@ if (isset($_REQUEST['game_selected'])) {
 				$tpl->assign('returnTo', 'game_listing.php?game_selected=' . 
 				 $db_name);
 				$tpl->display('game_join_problems.tpl.php');
-				exit();
+				exit;
 			}
 
 			// Create user's first ship
@@ -232,11 +232,11 @@ if (isset($_REQUEST['game_selected'])) {
 
 			header('Location: system.php');
 
-			exit();
+			exit;
 		}
 	}
 
-	exit();
+	exit;
 }
 
 if (IS_OWNER && isset($_REQUEST['newGame']) && ctype_alnum($_REQUEST['newGame'])) {
@@ -300,6 +300,6 @@ $tpl->assign('canCreateGame', IS_OWNER);
 $tpl->assign('serverNews', file_get_contents('inc/server_news.inc.html'));
 
 $tpl->display('game_listing.tpl.php');
-exit();
+exit;
 
 ?>

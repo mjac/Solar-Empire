@@ -94,7 +94,7 @@ END;
 	$out_str .= "</table><br />";
 } elseif (isset($php_info)) {
 	phpinfo();
-	exit();
+	exit;
 } else {
 	$out_str .= <<<END
 <h1>Owner Tools</h1>

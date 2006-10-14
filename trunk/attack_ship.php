@@ -5,7 +5,7 @@ require_once('inc/attack.inc.php');
 
 if (!isset($target)) {
 	header('Location: system.php');
-	exit();
+	exit;
 }
 
 $out = "<h1>Attack result</h1>\n";
@@ -14,7 +14,7 @@ if (!($tShip = getShip($target)) ||
      $tShip['ship_id'] == $userShip['ship_id'] ||
      $tShip['location'] != $userShip['location']) {
 	header('Location: system.php');
-	exit();
+	exit;
 }
 
 if (!canAttackShip($tShip)) {
