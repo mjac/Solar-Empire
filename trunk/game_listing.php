@@ -128,8 +128,8 @@ if (isset($_REQUEST['game_selected'])) {
 
 		exit();
 	} else { // User joining selected game
-		$pCount = $db->query('SELECT COUNT(*) FROM [game]_users WHERE ' .
-		 'login_id != %u', array($gameInfo['admin']));
+		$pCount = $db->query('SELECT COUNT(*) FROM [game]_users WHERE login_id != %[1]',
+		 $gameInfo['admin']);
 		$players = (int)current($db->fetchRow($pCount));
 
 		// Get the vars for the game
