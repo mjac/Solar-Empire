@@ -97,7 +97,7 @@ INSERT INTO gamename_db_vars (name, value, min, max, descript) VALUES ('admin_va
 ('uv_fuel_percent', 30, 0, 100, 'Percent of star systems that will have fuel when universe is generated.'),
 ('uv_map_graphics', 1, 0, 1, 'Whether to use graphics in the maps.'),
 ('uv_map_layout', 0, 0, 4, 'Choose the layout of the map.<p>0 = Random. 1 = Galactic Core. 2 = Clusters. 3 = Stars within a circle.'),
-('uv_max_link_dist', -1, -1, 10000, 'Maximum distance a link between two star systems may be (in pixels).<br>Setting this too low will result in most/all stars not being linked. Note that Sol is always linked, no matter this var.<br>Set to -1 to allow nature to take it''s course.<p>Try experimenting.'),
+('uv_max_link_dist', 40, 0, 10000, 'Maximum distance a link between two star systems may be.  Setting this too low will result in most/all stars not being linked.'),
 ('uv_metal_max', 99835, 1, 1000000, 'Max amount of metal in a star system when universe is generated.'),
 ('uv_metal_min', 134, 1, 1000000, 'Min amount of metal in a star system when universe is generated.'),
 ('uv_metal_percent', 60, 0, 100, 'Percent of star systems that will have metal when universe is generated.'),
