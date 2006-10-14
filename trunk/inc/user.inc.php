@@ -520,11 +520,8 @@ function getShip($id)
 {
 	global $db;
 
-	$sQuery = $db->query('SELECT s.*, t.name AS class_name, ' .
-	 't.abbr AS class_abbr, t.appearance, u.login_name, u.turns_run ' .
-	 'FROM [game]_ships AS s LEFT JOIN [game]_ship_types AS t ON ' .
-	 's.type_id = t.type_id LEFT JOIN [game]_users AS u ON ' .
-	 's.login_id = u.login_id WHERE s.ship_id = %u', array($id));
+	$sQuery = $db->query('SELECT s.*, t.name AS class_name, t.abbr AS class_abbr, t.appearance, u.login_name, u.turns_run FROM [game]_ships AS s LEFT JOIN [game]_ship_types AS t ON s.type_id = t.type_id LEFT JOIN [game]_users AS u ON s.login_id = u.login_id WHERE s.ship_id = %[1]',
+	 $id);
 
 	if (!$sInfo = $db->fetchRow($sQuery)) {
 		return false;
