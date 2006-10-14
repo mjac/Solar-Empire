@@ -5,7 +5,8 @@ if (!function_exists('makeList')) {
 	require('inc/list.inc.php');
 }
 
-$title = 'Problems logging in';
+$this->title = 'Problems logging in';
+$this->pageName = 'Sign-in';
 
 include($this->loadTemplate('inc/header_splash.tpl.php'));
 

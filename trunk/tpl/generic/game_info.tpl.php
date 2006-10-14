@@ -9,7 +9,8 @@ if (!function_exists('resolveDifficulty')) {
 	require($this->loadTemplate('inc/difficulty.inc.php'));
 }
 
-$title = 'Game information';
+$this->pageName = 'Game information';
+$this->title = 'Detailed information about the game';
 
 include($this->loadTemplate('inc/header.tpl.php'));
 
@@ -75,7 +76,7 @@ if ($this->viewVars) {
 you the competitive advantage.<?php
 
 } else {
-	echo "The admin has disabled viewing of game variables.";
+?>The admin has disabled viewing of game variables.<?php
 }
 
 ?></td>

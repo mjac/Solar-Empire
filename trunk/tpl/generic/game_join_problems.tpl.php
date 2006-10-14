@@ -5,7 +5,8 @@ if (!function_exists('makeList')) {
 	require($this->loadTemplate('inc/list.inc.php'));
 }
 
-$title = 'Problems joining game';
+$this->pageName = 'Join game';
+$this->title = 'Problems with your attempt to join the game';
 
 include($this->loadTemplate('inc/header_splash.tpl.php'));
 

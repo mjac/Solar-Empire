@@ -1,7 +1,8 @@
 <?php
 class_exists('Savant2') || exit;
 
-$title = 'Competitive, web based, space combat game';
+$this->pageName = 'Welcome';
+$this->title = 'Competitive, web based, space combat game';
 
 include($this->loadTemplate('inc/header_splash.tpl.php'));
 

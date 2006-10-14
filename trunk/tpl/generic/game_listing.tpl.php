@@ -21,7 +21,8 @@ function formatGameList(&$tpl, $gList)
 	return $list;
 }
 
-$title = 'Game listing';
+$this->pageName = 'Game listing';
+$this->title = 'Listing of all games running on this server';
 
 include($this->loadTemplate('inc/header_splash.tpl.php'));
 

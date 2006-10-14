@@ -1,7 +1,8 @@
 <?php
 class_exists('Savant2') || exit;
 
-$title = 'Registration complete';
+$this->pageName = 'Register';
+$this->title = 'Registration complete, account created';
 
 include($this->loadTemplate('inc/header_splash.tpl.php'));
 

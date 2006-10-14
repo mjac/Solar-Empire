@@ -5,7 +5,8 @@ if (!function_exists('makeList')) {
 	require('inc/list.inc.php');
 }
 
-$title = 'Problems while registering';
+$this->pageName = 'Register';
+$this->title = 'Problems while registering your new account';
 
 include($this->loadTemplate('inc/header_splash.tpl.php'));
 

@@ -1,11 +1,12 @@
 <?php
 class_exists('Savant2') || exit;
 
-$title = 'Credits, a list of contributors to System Wars';
+$this->pageName = 'Credits';
+$this->title = 'A list of contributors to System Wars';
 
 include($this->loadTemplate('inc/header_splash.tpl.php'));
 
-?><h1>Credits, contributors to System Wars</h1>
+?><h1>Contributors to System Wars</h1>
 
 <p>People who have contributed to the development of System Wars, both directly 
 and indirectly.  Return to the <a href="<?php 

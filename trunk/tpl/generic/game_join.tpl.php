@@ -1,7 +1,8 @@
 <?php
 class_exists('Savant2') || exit;
 
-$title = 'Join game';
+$this->pageName = 'Join game';
+$this->title = 'Enter both your player and ship names to begin';
 
 include($this->loadTemplate('inc/header_splash.tpl.php'));
 

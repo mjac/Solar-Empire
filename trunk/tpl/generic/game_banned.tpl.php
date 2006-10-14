@@ -1,7 +1,8 @@
 <?php
 class_exists('Savant2') || exit;
 
-$title = 'Banned from playing this game';
+$this->pageName = 'Banned';
+$this->title = 'You have been banned from playing this game';
 
 include($this->loadTemplate('inc/header_splash.tpl.php'));
 

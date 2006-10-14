@@ -1,7 +1,8 @@
 <?php
 class_exists('Savant2') || exit;
 
-$title = 'Game variables';
+$this->pageName = 'Game variables';
+$this->title = 'A list of options that affect this game';
 
 include($this->loadTemplate('inc/header.tpl.php'));
 
