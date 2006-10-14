@@ -606,25 +606,4 @@ class genMapsetEllipse extends genMapset
 	}
 };
 
-
-
-
-
-
-
-
-// to test
-$a = new genUniverse;
-$a->options['width'] = 500;
-$a->options['height'] = 1000;
-//$a->appearance['graphics']['star'] = 'star.png';
-//$a->appearance['graphics']['earth'] = 'earth.png';
-$a->createStars();
-$a->positions();
-$a->wormholes();
-$a->link();
-$a->names(explode("\n\n", file_get_contents('se_star_names.csv')));
-$a->renderGlobal('test.png', 'test2.png');
-$a->renderLocal('test.png', 'D:/www/test');
-
 ?>
