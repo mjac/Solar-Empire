@@ -101,7 +101,7 @@ switch ($action) {
 		$uni->link();
 		$uni->wormholes();
 		$uni->renderGlobal($mapDir . '/screen.png', $mapDir . '/print.png');
-		$uni->renderLocal($mapDir . '/local');
+		$uni->renderLocal($mapDir . '/screen.png', $mapDir . '/local');
 		break;
 	default:
 		assignCommon($tpl);
