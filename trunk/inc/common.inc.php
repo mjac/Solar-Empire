@@ -273,14 +273,15 @@ function selectGame($db_name)
 {
 	global $db;
 
-	$db->addVar('game', $db->escape($db_name));
+	$gQuery = $db->query('SELECT * FROM se_games WHERE db_name = \'%[1]\'', 
+	 $db_name);
 
-	$gQuery = $db->query('SELECT * FROM se_games WHERE db_name = \'[game]\'');
 	$gameInfo = $db->fetchRow($gQuery);
 	if (empty($gameInfo)) {
 	    return false;
 	}
 
+	$db->addVar('game', $db_name);
 	gameVars($db_name);
 
 	return $gameInfo;
