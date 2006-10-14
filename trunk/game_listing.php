@@ -250,13 +250,13 @@ if (IS_OWNER && isset($_REQUEST['newGame']) && ctype_alnum($_REQUEST['newGame'])
 			$query .= $line;
 		}
 	}
-	$db->query('%s', array(str_replace('gamename', $_REQUEST['newGame'], $query)));
+	$db->query(str_replace('gamename', $_REQUEST['newGame'], $query));
 
 	$maps = PATH_BASE . '/img/maps/' . $_REQUEST['newGame'];
 	if (is_dir($maps)) {
 		clearImages($maps);
 	} else {
-		mkdir($maps)
+		mkdir($maps);
 	}
 	if (is_dir($maps . '/local')) {
 		clearImages($maps . '/local');
@@ -264,23 +264,11 @@ if (IS_OWNER && isset($_REQUEST['newGame']) && ctype_alnum($_REQUEST['newGame'])
 		mkdir{$maps . '/local');
 	}
 
-	$db->query('INSERT INTO gamename_stars (star_id, star_name, x, y, ' .
-	 'link_1, link_2, link_3, link_4, link_5, link_6, metal, fuel, wormhole, ' .
-	 'planetary_slots) VALUES (1, \'Sol\', 250, 250, 0, 0, 0, 0, 0, 0, 0, 0, ' .
-	 '0, 0)');
+	$db->query('DELETE FROM se_games WHERE db_name = \'%[1]\'', 
+	 $_REQUEST['newGame']);
 
-	$db->query('DELETE FROM se_games WHERE db_name = \'%s\'', 
-	 array($db->escape($_REQUEST['newGame'])));
-
-	$time = time();
-	$db->query('INSERT INTO se_games (db_name, name, admin, `status`, ' .
-	 'description, intro_message, num_stars, difficulty, started, finishes, ' .
-	 'processed_cleanup, processed_turns, processed_systems, ' .
-	 'processed_ships, processed_planets, processed_government) VALUES '.
-	 '(\'%s\', \'Test Game!\', 1, \'paused\', \'\', \'\', 150, 3, ' .
-	 '%u, %u, %u, %u, %u, %u, %u, %u)', 
-	 array($db->escape($_REQUEST['newGame']), $time, $time + 1728000, $time, 
-	 $time, $time, $time, $time, $time));
+	$db->query('INSERT INTO se_games (db_name, name, admin, `status`, description, intro_message, num_stars, difficulty, started, finishes, processed_cleanup, processed_turns, processed_systems, processed_ships, processed_planets, processed_government) VALUES (\'%[1]\', \'Test Game!\', 1, \'paused\', \'\', \'\', 150, 3, %[2], %[3], %[2], %[2], %[2], %[2], %[2], %[2])', 
+	 $_REQUEST['newGame'], time(), time() + 1728000);
 }
 
 
@@ -292,13 +280,12 @@ $tpl->assign('accountName', $account['login_name']);
 $gameList = array();
 
 // Cycle through the games that are not hidden
-$games = $db->query('SELECT name, db_name, status FROM ' .
- 'se_games WHERE status != \'hidden\' OR admin = %u ORDER BY name ASC', 
- array($account['login_id']));
+$games = $db->query('SELECT name, db_name, status FROM se_games WHERE status != \'hidden\' OR admin = %[1] ORDER BY name ASC', 
+ $account['login_id']);
 
 while ($game = $db->fetchRow($games, ROW_ASSOC)) {
-	$inGame = $db->query('SELECT COUNT(*) FROM ' . $game['db_name'] .
-	 '_users WHERE login_id = %u', array($account['login_id']));
+	$inGame = $db->query('SELECT COUNT(*) FROM %[1]_users WHERE login_id = %[2]',
+	 $game['db_name'], $account['login_id']);
 	$result = $db->fetchRow($inGame, ROW_NUMERIC);
 
 	$game['in'] = $result[0] > 0;
