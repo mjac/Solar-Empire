@@ -20,7 +20,18 @@ require_once('install/data.inc.php');
 
 <?php
 
-if (isset($_REQUEST['sure'])) {
+if (!isset($_REQUEST['sure'])) {
+?>
+<p><a href="<?php
+	echo htmlentities($_SERVER['SCRIPT_NAME']);
+?>?sure=1">Install all the 
+database tables</a> &#8212; this will wipe all server-level data including <strong>all user accounts</strong>.</p>
+</body>
+</html>
+<?php
+	exit;
+}
+
 ?>
 <h2>Creating structure</h2><?php 
 
@@ -45,8 +56,7 @@ foreach ($queries as $query) {
 $count = 0;
 $stars = fopen('install/star_names.txt', 'r');
 while (!feof($stars)) {
-	$db->query('INSERT INTO se_star_names VALUES (\'%s\')', 
-	 array(fgets($stars)));
+	$db->query('INSERT INTO se_star_names VALUES (\'%[1]\')', fgets($stars));
 	++$count;
 }
 
@@ -58,8 +68,8 @@ while (!feof($stars)) {
 
 $tipId = 0;
 foreach ($dat['tips'] as $tips) {
-	$db->query('INSERT INTO daily_tips (tip_id, tip_content) VALUES ' .
-	 '(%u, \'%s\')', array(++$tipId, $db->escape($tips)));
+	$db->query('INSERT INTO daily_tips (tip_id, tip_content) VALUES (%[1], \'%[2]\')',
+	 ++$tipId, $tips);
 }
 
 ?>
@@ -69,9 +79,8 @@ foreach ($dat['tips'] as $tips) {
 
 $count = 0;
 foreach ($dat['options'] as $option) {
-	$db->query('INSERT INTO option_list (option_name, option_min, ' .
-	 'option_max, option_desc, option_type) VALUES (\'%s\', %d, %d, \'%s\', ' .
-	 '%u)', array($option[0], $option[1], $option[2], $option[3], $option[4]));
+	$db->query('INSERT INTO option_list (option_name, option_min, option_max, option_desc, option_type) VALUES (\'%[1]\', %[2], %[3], \'%[4]\', %[5])',
+	 $option[0], $option[1], $option[2], $option[3], $option[4]);
 	++$count;
 }
 
@@ -81,29 +90,12 @@ foreach ($dat['options'] as $option) {
 <h2>Adding administrator account</h2>
 <p><?php
 
-$newAdmin = $db->query('INSERT INTO user_accounts (login_id, login_name, ' .
- 'passwd, session_exp, session_id, in_game, email_address, signed_up, ' .
- 'last_login, login_count, last_ip, num_games_joined, page_views, ' .
- 'real_name, total_score, style) VALUES (1, \'Admin\', ' .
- '\'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\', 0, ' .
- '\'\', NULL, \'Tyrant of the Universe\', 1, 1, 1, \'\', 0, 0, ' .
- '\'Game Administrator\', 0, NULL)');	
+$newAdmin = $db->query('INSERT INTO user_accounts (login_id, login_name, passwd, session_exp, session_id, in_game, email_address, signed_up, login, login_count, last_ip, num_games_joined, page_views, real_name, total_score, style) VALUES (1, \'Admin\', \'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\', 0, \'\', NULL, \'Tyrant of the Universe\', 1, 1, 1, \'\', 0, 0, \'Game Administrator\', 0, NULL)');
 
 echo $db->hasError($newAdmin) ? 'Failure' : 'Success';
 
 ?></p>
 <h2>Result</h2>
-<p>If all of the queries completed successfully, delete the install directory
-and sign-in as Admin (no password).</p>
-<?php
-} else {
-?>
-<p><a href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?sure=1">Install all the 
-database tables</a> &#8212; this will wipe all server-level data including 
-<strong>all user accounts</strong>.</p>
-<?php
-}
-
-?>
+<p>If all of the queries completed successfully, delete the install directory and sign-in as Admin (no password).</p>
 </body>
 </html>

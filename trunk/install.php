@@ -6,7 +6,7 @@ if (!(file_exists('install') && is_dir('install'))) {
 	exit('The install directory must exist.');
 }
 
-require_once('inc/external/mcdb/mcdb.class.php');
+require_once('inc/external/sda/sda.class.php');
 
 $configTpl = 'install/config.inc.php';
 $configNew = 'inc/config.inc.php';
@@ -33,7 +33,7 @@ function currentValue($name)
 	}
 }
 
-$db = new mcdb;
+$db = new sda;
 $dbFine = false;
 $dbDsn = '';
 
@@ -179,7 +179,7 @@ if (isset($_REQUEST['sure']) && $dbFine) {
 
 		require_once($configTpl);
 
-		if (is_writable($configNew)) {
+		if (is_writable($configNew) || !is_file($configNew)) {
 			$fp = fopen($configNew, 'w');
 			fwrite($fp, str_replace(DB_DSN, $dbDsn, $src));
 			fclose($fp);
