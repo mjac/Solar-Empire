@@ -14,8 +14,8 @@ if (!(checkAuth() && $account['in_game'] !== NULL)) {
 checkPlayer($login_id);
 
 // update last request (so as know when user last requested a page in THIS game.
-$db->query('UPDATE [game]_users SET last_request = %u WHERE ' .
- 'login_id = %u', array(time(), $user['login_id']));
+$db->query('UPDATE [game]_users SET last_request = %[1] WHERE login_id = %[2]',
+ time(), $user['login_id']);
 
 // load the ship present usership
 checkShip();
@@ -26,18 +26,18 @@ function checkShip()
 
 	$userShip = getShip($user['ship_id']);
 	if ($userShip === NULL) {
-		$oQuery = $db->query('SELECT ship_id FROM [game]_ships WHERE ' .
-		 'login_id = %u ORDER BY RAND()', array($user['login_id']));
+		$oQuery = $db->query('SELECT ship_id FROM [game]_ships WHERE login_id = %[1] ORDER BY RAND()',
+		 $user['login_id']);
 
 		if ($other = $db->fetchRow($oQuery)) {
 			$user['ship_id'] = $other['ship_id'];
 			$userShip = getShip($user['ship_id']);
-			$db->query('UPDATE [game]_users SET ship_id = %u WHERE ' .
-			 'login_id = %u', array($user['ship_id'], $user['login_id']));
+			$db->query('UPDATE [game]_users SET ship_id = %[1] WHERE login_id = %[2]',
+			 $user['ship_id'], $user['login_id']);
 		} elseif ($user['ship_id'] !== NULL) {
 			$user['ship_id'] = NULL;
-			$db->query('UPDATE [game]_users SET ship_id = NULL WHERE ' .
-			 'login_id = %u', array($user['login_id']));
+			$db->query('UPDATE [game]_users SET ship_id = NULL WHERE login_id = %[1]',
+			 $user['login_id']);
 		}
 	}
 }
@@ -62,13 +62,12 @@ function giveTurns($id, $amount)
 	}
 
 	if ($amount > 0) {
-		$gave = $db->query('UPDATE [game]_users SET turns = turns + %u ' .
-		 'WHERE login_id = %u', array($amount, $id));
+		$gave = $db->query('UPDATE [game]_users SET turns = turns + %[1] WHERE login_id = %[2]',
+		 $amount, $id);
 	} else {
 		$amount = abs($amount);
-		$gave = $db->query('UPDATE [game]_users SET turns = turns - %u, ' .
-		 'turns_run = turns_run + %u WHERE login_id = %u AND turns >= %u',
-		 array($amount, $amount, $id, $amount));
+		$gave = $db->query('UPDATE [game]_users SET turns = turns - %[1], turns_run = turns_run + %[1] WHERE login_id = %[2] AND turns >= %[1]',
+		 $amount, $id);
 	}
 
 	return $db->affectedRows($gave) ? true : false;
@@ -93,10 +92,8 @@ function checkPlayer($id)
 {
 	global $user, $userOpt, $db;
 
-	$uQuery = $db->query('SELECT u.*, c.symbol AS clan_sym, ' .
-	 'c.sym_color AS clan_sym_color FROM [game]_users AS u ' .
-	 'LEFT JOIN [game]_clans AS c ON u.clan_id = c.clan_id WHERE ' .
-	 'login_id = %u', array($id));
+	$uQuery = $db->query('SELECT u.*, c.symbol AS clan_sym, c.sym_color AS clan_sym_color FROM [game]_users AS u LEFT JOIN [game]_clans AS c ON u.clan_id = c.clan_id WHERE login_id = %[1]',
+	 $id);
 	$user = $db->fetchRow($uQuery);
 
 	if (!is_array($user)) {
@@ -104,8 +101,8 @@ function checkPlayer($id)
 		exit();
 	}
 
-	$oQuery = $db->query('SELECT * FROM [game]_user_options WHERE ' .
-	 'login_id = %u', array($user['login_id']));
+	$oQuery = $db->query('SELECT * FROM [game]_user_options WHERE login_id = %[1]',
+	 $user['login_id']);
 	$userOpt = $db->fetchRow($oQuery);
 }
 
@@ -120,12 +117,12 @@ function giveMoney($id, $amount)
 	}
 
 	if ($amount > 0) {
-		$gave = $db->query('UPDATE [game]_users SET cash = cash + %u ' .
-		 'WHERE login_id = %u', array($amount, $id));
+		$gave = $db->query('UPDATE [game]_users SET cash = cash + %[1] WHERE login_id = %[2]',
+		 $amount, $id);
 	} else {
 		$amount = abs($amount);
-		$gave = $db->query('UPDATE [game]_users SET cash = cash - %u ' .
-		 'WHERE login_id = %u AND cash >= %u', array($amount, $id, $amount));
+		$gave = $db->query('UPDATE [game]_users SET cash = cash - %[1] WHERE login_id = %[2] AND cash >= %[1]',
+		 $amount, $id);
 	}
 
 	return $db->affectedRows($gave) ? true : false;
@@ -740,10 +737,10 @@ function moveShipTo($ship, $sys)
 {
 	global $db;
 
-	$args = array_merge(array($sys, $ship['ship_id']), towedByShip($ship));
-	$moved = $db->query('UPDATE [game]_ships SET location = %u WHERE ' .
-	 'ship_id = %u' . str_repeat(' OR ship_id = %u ', count($args) - 2),
-	 $args);
+	$args = towedByShip($ship);
+	$args[] = $ship['ship_id'];
+	$moved = $db->query('UPDATE [game]_ships SET location = %[1] WHERE ship_id = ' . 
+	 implode(' OR ship_id = ', $args), $sys);
 
 	return $db->affectedRows($moved);
 }
@@ -762,12 +759,8 @@ function moveUserTo($sys)
 function closestShip($playerId, $x, $y)
 {
 	global $db;
-	$new = $db->query('SELECT s.ship_id FROM [game]_ships AS s ' .
-	 'INNER JOIN [game]_stars AS l ON s.location = l.star_id ' .
-	 'INNER JOIN [game]_users AS u ON s.login_id = u.login_id ' .
-	 'WHERE s.login_id = %u && u.ship_id != s.ship_id ORDER BY ' .
-	 '(POWER(l.x - %u, 2) + POWER(l.y - %u, 2)) ASC, RAND() LIMIT 1',
-	 array($playerId, $x, $y));
+	$new = $db->query('SELECT s.ship_id FROM [game]_ships AS s INNER JOIN [game]_stars AS l ON s.location = l.star_id INNER JOIN [game]_users AS u ON s.login_id = u.login_id WHERE s.login_id = %[1] && u.ship_id != s.ship_id ORDER BY (POWER(l.x - %[2], 2) + POWER(l.y - %[3], 2)) ASC, RAND() LIMIT 1',
+	 $playerId, $x, $y);
 
 	return $db->numRows($new) > 0 ? (int)current($db->fetchRow($new)) : false;
 }
@@ -791,17 +784,15 @@ function assignCommon(&$tpl)
 		'clans' => $gameOpt['max_clans'] > 0
 	));
 
-	$uAmount = $db->query('SELECT COUNT(login_id) FROM [game]_users WHERE ' .
-	 'login_id > 1 AND last_request > %u', array(time() - 300));
+	$uAmount = $db->query('SELECT COUNT(login_id) FROM [game]_users WHERE login_id > 1 AND last_request > %[1]', time() - 300);
 	$activeUsers = $db->fetchRow($uAmount, ROW_NUMERIC);
 
 	$tpl->assign('activeUsers', $activeUsers ? (int)$activeUsers[0] : 0);
 	$tpl->assign('viewActiveUsers', IS_ADMIN || IS_OWNER);
 
 	// Game forum
-	$fAmount = $db->query('SELECT COUNT(*) FROM [game]_messages WHERE ' .
-	 'timestamp > %u AND login_id = -1 AND sender_id != %u',
-	 array($user['last_access_forum'], $user['login_id']));
+	$fAmount = $db->query('SELECT COUNT(*) FROM [game]_messages WHERE timestamp > %[1] AND login_id = -1 AND sender_id != %[2]',
+	 $user['last_access_forum'], $user['login_id']);
 	$counted = $db->fetchRow($fAmount);
 	$tpl->assign('forumNewMsgs', $counted ? (int)current($counted) : 0);
 	$tpl->assign('forumLastAccess', $user['last_access_forum']);
@@ -809,10 +800,8 @@ function assignCommon(&$tpl)
 	// Clan forum(s)
 	$tpl->assign('viewClanForums', IS_ADMIN);
 	if ($user['clan_id'] !== NULL) {	
-		$cCount = $db->query('SELECT COUNT(*) FROM [game]_messages WHERE ' .
-		 'timestamp > %u AND login_id = -5 AND clan_id = %u AND ' .
-		 'sender_id != %u', array($user['last_access_clan_forum'],
-		 $user['clan_id'], $user['login_id']));
+		$cCount = $db->query('SELECT COUNT(*) FROM [game]_messages WHERE timestamp > %[1] AND login_id = -5 AND clan_id = %[2] AND sender_id != %[3]',
+		 $user['last_access_clan_forum'], $user['clan_id'], $user['login_id']);
 		$messageCount = $db->fetchRow($cCount);
 
 		$tpl->assign('clanForumNewMsgs', $messageCount ? 
@@ -865,8 +854,8 @@ function assignCommon(&$tpl)
 	}
 
 	// Player messages
-	$mAmount = $db->query('SELECT COUNT(*) FROM [game]_messages WHERE ' .
-	 'login_id = %u', array($user['login_id']));
+	$mAmount = $db->query('SELECT COUNT(*) FROM [game]_messages WHERE login_id = %[1]',
+	 $user['login_id']);
 	$counted = $db->fetchRow($mAmount);
 	$tpl->assign('messageAmount', $counted ? (int)current($counted) : 0);
 
@@ -876,8 +865,8 @@ function assignCommon(&$tpl)
 
 	$tpl->assign('viewAdminForum', IS_ADMIN || IS_OWNER);
 	if (IS_ADMIN || IS_OWNER) {
-		$mCount = $db->query('SELECT COUNT(*) FROM se_central_forum WHERE ' .
-		 'timestamp > %u', array($user['last_access_admin_forum']));
+		$mCount = $db->query('SELECT COUNT(*) FROM se_central_forum WHERE timestamp > %[1]',
+		 $user['last_access_admin_forum']);
 		$messageCount = $db->fetchRow($mCount);
 
 		$tpl->assign('adminForumNewMsgs', $messageCount ? 
