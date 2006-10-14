@@ -261,7 +261,7 @@ if (IS_OWNER && isset($_REQUEST['newGame']) && ctype_alnum($_REQUEST['newGame'])
 	if (is_dir($maps . '/local')) {
 		clearImages($maps . '/local');
 	} else {
-		mkdir{$maps . '/local');
+		mkdir($maps . '/local');
 	}
 
 	$db->query('DELETE FROM se_games WHERE db_name = \'%[1]\'', 
