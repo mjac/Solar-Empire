@@ -245,7 +245,7 @@ if (IS_OWNER && isset($_REQUEST['newGame']) && ctype_alnum($_REQUEST['newGame'])
 	while (!feof($fp)) {
 		$line = fgets($fp);
 		if (strpos(ltrim($line), '--') === 0) {
-			$db->query('%s', array(str_replace('gamename', $_REQUEST['newGame'], $query)));
+			$db->query(str_replace('gamename', $_REQUEST['newGame'], $query));
 			$query = '';
 		} else {
 			$query .= $line;
