@@ -27,20 +27,11 @@ $this->eprint($this->url['base'] . '/game_listing.php');
 <h1>Solar Empire</h1>
 
 <h2>Introduction</h2>
-<p>Solar Empire is a highly competitive, web based, <strong>space combat 
-game</strong>.  Master the arts of colonisation and exploration while playing 
-a noble but precarious game of warfare to ensure survival.</p>
-<p>A quote from a player: <q>I sure wish work would quit cutting into my
-gaming time</q>.</p>
+<p>Solar Empire is a highly competitive, web based, <strong>space combat game</strong>.  Master the arts of colonisation and exploration while playing a noble but precarious game of warfare to ensure survival.</p>
 
 <h2>Project information</h2>
-<p><a href="http://sourceforge.net/projects/solar-empire/">Solar Empire</a> 
-is an open source project hosted on SourceForge; look at the 
-<a href="http://sourceforge.net/news/?group_id=16534">news section</a> for 
-the latest updates.  The <a href="credits.php">credits</a> page contains a 
-list of all the contributors to the game</a>.</p>
-<p>Visit the <a href="http://forum.solar-empire.net/">global forums</a> to
-learn more and help develop this open-source game.</p>
+<p><a href="http://sourceforge.net/projects/solar-empire/">Solar Empire</a> is an open source project hosted on SourceForge; look at the <a href="http://sourceforge.net/news/?group_id=16534">news section</a> for the latest updates.  The <a href="<?php $this->eprint($this->url['base'] . '/credits.php'); ?>">credits</a> page contains a list of all the contributors to the game</a>.</p>
+<p>Visit the <a href="http://forum.syswars.com/">global forums</a> to learn more and help develop this open-source game.</p>
 
 <h2>Operational Servers</h2>
 <p><a href="http://sourceforge.net/projects/solar-empire/"><img 
@@ -50,7 +41,6 @@ learn more and help develop this open-source game.</p>
 <ul>
 	<li><a href="http://www.solar-empire.net/">Endless War</a></li>
 	<li><a href="http://qse.tradelair.com/">Tradelair</a></li>
-	<li><a href="http://www.gegn.net/">Galactic Empire</a></li>
 	<li><a href="http://www.imperial-empire-se.com/">Imperial Empire</a></li>
 	<li><a href="http://solarempire.fuoriradio.com/">Italian Server</a></li>
 </ul>

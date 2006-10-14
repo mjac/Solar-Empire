@@ -87,8 +87,8 @@ if ($this->canCreateGame) {
 
 <h2>Places to go</h2>
 <ul>
-	<li><a href="http://home.solar-empire.net/">Solar Empire Home</a></li>
-	<li><a href="http://forum.solar-empire.net/">Solar Empire Forum</a></li>
+	<li><a href="http://www.solarempire.com/">Solar Empire Home</a></li>
+	<li><a href="http://forum.syswars.com/">Solar Empire Forum</a></li>
 	<li><a href="http://sourceforge.net/projects/solar-empire/">Sourceforge Project</a></li>
 </ul>
 <?php

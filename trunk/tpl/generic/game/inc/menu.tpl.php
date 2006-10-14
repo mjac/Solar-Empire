@@ -110,7 +110,7 @@ if ($this->viewClanForums) { // View all forums (admin etc)
 }
 
 ?>
-	<li><a href="http://forum.solar-empire.net/">Global forum</a></li>
+	<li><a href="http://forum.syswars.com/">Global forum</a></li>
 </ul>
 
 <h2><em><?php
