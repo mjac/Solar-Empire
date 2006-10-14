@@ -93,7 +93,8 @@ if (isset($_REQUEST['game_selected'])) {
 	}
 
 	$gameInfo = $db->fetchRow($gQuery);
-	$db->addVar('game', $db->escape($db_name = $gameInfo['db_name']));
+	$db_name = $gameInfo['db_name'];
+	$db->addVar('game', $db_name);
 
 	$inGame = $db->query('SELECT COUNT(*) FROM [game]_users WHERE login_id = %[1]', 
 	 $login_id);
