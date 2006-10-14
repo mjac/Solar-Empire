@@ -351,4 +351,20 @@ function esc($str)
 	return htmlentities($str, ENT_QUOTES, 'UTF-8');
 }
 
+function clearImages($path)
+{
+	if (!file_exists($path)) {
+		return;
+	}
+
+	$dir = opendir($path);
+	while ($file = readdir($dir)) {
+		if (substr($file, -4) === '.png') {
+			unlink($path . '/' . $file);
+		}
+	}
+
+	closedir($dir);
+}
+
 ?>
