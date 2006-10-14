@@ -1,5 +1,5 @@
 <?php
-defined('PATH_SAVANT') || exit();
+class_exists('Savant2') || exit;
 
 $this->pageName = 'System';
 $this->title = 'The system does not exist';

@@ -1,5 +1,5 @@
 <?php
-defined('PATH_SAVANT') || exit();
+class_exists('Savant2') || exit;
 
 function formatName($id, $name, $clanId, $clanSym, $clanCol)
 {

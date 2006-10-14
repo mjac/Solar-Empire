@@ -1,5 +1,5 @@
 <?php
-defined('PATH_SAVANT') || exit();
+class_exists('Savant2') || exit;
 
 if (!function_exists('formatName')) {
 	require($this->loadTemplate('game/inc/formatNames.inc.php'));

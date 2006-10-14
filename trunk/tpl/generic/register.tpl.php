@@ -1,5 +1,5 @@
 <?php
-defined('PATH_SAVANT') || exit();
+class_exists('Savant2') || exit;
 
 $title = 'Register and start playing';
 

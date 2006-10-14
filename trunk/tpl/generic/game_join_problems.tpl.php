@@ -1,5 +1,5 @@
 <?php
-defined('PATH_SAVANT') || exit();
+class_exists('Savant2') || exit;
 
 if (!function_exists('makeList')) {
 	require($this->loadTemplate('inc/list.inc.php'));

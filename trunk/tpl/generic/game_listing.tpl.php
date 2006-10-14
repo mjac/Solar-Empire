@@ -1,5 +1,5 @@
 <?php
-defined('PATH_SAVANT') || exit();
+class_exists('Savant2') || exit;
 
 if (!function_exists('popupHelp')) {
 	require($this->loadTemplate('inc/popupHelp.inc.php'));

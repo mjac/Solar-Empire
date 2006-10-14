@@ -1,6 +1,6 @@
 <?php
 
-defined('PATH_SAVANT') or exit('Create constant PATH_SAVANT!');
+defined('PATH_SAVANT') or exit('Create constant PATH_SAVANT');
 
 $styleDir = '';
 
@@ -15,7 +15,7 @@ if (isset($account) && isset($account['style']) &&
 $pStyles[] = DEFAULT_STYLE;
 
 foreach ($pStyles as $try) {
-	$xml = URL_STYLES . '/' . $try . '.xml';
+	$xml = URL_TPL . '/' . $try . '.xml';
 	if (!(is_file($xml) && is_readable($xml))) {
 		continue;
 	}
@@ -35,21 +35,23 @@ foreach ($pStyles as $try) {
 		}
 	}
 
-	if (!empty($styleDir) && is_dir(URL_STYLES . '/' . $styleDir)) {
+	if (!empty($styleDir) && is_dir(URL_TPL . '/' . $styleDir)) {
 		break;
 	}
 }
 
 if (empty($styleDir)) {
-	trigger_error('No available styles!', E_USER_ERROR);
-	exit();
+	trigger_error('There are no styles available.', E_USER_ERROR);
+	exit;
 }
 
-require_once(PATH_SAVANT);
+if (!class_exists('Savant2')) {
+	require(PATH_SAVANT);
+}
 
 $tpl =& new Savant2();
-$tpl->addPath('template', PATH_STYLES . '/' . $styleDir);
+$tpl->addPath('template', PATH_TPL . '/' . $styleDir);
 $tpl->assign('url', array('full' => URL_FULL, 'self' => URL_SELF,
- 'base' => URL_BASE, 'tpl' => URL_STYLES . '/' . $styleDir));
+ 'base' => URL_BASE, 'tpl' => URL_TPL . '/' . $styleDir));
 
 ?>

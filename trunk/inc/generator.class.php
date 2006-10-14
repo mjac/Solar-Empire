@@ -25,7 +25,7 @@ class genUniverse
 	
 		'starMinDist' => 25,
 	
-		'linkDistance' => 100,
+		'linkMaxDist' => 100,
 
 		'centralStar' => 1
 	);
@@ -56,7 +56,7 @@ class genUniverse
 		)
 	);
 
-	var $mapsets = array(
+	var $mapTypes = array(
 		'random' => 'genMapsetRandom',
 		'core' => 'genMapsetCore',
 		'clusters' => 'genMapsetClusters',
@@ -79,7 +79,7 @@ class genUniverse
 
 	function positions()
 	{
-		$class = $this->mapsets[$this->options['mapType']];
+		$class = $this->mapTypes[$this->options['mapType']];
 		$map = new $class($this->options);
 		$map->generate($this->stars);
 	}
@@ -102,8 +102,8 @@ class genUniverse
 
 	function link()
 	{
-		$maxQuad = $this->options['linkDistance'] * 
-		 $this->options['linkDistance'];
+		$maxQuad = $this->options['linkMaxDist'] * 
+		 $this->options['linkMaxDist'];
 	
 		for ($toLink = 0; $toLink < $this->options['starAmount']; ++$toLink) {
 			$fromStar = &$this->stars[$toLink];

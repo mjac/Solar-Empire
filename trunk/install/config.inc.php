@@ -20,15 +20,17 @@ defined('E_STRICT') || define('E_STRICT', 0x800);
 error_reporting(E_ALL & ~E_STRICT);
 
 // PATHS
-define('PATH_MCDB', dirname(__FILE__) . '/external/mcdb/mcdb.class.php');
-define('PATH_SAVANT', dirname(__FILE__) . '/external/Savant2/Savant2.php');
-define('PATH_STYLES', dirname(__FILE__) . '/../tpl');
+define('PATH_BASE', dirname(__FILE__) . '/..');
+define('PATH_INC', PATH_BASE . '/inc');
+define('PATH_TPL', PATH_BASE . '/tpl');
+define('PATH_SDA', PATH_INC . '/external/sda/sda.class.php');
+define('PATH_SAVANT', PATH_INC . '/external/savant/Savant2.php');
 
 $dir = dirname($_SERVER['SCRIPT_NAME']);
 define('URL_BASE', rtrim($dir, '\\/'));
-define('URL_FULL', isset($_SERVER['HTTP_HOST']) ? ('http://' . 
- $_SERVER['HTTP_HOST'] . URL_BASE) : URL_BASE);
+define('URL_FULL', isset($_SERVER['HTTP_HOST']) ? 
+ ('http://' . $_SERVER['HTTP_HOST'] . URL_BASE) : URL_BASE);
 define('URL_SELF', $_SERVER['SCRIPT_NAME']);
-define('URL_STYLES', 'tpl');
+define('URL_TPL', 'tpl');
 
 ?>

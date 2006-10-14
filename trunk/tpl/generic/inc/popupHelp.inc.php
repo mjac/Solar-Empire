@@ -1,5 +1,5 @@
 <?php
-defined('PATH_SAVANT') || exit();
+class_exists('Savant2') || exit;
 
 // Function that will create a help-link
 function popupHelp($topic, $height, $width, $string, &$tpl)

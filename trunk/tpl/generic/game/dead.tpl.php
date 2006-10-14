@@ -1,5 +1,5 @@
 <?php
-defined('PATH_SAVANT') || exit();
+class_exists('Savant2') || exit;
 
 $this->pageName = 'Game over';
 $this->title = 'All of your ships have been destroyed';

@@ -1,20 +1,22 @@
 <?php
 
-defined('PATH_MCDB') or exit('Create constant PATH_MCDB!');
+defined('PATH_SDA') or exit('Create constant PATH_SDA');
 
-require_once(PATH_MCDB);
+if (!class_exists('sda')) {
+	require(PATH_SDA);
+}
 
-$db = new mcdb;
+$db = new sda;
 
 //$db->debug();
 $db->varFormat = '[%]'; // [game] for instance
 $db->rowType = ROW_ASSOC;
-$db->debug();
+$db->debug(true);
 
 $connect = $db->connect(DB_DSN);
 if ($db->hasError($connect)) {
 	trigger_error($db->error($connect), E_USER_ERROR);
-	exit();
+	exit;
 }
 
 unset($connect, $driver);

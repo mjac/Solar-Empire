@@ -2,57 +2,70 @@
 
 require_once('inc/admin.inc.php');
 require_once('inc/template.inc.php');
-require_once('inc/generator.inc.php');
+require_once('inc/generator.class.php');
 
-set_time_limit(30);
+set_time_limit(60);
 
-$UNI = array();
+function clearImages($path)
+{
+	if (!file_exists($path)) {
+		return;
+	}
 
-$UNI['size'] = $gameOpt['uv_universe_size'];
-$UNI['numsystems'] = $gameOpt['uv_num_stars'];
-$UNI['map_border'] = 25;
-$UNI['num_size'] = 1; // font number size
-$UNI['graphics'] = (bool)$gameOpt['uv_map_graphics'];
+	$dir = opendir($path);
+	while ($file = readdir($dir)) {
+		if (substr($file, -4) === '.png') {
+			unlink($path . '/' . $file);
+		}
+	}
 
-$UNI['bg_color'] = array(0x00, 0x00, 0x00);
-$UNI['link_color'] = array(0x66, 0x66, 0x66);
-//$UNI['num_color'] = array(0x99, 0xCC, 0xFF); // Most system numbers
-$UNI['num_color2'] = array(0xFF, 0xFF, 0xFF); // Current system number
-$UNI['num_color3'] = array(0xFF, 0x00, 0x00); // Sol color
-$UNI['star_color'] = array(0xFF, 0xFF, 0xFF);
-$UNI['label_color'] = array(0x00, 0xFF, 0x00);
-$UNI['worm_one_way_color'] = array(0xE6, 0xE6, 0x40);
-$UNI['worm_two_way_color'] = array(0x00, 0xE6, 0x00);
+	closedir($dir);
+}
 
-$UNI['print_bg_color'] = array(0xFF, 0xFF, 0xFF);
-$UNI['print_link_color'] = array(0xCC, 0xCC, 0xCC);
-$UNI['print_num_color'] = array(0x00, 0x00, 0x00);
-$UNI['print_star_color'] = array(0x00, 0x00, 0x00);
-$UNI['print_label_color'] = array(0x00, 0x00, 0x00);
+$uni = new genUniverse;
 
-$UNI['num_color'] = $UNI['graphics'] ? array(0x99, 0xCC, 0xFF) : 
- array(0x00, 0xFF, 0xFF);
+$uni->options['width'] = $uni->options['height'] = $gameOpt['uv_universe_size'];
+$uni->options['starAmount'] = $gameOpt['uv_num_stars'];
 
-$UNI['localmapwidth'] = 200; // Width of local map.
-$UNI['localmapheight'] = 200; // Height of local map.
+if ($gameOpt['uv_map_graphics']) {
+	$uni->appearance['earth'] = PATH_BASE . '/img/map/earth.png';
+	$uni->appearance['star'] = PATH_BASE . '/img/map/star.png';
+}
 
-$UNI['mindist'] = $gameOpt['uv_min_star_dist'];
+$uni->options['localWidth'] = $uni->options['localHeight'] = 200;
+
+$uni->options['starMinDist'] = $gameOpt['uv_min_star_dist'];
+$uni->options['linkMaxDist'] = $gameOpt['uv_max_link_dist'];
+
+if (!$gameOpt['wormholes']) {
+	$uni->options['wormholeChance'] = 0;
+}
+
+$mapTypes = array_keys($uni->mapTypes);
+switch ($gameOpt['uv_map_layout']) {
+	case 0:
+	case 1:
+	case 2:
+	case 3:
+		$uni->options['mapType'] = $mapTypes[$gameOpt['uv_map_layout']];
+		break;
+	default:
+		$uni->options['mapType'] = 0;
+}
+
 $UNI['minfuel'] = $gameOpt['uv_fuel_min'];
 $UNI['maxfuel'] = $gameOpt['uv_fuel_max'];
 $UNI['fuelpercent'] = $gameOpt['uv_fuel_percent'];
+
 $UNI['minmetal'] = $gameOpt['uv_metal_min'];
 $UNI['maxmetal'] = $gameOpt['uv_metal_max'];
 $UNI['metalpercent'] = $gameOpt['uv_metal_percent'];
-$UNI['map_layout'] = $gameOpt['uv_map_layout'];
+
 $UNI['uv_planets'] = $gameOpt['uv_planets'];
 $UNI['uv_planet_slots'] = $gameOpt['uv_planet_slots'];
-$UNI['wormholes'] = $gameOpt['wormholes'];
+
 $UNI['num_ports'] = $gameOpt['uv_num_ports'];
 $UNI['num_bms'] = $gameOpt['uv_num_bmrkt'];
-$UNI['link_dist'] = $gameOpt['uv_max_link_dist']; // Maximum distance between linked systems
-
-$UNI['minlinks'] = 2; // Miniumum number of links a system may have.
-$UNI['maxlinks'] = 6; // Maximum number of links a system may have.
 
 $action = isset($_REQUEST['action']) ? strtolower($_REQUEST['action']) : '';
 $tpl->assign('action', $action);
@@ -70,6 +83,10 @@ switch ($action) {
 }
 
 exit;
+
+
+
+
 
 if (!isset($gen_new_maps)) { // Don't make a new uni for map making
 	$systems = array(array(
