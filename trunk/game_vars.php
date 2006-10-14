@@ -18,8 +18,7 @@ $tpl->assign('gameName', $gameInfo['name']);
 
 $gameVars = array();
 
-$vars = $db->query('SELECT name, value, descript FROM [game]_db_vars ' .
- 'ORDER BY name');
+$vars = $db->query('SELECT name, value, descript FROM [game]_db_vars ORDER BY name');
 while ($var = $db->fetchRow($vars, ROW_ASSOC)) {
 	$gameVars[] = $var;
 }

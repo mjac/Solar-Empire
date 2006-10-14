@@ -41,7 +41,7 @@ $tpl->assign('shipsKilled', (int)$playerStats[3]);
 $tpl->assign('fightersLost', (int)$playerStats[4]);
 $tpl->assign('fightersKilled', (int)$playerStats[5]);
 
-$aQuery = $db->query('SELECT COUNT(*) FROM [game]_users WHERE ship_id IS NOT NULL AND login_id != %u',
+$aQuery = $db->query('SELECT COUNT(*) FROM [game]_users WHERE ship_id IS NOT NULL AND login_id != %[1]',
  $gameInfo['admin']);
 $tpl->assign('alivePlayers', (int)current($db->fetchRow($aQuery)));
 
