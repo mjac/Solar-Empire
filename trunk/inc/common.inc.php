@@ -186,10 +186,9 @@ Data update/insertion Functions
 function insert_history($userId, $text)
 {
 	global $db;
-	$db->query('INSERT INTO user_history VALUES (%u, %u, \'[game]\', ' .
-	 '\'%s\', \'%s\', \'%s\')', array($userId, time(), $db->escape($text),
-	 $db->escape($_SERVER['REMOTE_ADDR']),
-	 $db->escape($_SERVER['HTTP_USER_AGENT'])));
+	$db->query('INSERT INTO user_history VALUES (%[1], %[2], \'[game]\', \'%[3]\', \'%[4]\', \'%[5]\')', 
+	 $userId, time(), $text, $_SERVER['REMOTE_ADDR'],
+	 $_SERVER['HTTP_USER_AGENT']);
 }
 
 //post an entry into the news
@@ -199,9 +198,8 @@ function post_news($headline)
 
 	$newId = newId('[game]_news', 'news_id');
 
-	$db->query('INSERT INTO [game]_news (news_id, timestamp, headline, ' .
-	 'login_id) VALUES (%u, %u, \'%s\', %u)', array($newId, time(),
-	 $db->escape($headline), $account['login_id']));
+	$db->query('INSERT INTO [game]_news (news_id, timestamp, headline, login_id) VALUES (%[1], %[2], \'%[3]\', %[4])', 
+	 $newId, time(), $headline, $account['login_id']);
 }
 
 
@@ -234,23 +232,22 @@ function checkAuth()
 
 	//get all details for the user with that sessionid/login_id combo
 	//if the admin, don't use the session_id as a key
-	$info = $db->query('SELECT * FROM user_accounts WHERE ' .
-	 'login_id = %u AND session_id = \'%s\'', array($login_id,
-	 $db->escape($session_id)));
+	$info = $db->query('SELECT * FROM user_accounts WHERE login_id = %[1] AND session_id = \'%[2]\'', 
+	 $login_id, $session_id);
 	$account = $db->fetchRow($info);
 
 	$next_exp = time() + SESSION_TIME_LIMIT;
 
 	// Session is invalid.
-	if ($session_id == '' || $login_id == 0 || $session_id != $account['session_id'] ||
+	if ($session_id == '' || $login_id == 0 || 
+	     $session_id != $account['session_id'] ||
 	     $account['session_exp'] < time()) {//session expired or invalid
 		unset($account, $login_id, $session_id, $gameInfo);
 		return false;
 	}
 
-	$db->query('UPDATE user_accounts SET session_exp = %u, ' .
-	 'page_views = page_views + 1 WHERE login_id = %u',
-	 array($next_exp, $login_id));
+	$db->query('UPDATE user_accounts SET session_exp = %[1], page_views = page_views + 1 WHERE login_id = %[2]', 
+	 $next_exp, $login_id);
 
 	define('IS_OWNER', $account['login_id'] == OWNER_ID);
 
@@ -258,8 +255,8 @@ function checkAuth()
 
 	if ($account['in_game'] !== NULL) {
 		if (!$gameInfo = selectGame($account['in_game'])) {
-			$db->query('UPDATE user_accounts SET in_game = NULL WHERE ' .
-			 'login_id = %u', array($login_id));
+			$db->query('UPDATE user_accounts SET in_game = NULL WHERE login_id = %[1]', 
+			 $login_id);
 			$account['in_game'] = NULL;
 		    return false;
 		}
@@ -309,30 +306,6 @@ function calc_perc($num, $den)
 }
 
 
-/*
-//print clickable name of $player
-function print_name($player)
-{
-	global $db, $userOpt;
-	static $cache = array();
-
-	if (!isset($cache[$player['login_id']])) {//this user not cached
-		$pQuery = $db->query('SELECT login_id, login_name, u.clan_id, ' .
-		 'c.sym_color AS clan_sym_color, c.symbol AS clan_sym ' .
-		 'FROM [game]_users AS u LEFT JOIN [game]_clans AS c ON ' .
-		 'u.clan_id = c.clan_id WHERE login_id = %u',
-		 array($player['login_id']));
-		$player = $db->fetchRow($pQuery);
-
-		$cache[$player['login_id']] = formatName($player['login_id'],
-		 $player['login_name'], $player['clan_id'], $player['clan_sym'],
-		 $player['clan_sym_color']);
-	}
-
-	return $cache[$player['login_id']];
-}*/
-
-
 /*********************
 Misc Functions
 *********************/
@@ -361,17 +334,13 @@ function make_ship($parts, $owner)
 	$newId = newId('[game]_ships', 'ship_id');
 
 	// build the new ship
-	$result = $db->query('INSERT INTO [game]_ships (ship_id, ship_name, ' .
-	 'login_id, type_id, location, fighters, max_fighters, max_shields, ' .
-	 'cargo_bays, mining_rate, config, upgrades, point_value, hull, max_hull, auxiliary_ship) ' .
-	 'VALUES (%u, \'%s\', %u, %u, %u, %u, %u, %u, %u, %u, \'%s\', %u, %u, %u, %u, ' .
-	 ($parts['auxiliary_ship'] === NULL ? '%s' : '%u') . ')',
-	 array($newId, $db->escape($parts['ship_name']), $owner['login_id'],
-	 $parts['type_id'], isset($parts['location']) ? $parts['location'] : 1,
-	 $parts['fighters'], $parts['max_fighters'], $parts['max_shields'],
-	 $parts['cargo_bays'], $parts['mining_rate'], $parts['config'],
-	 $parts['upgrades'], $parts['point_value'], $parts['hull'], $parts['max_hull'],
-	 $parts['auxiliary_ship'] === NULL ? 'NULL' : $parts['auxiliary_ship']));
+	$result = $db->query('INSERT INTO [game]_ships (ship_id, ship_name, login_id, type_id, location, fighters, max_fighters, max_shields, cargo_bays, mining_rate, config, upgrades, point_value, hull, max_hull, auxiliary_ship) VALUES (%[1], \'%[2]\', %[3], %[4], %[5], %[6], %[7], %[8], %[9], %[10], \'%[11]\', %[12], %[13], %[14], %[15], %[16])',
+	 $newId, $parts['ship_name'], $owner['login_id'], $parts['type_id'], 
+	 isset($parts['location']) ? $parts['location'] : 1, $parts['fighters'], 
+	 $parts['max_fighters'], $parts['max_shields'], $parts['cargo_bays'], 
+	 $parts['mining_rate'], $parts['config'], $parts['upgrades'], 
+	 $parts['point_value'], $parts['hull'], $parts['max_hull'], 
+	 $parts['auxiliary_ship'] === NULL ? 'NULL' : $parts['auxiliary_ship']);
 
 	return $db->hasError($result) ? false : $newId;
 }
