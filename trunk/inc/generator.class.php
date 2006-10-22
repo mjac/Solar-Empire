@@ -1,13 +1,23 @@
 <?php
 
 /**
- * Generates a universe similar to a mathematical graph
- * 
- * Provides a wealth of customisation options.   
- */ 
+ * @package SEUniGen
+ */
 
+/**
+ * Generates a universe based on vertices and edges.
+ * @author Michael Clark <mjac@mjac.co.uk>
+ * 
+ * Features include
+ *  - Supports graphics for each standard or important system
+ *  - Unlimited amount of links for each vertex
+ *  - Four mapsets using a common base class allowing users to extend add more 
+ *    algorithms
+ *  - Optimised mathematics and algorithms to improve generation speed
+ */
 class genUniverse
 {
+	/** Essential options for generating the universe */
 	var $options = array(
 		'starAmount' => 300,
 		'width' => 800,
@@ -30,6 +40,7 @@ class genUniverse
 		'centralStar' => 1
 	);
 
+	/** Aesthetic options for image generation */
 	var $appearance = array(
 		'mapPadding' => 50,
 		'label' => true,
@@ -56,6 +67,11 @@ class genUniverse
 		)
 	);
 
+	/**
+	 * List of in-built map types
+	 * 
+	 * Extended by $uni->mapTypes['newType'] = 'className';	 	 
+	 */
 	var $mapTypes = array(
 		'random' => 'genMapsetRandom',
 		'core' => 'genMapsetCore',
@@ -63,8 +79,15 @@ class genUniverse
 		'ellipse' => 'genMapsetEllipse'
 	);
 
+	/** Storage for the generated stars */
 	var $stars;
 
+	/** 
+	 * Creates and fills $this->stars
+	 * 
+	 * - Fills $this->stars with starAmount instances of genStar
+	 * - Sets the ID and link amount of each star	 
+	 */
 	function createStars()
 	{
 		$this->stars = array();
@@ -77,6 +100,7 @@ class genUniverse
 		}
 	}
 
+	/** Generates star positions using the chosen map class */
 	function positions()
 	{
 		$class = $this->mapTypes[$this->options['mapType']];
@@ -84,6 +108,13 @@ class genUniverse
 		$map->generate($this->stars);
 	}
 
+	/**
+	 * Gives every star a random, unique name.
+	 * @param $names List of names to choose from
+	 *	 
+	 * If the amount of stars is large than the number of names a number is 
+	 * appended to each name to make it unique.
+	 */
 	function names(&$names)
 	{
 		$count = count($names);
@@ -100,6 +131,15 @@ class genUniverse
 		}
 	}
 
+	/**
+	 * Fast algorithm to create links/edges between near vertices.
+	 * 
+	 * Uses optimised mathematics to increase speed.  Quadrance is used instead 
+	 * of distance to eliminate square roots and stored in an internal array 
+	 * compatible with asort as usort is far too slow.	 
+	 *
+	 * \f$Q = s^2 = (x_2 - x_1)^2 + (y_2 - y_1)^2\f$
+	 */
 	function link()
 	{
 		$maxQuad = $this->options['linkMaxDist'] * 
@@ -129,6 +169,7 @@ class genUniverse
 		}
 	}
 
+	/** Creates wormholes/edges between vertices that are any distance apart */
 	function wormholes()
 	{
 		if ($this->options['wormholeChance'] == 0) {
@@ -162,7 +203,12 @@ class genUniverse
 		}
 	}
 
-	function renderGlobal($standard, $print)
+	/**
+	 * Create large screen and print maps showing the whole universe
+	 * @param $screen File to write the screen map to
+	 * @param $print File to write the printable map to
+	 */
+	function renderGlobal($screen, $print)
 	{
 		$graphics = $this->usingGraphics();
 
@@ -185,6 +231,8 @@ class genUniverse
 		}
 
 		$sCol =& $this->appearance['screen'];
+
+		// Allocate all colours
 		$colBack = imagecolorallocate($starMap, $sCol['background'][0],
 		 $sCol['background'][1], $sCol['background'][2]);
 		$colLabel = imagecolorallocate($starMap, $sCol['label'][0], 
@@ -198,6 +246,7 @@ class genUniverse
 		$colWormBi = imagecolorallocate($starMap,$sCol['wormholeBi'][0],
 		 $sCol['wormholeBi'][1], $sCol['wormholeBi'][2]);
 
+		// Draw links/edges
 		foreach ($this->stars as $star) {
 			for ($link = 0; $link < $star->linkAmount; ++$link) {
 				if (empty($star->links[$link]) ||
@@ -213,7 +262,7 @@ class genUniverse
 			}
 		}
 
-		// Wormholes
+		// Draw wormholes
 		if ($this->options['wormholeChance'] != 0) {
 			foreach ($this->stars as $star) {
 				if (empty($star->wormhole)) {
@@ -231,6 +280,7 @@ class genUniverse
 			}
 		}
 
+		// Draw vertices as dots or images depending on map settings
 		if ($graphics) {
 			foreach ($this->stars as $star) {
 				if ($star->id == $this->options['centralStar']) {
@@ -256,6 +306,7 @@ class genUniverse
 			}
 		}
 
+		// Label each star with a number if allowed
 		if ($this->appearance['label']) {
 			$off = $graphics ? array(6, -4) : array(3, -4);
 
@@ -269,7 +320,7 @@ class genUniverse
 		}
 
 
-		// Create printable map by changing colours
+		// Create printable map by swapping colours
 		$printMap = imagecreate($totalWidth, $totalHeight);
 
 		$pCol =& $this->appearance['print'];
@@ -310,13 +361,18 @@ class genUniverse
 		}
 
 		// Output and destroy images
-		imagepng($starMap, $standard);
+		imagepng($starMap, $screen);
 		imagedestroy($starMap);
 
 		imagepng($printMap, $print);	
 		imagedestroy($printMap);
 	}
 
+	/** 
+	 * Creates smaller local maps using a generated screen map
+	 * @param $global Generated global map to base the local maps on
+	 * @param $directory Directory to write the local maps (N.png) to
+	 */
 	function renderLocal($global, $directory)
 	{
 		if (!is_dir($directory)) {
@@ -361,6 +417,7 @@ class genUniverse
 		imagedestroy($starMap);
 	}
 
+	/** Determines whether the universe will use graphics */
 	function usingGraphics()
 	{
 		return $this->appearance['graphics']['earth'] && 
@@ -369,6 +426,7 @@ class genUniverse
 		 is_file($this->appearance['graphics']['star']);
 	}
 
+	/** Shuffles a simple array */
 	function shuffle(&$items)
 	{
 		for ($i = count($items) - 1; $i > 0; --$i) {
@@ -381,9 +439,7 @@ class genUniverse
 };
 
 
-
-
-
+/** Simple class representing a star system */
 class star
 {
 	var $name = '';
@@ -396,6 +452,7 @@ class star
 	var $wormhole;
 };
 
+/** Extended star class used for generation */
 class genStar extends star
 {
 	function linkTo(&$to)
@@ -426,6 +483,7 @@ class genStar extends star
 	}
 };
 
+/** Base mapset class containing common utility functions */
 class genMapset
 {
 	var $options;
@@ -468,6 +526,7 @@ class genMapset
 	}
 };
 
+/** Random positions */
 class genMapsetRandom extends genMapset
 {
 	function genMapsetRandom(&$options)
@@ -492,6 +551,7 @@ class genMapsetRandom extends genMapset
 	}
 };
 
+/** Dense core of stars getting sparser proportional to distance from centre */
 class genMapsetCore extends genMapset
 {
 	function genMapsetCore(&$options)
@@ -524,6 +584,7 @@ class genMapsetCore extends genMapset
 	}
 };
 
+/** Clusters of stars */
 class genMapsetClusters extends genMapset
 {
 	function genMapsetClusters(&$options)
@@ -571,6 +632,7 @@ class genMapsetClusters extends genMapset
 	}
 };
 
+/** Stars are contained in an ellipse */
 class genMapsetEllipse extends genMapset
 {
 	function genMapsetEllipse(&$options)
