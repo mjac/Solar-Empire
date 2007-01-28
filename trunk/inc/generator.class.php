@@ -78,6 +78,13 @@ class generator extends genUniverse
 		$this->stars[$solIndex]->name = $this->stars[$lowIndex]->name;
 		$this->stars[$lowIndex]->name = 'Sol';
 	}
+
+	/** Output map to browser (for preview) */
+	function displayMap()
+	{
+	    header('Content-Type: image/png');
+	    imagepng($this->starMap);
+	}
 };
 
 ?>

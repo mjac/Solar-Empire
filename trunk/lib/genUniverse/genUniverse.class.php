@@ -82,6 +82,9 @@ class genUniverse
 	/** Storage for the generated stars */
 	var $stars;
 
+	/** Storage for the generated map */
+	var $starMap;
+
 	/** 
 	 * Creates and fills $this->stars
 	 * 
@@ -204,11 +207,9 @@ class genUniverse
 	}
 
 	/**
-	 * Create large screen and print maps showing the whole universe
-	 * @param $screen File to write the screen map to
-	 * @param $print File to write the printable map to
+	 * Render map of the whole universe
 	 */
-	function renderGlobal($screen, $print)
+	function renderMap()
 	{
 		$graphics = $this->usingGraphics();
 
@@ -217,11 +218,11 @@ class genUniverse
 		$totalHeight = $this->options['height'] + 2 * 
 		 $this->appearance['mapPadding'];
 
-		$starMap = imagecreate($totalWidth, $totalHeight);
+		$this->starMap = imagecreate($totalWidth, $totalHeight);
 
 		if ($graphics) {
-			$earthIm = 
-			 imagecreatefrompng($this->appearance['graphics']['earth']);
+			$earthIm = imagecreatefrompng(
+			 $this->appearance['graphics']['earth']);
 			$earthDim = array(imagesx($earthIm), imagesy($earthIm));
 			$earthPos = array(-$earthDim[0] / 2, -$earthDim[1] / 2);
 
@@ -233,17 +234,17 @@ class genUniverse
 		$sCol =& $this->appearance['screen'];
 
 		// Allocate all colours
-		$colBack = imagecolorallocate($starMap, $sCol['background'][0],
+		$colBack = imagecolorallocate($this->starMap, $sCol['background'][0],
 		 $sCol['background'][1], $sCol['background'][2]);
-		$colLabel = imagecolorallocate($starMap, $sCol['label'][0], 
+		$colLabel = imagecolorallocate($this->starMap, $sCol['label'][0],
 		 $sCol['label'][1], $sCol['label'][2]);
-		$colStar = imagecolorallocate($starMap, $sCol['star'][0], 
+		$colStar = imagecolorallocate($this->starMap, $sCol['star'][0],
 		 $sCol['star'][1], $sCol['star'][2]);
-		$colLink = imagecolorallocate($starMap, $sCol['link'][0], 
+		$colLink = imagecolorallocate($this->starMap, $sCol['link'][0],
 		 $sCol['link'][1], $sCol['link'][2]);
-		$colWorm = imagecolorallocate($starMap, $sCol['wormhole'][0],
+		$colWorm = imagecolorallocate($this->starMap, $sCol['wormhole'][0],
 		 $sCol['wormhole'][1], $sCol['wormhole'][2]);
-		$colWormBi = imagecolorallocate($starMap,$sCol['wormholeBi'][0],
+		$colWormBi = imagecolorallocate($this->starMap,$sCol['wormholeBi'][0],
 		 $sCol['wormholeBi'][1], $sCol['wormholeBi'][2]);
 
 		// Draw links/edges
@@ -254,24 +255,25 @@ class genUniverse
 					continue;
 				}
 
-				imageline($starMap, $star->x + 
-				 $this->appearance['mapPadding'], $star->y + 
-				 $this->appearance['mapPadding'], $star->links[$link]->x + 
-				 $this->appearance['mapPadding'], $star->links[$link]->y + 
+				imageline($this->starMap, $star->x +
+				 $this->appearance['mapPadding'], $star->y +
+				 $this->appearance['mapPadding'], $star->links[$link]->x +
+				 $this->appearance['mapPadding'], $star->links[$link]->y +
 				 $this->appearance['mapPadding'], $colLink);
 			}
 		}
 
 		// Draw wormholes
-		if ($this->options['wormholeChance'] != 0) {
+		if ($this->options['wormholeChance'] != 0.0) {
 			foreach ($this->stars as $star) {
 				if (empty($star->wormhole)) {
 					continue;
 				}
 	
 				$twoWay = $star->wormhole->wormhole;
-	
-				imageline($starMap, $star->x + $this->appearance['mapPadding'], 
+
+				imageline($this->starMap, $star->x +
+				 $this->appearance['mapPadding'],
 				 $star->y + $this->appearance['mapPadding'], 
 				 $star->wormhole->x + $this->appearance['mapPadding'], 
 				 $star->wormhole->y + $this->appearance['mapPadding'],
@@ -293,14 +295,14 @@ class genUniverse
 					$dim =& $starDim;
 				}
 
-				imagecopy($starMap, $im, $star->x + 
+				imagecopy($this->starMap, $im, $star->x +
 				 $this->appearance['mapPadding'] + $pos[0], $star->y + 
 				 $this->appearance['mapPadding'] + $pos[1], 0, 0, $dim[0], 
 				 $dim[1]);
 			}
 		} else {
 			foreach ($this->stars as $star) {
-				imagesetpixel($starMap, $star->x + 
+				imagesetpixel($this->starMap, $star->x +
 				 $this->appearance['mapPadding'], $star->y + 
 				 $this->appearance['mapPadding'], $colStar);
 			}
@@ -311,60 +313,74 @@ class genUniverse
 			$off = $graphics ? array(6, -4) : array(3, -4);
 
 			foreach ($this->stars as $star) {
-				imagestring($starMap, 
+				imagestring($this->starMap,
 				 $star->id == $this->options['centralStar'] ? 3 : 1,
 				 $star->x + $this->appearance['mapPadding'] + $off[0],
 				 $star->y + $this->appearance['mapPadding'] + $off[1],
 				 $star->id, $colLabel);
 			}
 		}
+	}
 
+	/** Destroy the image resource*/
+	function destroyMap()
+	{
+		imagedestroy($this->starMap);
+	}
 
-		// Create printable map by swapping colours
-		$printMap = imagecreate($totalWidth, $totalHeight);
+	/** Save the star map to a file */
+	function saveMap($filename)
+	{
+		imagepng($this->starMap, $filename);
+	}
 
+	/** Create printable map by swapping colours */
+	function savePrintMap($filename)
+	{
+		$sCol =& $this->appearance['screen'];
 		$pCol =& $this->appearance['print'];
-		imagecolorallocate($starMap, $pCol['background'][0],
-		 $pCol['background'][1], $pCol['background'][2]);
-		imagecopy($printMap, $starMap, 0, 0, 0, 0, $totalWidth, $totalHeight);
 
-		$index = imagecolorexact($printMap, $sCol['background'][0], 
+		$printMap = imagecreate(imagesx($this->starMap),
+		 imagesy($this->starMap));
+
+		imagecolorallocate($this->starMap, $pCol['background'][0],
+		 $pCol['background'][1], $pCol['background'][2]);
+		imagecopy($printMap, $this->starMap, 0, 0, 0, 0, $totalWidth,
+		 $totalHeight);
+
+		$index = imagecolorexact($printMap, $sCol['background'][0],
 		 $sCol['background'][1], $sCol['background'][2]);
-		imagecolorset($printMap, $index, $pCol['background'][0], 
+		imagecolorset($printMap, $index, $pCol['background'][0],
 		 $pCol['background'][1], $pCol['background'][2]);
 
-		$index = imagecolorexact($printMap, $sCol['link'][0], 
+		$index = imagecolorexact($printMap, $sCol['link'][0],
 		 $sCol['link'][1], $sCol['link'][2]);
-		imagecolorset($printMap, $index, $pCol['link'][0], 
+		imagecolorset($printMap, $index, $pCol['link'][0],
 		 $pCol['link'][1], $pCol['link'][2]);
 
-		$index = imagecolorexact($printMap, $sCol['wormhole'][0], 
+		$index = imagecolorexact($printMap, $sCol['wormhole'][0],
 		 $sCol['wormhole'][1], $sCol['wormhole'][2]);
-		imagecolorset($printMap, $index, $pCol['wormhole'][0], 
+		imagecolorset($printMap, $index, $pCol['wormhole'][0],
 		 $pCol['wormhole'][1], $pCol['wormhole'][2]);
 
-		$index = imagecolorexact($printMap, $sCol['wormholeBi'][0], 
+		$index = imagecolorexact($printMap, $sCol['wormholeBi'][0],
 		 $sCol['wormholeBi'][1], $sCol['wormholeBi'][2]);
-		imagecolorset($printMap, $index, $pCol['wormholeBi'][0], 
+		imagecolorset($printMap, $index, $pCol['wormholeBi'][0],
 		 $pCol['wormholeBi'][1], $pCol['wormholeBi'][2]);
 
-		$index = imagecolorexact($printMap, $sCol['label'][0], 
+		$index = imagecolorexact($printMap, $sCol['label'][0],
 		 $sCol['label'][1], $sCol['label'][2]);
-		imagecolorset($printMap, $index, $pCol['label'][0], 
+		imagecolorset($printMap, $index, $pCol['label'][0],
 		 $pCol['label'][1], $pCol['label'][2]);
-	
+
 		if (!$graphics) {
-			$index = imagecolorexact($printMap, $sCol['star'][0], 
+			$index = imagecolorexact($printMap, $sCol['star'][0],
 			 $sCol['star'][1], $sCol['star'][2]);
-			imagecolorset($printMap, $index, $pCol['star'][0], 
+			imagecolorset($printMap, $index, $pCol['star'][0],
 			 $pCol['star'][1], $pCol['star'][2]);
 		}
 
-		// Output and destroy images
-		imagepng($starMap, $screen);
-		imagedestroy($starMap);
-
-		imagepng($printMap, $print);	
+		imagepng($printMap, $filename);
 		imagedestroy($printMap);
 	}
 
@@ -373,15 +389,15 @@ class genUniverse
 	 * @param $global Generated global map to base the local maps on
 	 * @param $directory Directory to write the local maps (N.png) to
 	 */
-	function renderLocal($global, $directory)
+	function saveLocalMaps($global, $directory)
 	{
 		if (!is_dir($directory)) {
 			return;
 		}
 		$graphics = $this->usingGraphics();
-	
+
 		$starMap = imagecreatefrompng($global);
-	
+
 		foreach ($this->stars as $star) {
 			$sCol =& $this->appearance['screen'];
 
@@ -420,8 +436,8 @@ class genUniverse
 	/** Determines whether the universe will use graphics */
 	function usingGraphics()
 	{
-		return $this->appearance['graphics']['earth'] && 
-		 $this->appearance['graphics']['star'] &&
+		return !(empty($this->appearance['graphics']['earth']) ||
+		 empty($this->appearance['graphics']['star'])) &&
 		 is_file($this->appearance['graphics']['earth']) && 
 		 is_file($this->appearance['graphics']['star']);
 	}
@@ -439,8 +455,9 @@ class genUniverse
 };
 
 
-/** Simple class representing a star system */
-class star
+
+/** Extended star class used for generation */
+class genStar extends star
 {
 	var $name = '';
 	var $id = 0;
@@ -450,11 +467,7 @@ class star
 	var $linksLeft = 0;
 	var $links = array();
 	var $wormhole;
-};
 
-/** Extended star class used for generation */
-class genStar extends star
-{
 	function linkTo(&$to)
 	{
 		if ($this->linksLeft < 1 || $to->linksLeft < 1 || 
@@ -482,6 +495,9 @@ class genStar extends star
 		}
 	}
 };
+
+
+
 
 /** Base mapset class containing common utility functions */
 class genMapset
@@ -526,6 +542,7 @@ class genMapset
 	}
 };
 
+
 /** Random positions */
 class genMapsetRandom extends genMapset
 {
@@ -550,6 +567,7 @@ class genMapsetRandom extends genMapset
 		}
 	}
 };
+
 
 /** Dense core of stars getting sparser proportional to distance from centre */
 class genMapsetCore extends genMapset
@@ -583,6 +601,7 @@ class genMapsetCore extends genMapset
 		}
 	}
 };
+
 
 /** Clusters of stars */
 class genMapsetClusters extends genMapset
@@ -631,6 +650,7 @@ class genMapsetClusters extends genMapset
 		}
 	}
 };
+
 
 /** Stars are contained in an ellipse */
 class genMapsetEllipse extends genMapset

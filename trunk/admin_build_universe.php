@@ -23,12 +23,26 @@ switch ($action) {
 	case 'preview':
 	case 'create':
 		$uni->createStars();
+
 		$uni->positions();
 		$uni->centreSol();
+
 		$uni->link();
 		$uni->wormholes();
-		$uni->renderGlobal($mapDir . '/screen.png', $mapDir . '/print.png');
+
+		$uni->renderMap();
+
+		if ($action === 'preview') {
+		    $uni->displayMap();
+		    $uni->destroyMap();
+		    exit;
+		}
+
+		$uni->saveMap($mapDir . '/screen.png');
+		$uni->savePrintMap($mapDir . '/print.png');
 		$uni->renderLocal($mapDir . '/screen.png', $mapDir . '/local');
+
+		$uni->destroyMap();
 		break;
 
 	default:
