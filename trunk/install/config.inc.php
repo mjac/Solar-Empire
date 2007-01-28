@@ -23,8 +23,9 @@ error_reporting(E_ALL & ~E_STRICT);
 define('PATH_BASE', dirname(__FILE__) . '/..');
 define('PATH_INC', PATH_BASE . '/inc');
 define('PATH_TPL', PATH_BASE . '/tpl');
-define('PATH_SDA', PATH_INC . '/external/sda/sda.class.php');
-define('PATH_SAVANT', PATH_INC . '/external/savant/Savant2.php');
+define('PATH_LIB', PATH_BASE . '/lib');
+define('PATH_SDA', PATH_INC . '/sda/sda.class.php');
+define('PATH_SAVANT', PATH_INC . '/Savant2-2.4.3/Savant2.php');
 
 $dir = dirname($_SERVER['SCRIPT_NAME']);
 define('URL_BASE', rtrim($dir, '\\/'));
