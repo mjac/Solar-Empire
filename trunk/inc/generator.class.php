@@ -6,6 +6,7 @@ if (!class_exists('genUniverse')) {
 
 class generator extends genUniverse
 {
+	/** Apply game options to universe generator */
 	function generator()
 	{
 	    global $gameOpt;

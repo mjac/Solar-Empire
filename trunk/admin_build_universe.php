@@ -1,14 +1,14 @@
 <?php
 
-require_once(PATH_INC . '/admin.inc.php');
-require_once(PATH_INC . '/template.inc.php');
+require_once('inc/admin.inc.php');
+require_once('inc/template.inc.php');
 if (!class_exists('generator')) {
-	require(PATH_INC . '/generator.class.php');
+	require('inc/generator.class.php');
 }
 
 set_time_limit(60);
 
-$uni = new genUniverse;
+$uni = new generator;
 
 $action = isset($_REQUEST['action']) ? strtolower($_REQUEST['action']) : '';
 $tpl->assign('action', $action);
