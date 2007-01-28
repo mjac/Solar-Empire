@@ -55,7 +55,7 @@ if (!empty($problems)) {
 	exit;
 }
 
-require_once('inc/external/sha256/sha256.class.php');
+require_once(PATH_LIB . '/sha256/sha256.class.php');
 $password = randomString(6);
 
 $newId = newId('user_accounts', 'login_id');
