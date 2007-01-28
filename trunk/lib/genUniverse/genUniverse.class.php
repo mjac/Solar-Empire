@@ -457,7 +457,7 @@ class genUniverse
 
 
 /** Extended star class used for generation */
-class genStar extends star
+class genStar
 {
 	var $name = '';
 	var $id = 0;
