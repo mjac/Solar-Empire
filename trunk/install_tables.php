@@ -95,7 +95,14 @@ $newAdmin = $db->query('INSERT INTO user_accounts (login_id, login_name, passwd,
 echo $db->hasError($newAdmin) ? 'Failure' : 'Success';
 
 ?></p>
+
 <h2>Result</h2>
-<p>If all of the queries completed successfully, delete the install directory and sign-in as Admin (no password).</p>
+<p>The installation has been successful if all the tasks above are completed.   You can now <a href="index.php">sign-in</a> as <em>Admin</em> (empty password) and begin setting up your server.  Ensure you delete the following files, and set the new configuration file to read-only, to prevent a malicious user installing the server again:</p>
+<ul>
+	<li>install/*</li>
+	<li>install</li>
+	<li>install.php</li>
+	<li>install_tables.php</li>
+</ul>
 </body>
 </html>
