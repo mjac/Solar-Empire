@@ -9,7 +9,10 @@ function login_to_server($handle, $password)
 {
 	global $db, $tpl;
 
-	require_once(PATH_LIB . '/sha256/sha256.class.php');
+	if (!class_exists('sha256')) {
+		require(PATH_LIB . '/sha256/sha256.class.php');
+	}
+
 	$password = sha256::hash($password);
 
 	$uQuery = $db->query('SELECT login_id, passwd, login_count FROM user_accounts WHERE login_name = \'%[1]\'', 

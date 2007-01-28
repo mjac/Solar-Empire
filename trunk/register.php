@@ -55,7 +55,10 @@ if (!empty($problems)) {
 	exit;
 }
 
-require_once(PATH_LIB . '/sha256/sha256.class.php');
+if (!class_exists('sha256')) {
+	require(PATH_LIB . '/sha256/sha256.class.php');
+}
+
 $password = randomString(6);
 
 $newId = newId('user_accounts', 'login_id');

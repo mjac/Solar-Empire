@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @package SEUniGen
+ * @package genUniverse
  */
 
 /**

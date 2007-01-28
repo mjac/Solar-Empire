@@ -80,7 +80,10 @@ again</a></p>
 
 END;
 
-	require_once(PATH_LIB . '/sha256/sha256.class.php');
+	if (!class_exists('sha256')) {
+		require(PATH_LIB . '/sha256/sha256.class.php');
+	}
+
 	if ($changepass == 'change' || !(isset($newpass) && isset($oldpass))) {
 		$temp_str = <<<END
 <h1>Enter a new password</h1>
