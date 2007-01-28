@@ -16,20 +16,20 @@ $installed = false;
 
 function checkOption($name, $var)
 {
-	global $_REQUEST;
-
 	if (isset($_REQUEST[$name]) && 
 	     strtolower($_REQUEST[$name]) === strtolower($var)) {
 		echo ' selected="selected"';
 	}
 }
 
-function currentValue($name)
+function currentValue($name, $default = '')
 {
-	global $_REQUEST;
-
 	if (isset($_REQUEST[$name])) {
-		echo ' value="' . htmlentities(substr($_REQUEST[$name], 0, 256)) . '"';
+	    $default = substr($_REQUEST[$name], 0, 256);
+	}
+
+	if (!empty($default)) {
+		echo ' value="' . htmlentities($default) . '"';
 	}
 }
 
@@ -147,10 +147,10 @@ if (is_dir('doc') && is_readable('doc/licence.txt') &&
 	</select></dd>
 
 	<dt>Hostname or file</dt>
-	<dd><input name="dbHostname"<?php currentValue('dbHostname'); ?> class="text" /></dd>
+	<dd><input name="dbHostname"<?php currentValue('dbHostname', 'localhost'); ?> class="text" /></dd>
 
 	<dt>Name</dt>
-	<dd><input name="dbName"<?php currentValue('dbName'); ?> class="text" /></dd>
+	<dd><input name="dbName"<?php currentValue('dbName', 'solaremp'); ?> class="text" /></dd>
 
 	<dt>Username</dt>
 	<dd><input name="dbUsername"<?php currentValue('dbUsername'); ?> class="text" /></dd>
