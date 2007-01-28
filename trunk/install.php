@@ -6,7 +6,7 @@ if (!(file_exists('install') && is_dir('install'))) {
 	exit('The install directory must exist.');
 }
 
-require_once('inc/external/sda/sda.class.php');
+require_once('lib/sda/sda.class.php');
 
 $configTpl = 'install/config.inc.php';
 $configNew = 'inc/config.inc.php';
