@@ -345,8 +345,8 @@ class genUniverse
 
 		imagecolorallocate($this->starMap, $pCol['background'][0],
 		 $pCol['background'][1], $pCol['background'][2]);
-		imagecopy($printMap, $this->starMap, 0, 0, 0, 0, $totalWidth,
-		 $totalHeight);
+		imagecopy($printMap, $this->starMap, 0, 0, 0, 0,
+		 imagesx($this->starMap), imagesy($this->starMap));
 
 		$index = imagecolorexact($printMap, $sCol['background'][0],
 		 $sCol['background'][1], $sCol['background'][2]);
@@ -373,7 +373,7 @@ class genUniverse
 		imagecolorset($printMap, $index, $pCol['label'][0],
 		 $pCol['label'][1], $pCol['label'][2]);
 
-		if (!$graphics) {
+		if (!$this->usingGraphics()) {
 			$index = imagecolorexact($printMap, $sCol['star'][0],
 			 $sCol['star'][1], $sCol['star'][2]);
 			imagecolorset($printMap, $index, $pCol['star'][0],

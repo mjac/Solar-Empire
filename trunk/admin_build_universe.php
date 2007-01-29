@@ -17,10 +17,17 @@ $mapDir = PATH_BASE . '/img/maps/' . $gameInfo['db_name'];
 
 switch ($action) {
 	case 'maps':
-		// load id, position, link, wormhole from database and create
+		$uni->loadData();
+		$uni->renderMap();
+
+		$uni->saveMap($mapDir . '/screen.png');
+		$uni->savePrintMap($mapDir . '/print.png');
+		$uni->saveLocalMaps($mapDir . '/screen.png', $mapDir . '/local');
+
+		$uni->destroyMap();
 		break;
 
-	case 'preview':
+	case 'makepreview':
 	case 'create':
 		$uni->createStars();
 
@@ -32,23 +39,29 @@ switch ($action) {
 
 		$uni->renderMap();
 
-		if ($action === 'preview') {
+		if ($action === 'makepreview') {
 		    $uni->displayMap();
 		    $uni->destroyMap();
 		    exit;
 		}
 
+		$uni->saveData();
+
 		$uni->saveMap($mapDir . '/screen.png');
 		$uni->savePrintMap($mapDir . '/print.png');
-		$uni->renderLocal($mapDir . '/screen.png', $mapDir . '/local');
+		$uni->saveLocalMaps($mapDir . '/screen.png', $mapDir . '/local');
 
 		$uni->destroyMap();
-		break;
+	case 'preview':
+	    break;
 
 	default:
-		assignCommon($tpl);
-		$tpl->display('game/admin/generate.tpl.php');
-		return;
+	    $action = '';
 }
+
+$tpl->assign('action', $action);
+
+assignCommon($tpl);
+$tpl->display('game/admin/generator.tpl.php');
 
 ?>

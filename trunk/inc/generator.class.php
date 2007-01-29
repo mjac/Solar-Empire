@@ -85,6 +85,18 @@ class generator extends genUniverse
 	    header('Content-Type: image/png');
 	    imagepng($this->starMap);
 	}
+
+	/** Save current arrays to the database */
+	function saveData()
+	{
+	    global $db;
+	}
+
+	/** Fill arrays from the database*/
+	function loadData()
+	{
+	    global $db;
+	}
 };
 
 ?>

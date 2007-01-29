@@ -29,6 +29,9 @@ if ($this->action === 'create') {
 <?php
 } elseif ($this->action === 'preview') {
 ?><h2>Preview of current settings</h2>
+<p><img src="<?php
+$this->eprint($this->url['self'] . '?action=makepreview');
+?>" alt="Preview of new universe" /></p>
 <?php
 } elseif ($this->action === 'maps') {
 ?><h2>Creating universe maps</h2>
