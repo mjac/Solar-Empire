@@ -119,13 +119,7 @@ if (isset($status)) {
 		case 'running':
 			post_news("Game $status");
 		case 'hidden':
-			$db->query('UPDATE se_games SET status = \'%s\', ' .
-			 'processed_cleanup = %u, processed_systems = %u, ' .
-			 'processed_turns = %u, processed_ships = %u, ' .
-			 'processed_planets = %u, processed_government = %u WHERE ' .
-			 'db_name = \'[game]\'', array($db->escape($status), time(), 
-			 time(), time(), time(), time(), time()));
-			$out .= "<p>Game is now $status.</p>\n";
+			$db->query('UPDATE se_games SET status = \'%[1]\', processed_cleanup = %[2], processed_systems = %[2], processed_turns = %[2], processed_ships = %[2], processed_planets = %[2], processed_government = %[2] WHERE db_name = \'[game]\'', $status, time());
 			insert_history($user['login_id'], "Changed status to $status.");
 	}
 }
