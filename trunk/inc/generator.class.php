@@ -142,6 +142,7 @@ class generator extends genUniverse
 					$newStar->linksId[] = $link;
 					++$newStar->linkAmount;
 				}
+				$newStar->linksLeft = $newStar->linkAmount;
 			}
 			
 			$newStar->wormholeId = (int)$star[10];
