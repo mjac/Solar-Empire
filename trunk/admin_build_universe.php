@@ -31,6 +31,10 @@ switch ($action) {
 	case 'create':
 		$uni->createStars();
 
+		if ($action !== 'makepreview') {
+			$uni->setNames();
+		}
+
 		$uni->positions();
 		$uni->centreSol();
 
