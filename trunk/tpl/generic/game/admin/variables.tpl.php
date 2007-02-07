@@ -28,18 +28,16 @@ foreach ($this->gameVars as $name => $data) {
 	$this->eprint($name);
 ?></label></td>
 		    <td><?php echo $data['description']; ?></td>
-		    <td><?php $this->eprint(number_format($data['min'])); ?></td>
-		    <td><?php $this->eprint(number_format($data['max'])); ?></td>
+		    <td><?php $this->eprint($data['min']); ?></td>
+		    <td><?php $this->eprint($data['max']); ?></td>
 		    <td><input type="text" name="change[<?php
 	$this->eprint($name);
 ?>]" id="var<?php $this->eprint($name); ?>" value="<?php
-	$this->eprint(number_format($data['newValue'] === false ? $data['value'] :
-	 $data['newValue']));
+	$this->eprint($data['newValue'] === false ? $data['value'] :
+	 $data['newValue']);
 ?>" size="8" class="text" /><?php
 	if ($data['newValue'] !== false) {
-?><br /><em>was <?php
-		$this->eprint(number_format($data['value']));
-?></em><?php
+?><br /><em>was <?php $this->eprint($data['value']); ?></em><?php
 	}
 ?></td>
 		</tr>
