@@ -30,6 +30,49 @@ if ($this->action === 'create') {
 <p>The universe has been created successfully in <?php
 	$this->eprint(number_format($this->genPeriod, 4));
 ?>&nbsp;s.</p>
+<h3>Execution profile</h3>
+<table>
+	<thead>
+		<tr>
+		    <th>Activity</th>
+		    <th>Period /s</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+		    <td>Total</td>
+		    <td><?php
+	$this->eprint(number_format($this->genPeriod, 4));
+?></td>
+		</tr>
+	</tfoot>
+	<tbody>
+		<tr>
+		    <td>Positioning</td>
+		    <td><?php
+	$this->eprint(number_format($this->genPeriodPos, 4));
+?></td>
+		</tr>
+		<tr>
+		    <td>Linking</td>
+		    <td><?php
+	$this->eprint(number_format($this->genPeriodLink, 4));
+?></td>
+		</tr>
+		<tr>
+		    <td>Rendering map</td>
+		    <td><?php
+	$this->eprint(number_format($this->genPeriodRender, 4));
+?></td>
+		</tr>
+		<tr>
+		    <td>Saving data</td>
+		    <td><?php
+	$this->eprint(number_format($this->genPeriodSave, 4));
+?></td>
+		</tr>
+	</tbody>
+</table>
 <?php
 } elseif ($this->action === 'preview') {
 ?><h2>Preview of current settings</h2>
