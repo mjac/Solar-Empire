@@ -8,7 +8,37 @@ $this->description = '';
 include($this->loadTemplate('game/inc/header_game.tpl.php'));
 
 ?><h1>Edit game variables</h1>
-<form action="<?php $this->eprint($this->url['self']); ?>" method="post">
+<?php
+
+$updated = array();
+foreach ($this->gameVars as $name => $data) {
+	if ($data['newValue'] !== false) {
+	    $updated = array($name, $data['value'], $data['newValue']);
+	}
+}
+
+if (!empty($updated)) {
+?><h2>Updated variables</h2>
+<ul>
+<?php
+
+	foreach ($updated as $var) {
+?>  <li><em><?php $this->eprint($var[0]); ?></em> updated from <?php
+		$this->eprint(number_format($var[1]));
+?> to <?php
+		$this->eprint(number_format($var[2]));
+?></li>
+<?php
+	}
+
+?></ul>
+
+<h2>Continue editing</h2>
+<?php
+}
+
+
+?><form action="<?php $this->eprint($this->url['self']); ?>" method="post">
 	<p><input type="submit" value="Submit changes" class="button" /></p>
 	<p>Only variables that are within range will be saved.</p>
 	<table class="simple">
@@ -35,11 +65,7 @@ foreach ($this->gameVars as $name => $data) {
 ?>]" id="var<?php $this->eprint($name); ?>" value="<?php
 	$this->eprint($data['newValue'] === false ? $data['value'] :
 	 $data['newValue']);
-?>" size="8" class="text" /><?php
-	if ($data['newValue'] !== false) {
-?><br /><em>(<?php $this->eprint($data['value']); ?>)</em><?php
-	}
-?></td>
+?>" size="8" class="text" /></td>
 		</tr>
 <?php
 	 "</td>\n\t\t\t<td></td>\n\t\t</tr>\n";
