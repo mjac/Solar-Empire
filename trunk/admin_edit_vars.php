@@ -33,7 +33,7 @@ if (isset($_REQUEST['change'])) {
 		}
 	}
 
-	if ($updated > 0) {
+	if (!empty($savedVars)) {
 		insert_history($user['login_id'], 'Updated game variables: ' .
 		 implode(', ', $savedVars));
 	}

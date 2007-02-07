@@ -37,7 +37,7 @@ foreach ($this->gameVars as $name => $data) {
 	 $data['newValue']);
 ?>" size="8" class="text" /><?php
 	if ($data['newValue'] !== false) {
-?><br /><em>was <?php $this->eprint($data['value']); ?></em><?php
+?><br /><em>(<?php $this->eprint($data['value']); ?>)</em><?php
 	}
 ?></td>
 		</tr>

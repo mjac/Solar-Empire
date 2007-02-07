@@ -31,7 +31,7 @@ if ($this->action === 'create') {
 	$this->eprint(number_format($this->genPeriod, 4));
 ?>&nbsp;s.</p>
 <h3>Execution profile</h3>
-<table>
+<table class="simple">
 	<thead>
 		<tr>
 		    <th>Activity</th>
