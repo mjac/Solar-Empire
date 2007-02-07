@@ -1,8 +1,8 @@
 <?php
 class_exists('Savant2') || exit;
 
-$this->pageName = 'Administration';
-$this->title = 'Game administration panel';
+$this->pageName = 'Universe generator';
+$this->title = 'Create a new universe for this game';
 $this->description = '';
 
 include($this->loadTemplate('game/inc/header_game.tpl.php'));

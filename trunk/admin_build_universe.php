@@ -1,7 +1,8 @@
 <?php
 
-require_once('inc/admin.inc.php');
-require_once('inc/template.inc.php');
+require('inc/admin.inc.php');
+require('inc/template.inc.php');
+
 if (!class_exists('generator')) {
 	require('inc/generator.class.php');
 }

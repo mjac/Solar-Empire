@@ -1,63 +1,47 @@
 <?php
 
-require_once('inc/admin.inc.php');
+require('inc/admin.inc.php');
+require('inc/template.inc.php');
 
-$savedVars = array();
+$vars = array();
 
-if(isset($save_vars)) {
-	foreach ($_REQUEST as $var => $value) {
-		$update = $db->query('UPDATE [game]_db_vars SET value = %d WHERE ' .
-		 'name = \'%s\' AND %d <= max AND %d >= min', array($value,
-		 $db->escape($var), $value, $value));
+$currentVars = $db->query('SELECT name, min, max, value, descript FROM [game]_db_vars ORDER BY name');
+while ($var = $db->fetchRow($vars, ROW_NUMERIC)) {
+	$vars[$var[0]] = array(
+		'min' => (int)$var[1],
+		'max' => (int)$var[2],
+		'value' => (int)$var[3],
+		'description' => $var[4],
+		'newValue' => false
+	);
+}
+
+if (isset($_REQUEST['change'])) {
+	$savedVars = array();
+	foreach ($_REQUEST['change'] as $name => $value) {
+		$value = (int)$value;
+
+		if (!isset($vars[$name]) || $vars[$name]['value'] === $value) {
+			continue;
+		}
+
+		$update = $db->query('UPDATE [game]_db_vars SET value = %[1] WHERE name = \'%[2]\' AND max >= %[1] AND min <= %[1]', $value, $name);
+
 		if ($db->affectedRows($update) > 0) {
-			$savedVars[] = $var;
+			$savedVars[] = $name;
+			$vars[$name]['newValue'] = $value;
 		}
 	}
 
-	if (!empty($savedVars)) {
-		insert_history($user['login_id'], "Updated Game Vars: " .
+	if ($updated > 0) {
+		insert_history($user['login_id'], 'Updated game variables: ' .
 		 implode(', ', $savedVars));
 	}
 }
 
-$out = <<<END
-<h1>Edit game variables</h1>
-<form action="admin_edit_vars.php" method="post">
-	<p><input type="hidden" name="save_vars" value="1" />
-	<input type="hidden" name="game_vars" value="1" />
-	<input type="submit" value="Submit changes" class="button" /></p>
-	<p>Only variables that are within range will be saved.</p>
-	<table class="simple">
-		<tr>
-			<th>Variable</th>
-			<th>Description</th>
-			<th>Min</th>
-			<th>Max</th>
-			<th>Value</th>
-		</tr>
+$tpl->assign('gameVars', $vars);
 
-END;
-
-$vars = $db->query('SELECT name, min, max, value, descript ' .
- 'FROM [game]_db_vars ORDER BY name');
-while ($adminVar = $db->fetchRow($vars)) {
-	$out .= "\t\t<tr>\n\t\t\t<td><label for=\"" . $adminVar['name'] . "\">" .
-	 $adminVar['name'] . "</label>" . (in_array($adminVar['name'], $savedVars) ?
-	 " <strong>Updated</strong>" : '') . "</td>\n\t\t\t<td>" .
-	 $adminVar['descript'] . "</td>\n\t\t\t<td>" . $adminVar['min'] .
-	 "</td>\n\t\t\t<td>" . $adminVar['max'] .
-	 "</td>\n\t\t\t<td><input type=\"text\" name=\"" .
-	 $adminVar['name'] . "\" id=\"" . $adminVar['name'] . "\" value=\"" .
-	 $adminVar['value'] . "\" size=\"8\" class=\"text\" /></td>\n\t\t</tr>\n";
-}
-
-$out .= <<<END
-	</table>
-	<p><input type="submit" value="Submit changes" class="button" /></p>
-</form>
-
-END;
-
-print_page("Edit game variables", $out);
+assignCommon($tpl);
+$tpl->display('game/admin/variables.tpl.php');
 
 ?>
