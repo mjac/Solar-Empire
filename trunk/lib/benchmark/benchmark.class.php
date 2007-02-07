@@ -25,7 +25,8 @@ class benchmark
 
 	function period()
 	{
-	    return (float)($stopS - $startS) + ($stopMS - $startMS);
+	    return (float)($this->stopS - $this->startS) +
+		 ($this->stopMS - $this->startMS);
 	}
 };
 

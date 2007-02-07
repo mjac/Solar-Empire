@@ -33,7 +33,7 @@ if ($this->action === 'create') {
 <?php
 } elseif ($this->action === 'preview') {
 ?><h2>Preview of current settings</h2>
-<p>Please wait while the image loads: the actual generation is conducted when the browser requests the image below not when this page is opened.  Previewing a universe has <strong>no effect</strong> on the current game.</p>
+<p>Please wait while the image loads: the actual generation is conducted when the browser requests the image below, not when this page is opened.  Previewing a universe has <strong>no effect</strong> on the current game.</p>
 <p><img src="<?php
 	$this->eprint($this->url['self'] . '?action=makepreview');
 ?>" alt="Preview of new universe" /></p>
