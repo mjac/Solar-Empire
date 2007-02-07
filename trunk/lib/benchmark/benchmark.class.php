@@ -41,7 +41,7 @@ class autoBenchmark extends benchmark
 	function finish()
 	{
 	    $this->stop();
-	    return $this->period;
+	    return $this->period();
 	}
 };
 
