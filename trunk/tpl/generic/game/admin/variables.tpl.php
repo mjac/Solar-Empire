@@ -13,7 +13,7 @@ include($this->loadTemplate('game/inc/header_game.tpl.php'));
 $updated = array();
 foreach ($this->gameVars as $name => $data) {
 	if ($data['newValue'] !== false) {
-	    $updated = array($name, $data['value'], $data['newValue']);
+	    $updated[] = array($name, $data['value'], $data['newValue']);
 	}
 }
 
