@@ -6,7 +6,7 @@ require('inc/template.inc.php');
 $vars = array();
 
 $currentVars = $db->query('SELECT name, min, max, value, descript FROM [game]_db_vars ORDER BY name');
-while ($var = $db->fetchRow($vars, ROW_NUMERIC)) {
+while ($var = $db->fetchRow($currentVars, ROW_NUMERIC)) {
 	$vars[$var[0]] = array(
 		'min' => (int)$var[1],
 		'max' => (int)$var[2],
