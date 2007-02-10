@@ -5,7 +5,6 @@ require_once('inc/template.inc.php');
 
 $out = '';
 
-
 // Changes when the game ends
 if (isset($finishes)) {
 	$match = array();
@@ -94,35 +93,6 @@ if (isset($status)) {
 			$db->query('UPDATE se_games SET status = \'%[1]\', processed_cleanup = %[2], processed_systems = %[2], processed_turns = %[2], processed_ships = %[2], processed_planets = %[2], processed_government = %[2] WHERE db_name = \'[game]\'', $status, time());
 			insert_history($user['login_id'], "Changed status to $status.");
 	}
-}
-
-
-//preview a universe
-if (isset($preview)) {
-	$out = <<<END
-<h1><a href="$self?preview=1">Universe preview</a></h1>
-<p><img src="admin_build_universe.php?preview=1&amp;process=1"
- title="Generating universe; this may take some time." /></p>
-<p>The above image uses <strong>only</strong> the following variables.</p>
-<ul>
-	<li>uv_map_layout</li>
-	<li>uv_max_link_dist</li>
-	<li>uv_min_star_dist</li>
-	<li>uv_num_stars</li>
-	<li>uv_show_warp_numbers</li>
-	<li>uv_universe_size</li>
-	<li>wormholes</li>
-</ul>
-<p>Changing any of these variables will have some sort of effect on the
-image/universe generated.</p>
-<p>There is no way to save the previewd universe and use it in a game.
-It is only an example of what can be created.</p>
-<p>If no image appears, then there is a pretty big bug somewhere in the 
-universe generation process. Report it to the Server Admin.</p>
-
-END;
-
-	print_page('Universe preview', $out);
 }
 
 
@@ -228,8 +198,6 @@ END;
 }
 
 assignCommon($tpl);
-
 $tpl->display('game/admin/panel.tpl.php');
-exit;
 
 ?>
