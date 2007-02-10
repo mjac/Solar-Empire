@@ -36,7 +36,7 @@ if (empty($this->playersOnline)) {
 		$this->eprint(date('H:i:s (M d)', $player['lastRequest']));
 ?></td>
 		<td><?php
-		formatName($player['id'], $player['name'], $player['clan']['id'],
+		echo formatName($player['id'], $player['name'], $player['clan']['id'],
 		 $player['clan']['symbol'], $player['clan']['colour']);
 ?></td>
 	</tr>
