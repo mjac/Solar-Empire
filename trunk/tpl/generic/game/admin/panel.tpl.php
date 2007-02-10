@@ -67,7 +67,7 @@ $this->eprint($this->url['base'] . '/admin.php?post_game_news=1');
 $this->eprint($this->url['base'] . '/admin_ban_player.php'); 
 ?>">Ban player</a></li>
 	<li><a href="<?php
-$this->eprint($this->url['base'] . '/admin.php?show_active=1'); 
+$this->eprint($this->url['base'] . '/admin_active_users.php');
 ?>">View online players</a></li>
 	<li><a href="<?php
 $this->eprint($this->url['base'] . '/admin.php?more_money=1'); 

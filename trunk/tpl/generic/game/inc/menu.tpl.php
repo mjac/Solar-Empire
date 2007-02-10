@@ -24,7 +24,7 @@ echo popupHelp('game_info.php?db_name=' . $this->game['dbName'], 600, 450,
 <p><?php
 
 echo (IS_ADMIN || IS_OWNER ? ('<a href="' . $this->escape($this->url['base'] . 
- '/admin.php?show_active=1') . '">') : '') . $this->escape($this->activeUsers) .
+ '/admin_active_users.php') . '">') : '') . $this->escape($this->activeUsers) .
  ' active user(s)' . (IS_ADMIN || IS_OWNER ? '</a>' : '') . "</p>\n<p>" . 
  date('<\a \t\i\t\l\e="T">M d - H:i</\a>');
 

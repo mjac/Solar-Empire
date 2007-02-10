@@ -27,7 +27,7 @@ function formatName($id, $name, $clanId, $clanSym, $clanCol)
 
 function clanSymbol($symbol, $colour)
 {
-	return "<span style=\"color: #" . str_pad(dechex($colour), 6, '0', 
+	return "<span style=\"color: #" . str_pad(dechex($colour), 6, '0',
 	 STR_PAD_LEFT) . ";\">" . esc($symbol) . "</span>";
 }
 

@@ -50,34 +50,6 @@ if (isset($post_game_news) && empty($text)) {
 	post_news($text);
 }
 
-// Active user listing
-if (isset($show_active)) {
-	$out = "<h1>Users active within the past 5 minutes</h1>\n<p>Time Loaded: " .
-	 date("H:i:s (M d)") . " <a href=\"admin.php?show_active=1\">Reload</a></p>";
-
-	$players = $db->query('SELECT last_request, login_name, login_id, ' .
-	 'u.clan_id, c.symbol AS clan_sym,c.sym_color AS ' .
-	 'clan_sym_colour FROM [game]_users AS u LEFT JOIN ' .
-	 '[game]_clans AS c ON u.clan_id = c.clan_id WHERE ' .
-	 'last_request > %u ORDER BY last_request DESC', array(time() - 300));
-	if ($db->numRows($players) < 1) {
-		$out .= "<p>There are no active users.</p>";
-	} else {
-		$out .= "<table class=\"simple\">\n\t<tr>\n\t\t<th>Login Name</th>\n" .
-		 "\t\t<th>Last Request</th>\n\t</tr>\n";
-		while ($player = $db->fetchRow($players)) {
-			$out .= "\t<tr>\n\t\t<td>" . print_name($player) . "</td>\n" .
-			 "\t\t<td>" . date( "H:i:s (M d)", $player['last_request']) . 
-			 "</td>\n\n\t</tr>\n";
-			$player = dbr();
-		}
-		$out .= "</table>";
-	}
-
-	$rs = "<p><a href=admin.php>Back to Admin Page</a>";
-	print_page("Active Users",$out);
-}
-
 
 // Set game rating
 if (isset($difficulty)) {
