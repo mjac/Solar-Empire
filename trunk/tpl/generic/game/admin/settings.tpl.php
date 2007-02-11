@@ -5,6 +5,12 @@ $this->pageName = 'Settings';
 $this->title = 'Modify game settings';
 $this->description = '';
 
+$status = array(
+	'hidden' => 'Hidden',
+	'paused' => 'Paused',
+	'running' => 'Running'
+);
+
 include($this->loadTemplate('game/inc/header_game.tpl.php'));
 
 ?><h1>Game settings</h1>
@@ -68,19 +74,31 @@ if (isset($this->changed) && !empty($this->changed)) {
 <?php
 }
 
+
+
 ?><h2><label for="gameStatus">Status</label></h2><form action="<?php $this->eprint($this->url['self']); ?>" method="post">
 	<p><select name="status" id="gameStatus">
-		<option value="hidden">Hidden</option>
-		<option value="paused">Paused</option>
-		<option value="running">Running</option>
+<?php
+foreach ($status as $value => $display) {
+?>	<option value="<?php $this->eprint($value); ?>"<?php
+	if ($gameInfo['status'] === $value) {
+?> selected="selected"<?php
+	}
+?>><?php
+	$this->eprint($display);
+?></option>
+<?php
+}
+?>
 	</select>
 	<input type="submit" value="Change status" class="button" /></p>
 </form>
 
 <h2>Finish date</h2>
 <form action="<?php $this->eprint($this->url['self']); ?>" method="post">
-	<p><input type="text" name="finishes" value="YYYY-MM-DD HH:MM:SS"
-	 class="text" />
+	<p><input type="text" name="finishes" value="<?php
+$this->eprint(date('Y-m-d H:i:s', $gameInfo['finishes']));
+?>" class="text" />
 	<input type="submit" value="Change finish date" class="button" /></p>
 </form>
 
