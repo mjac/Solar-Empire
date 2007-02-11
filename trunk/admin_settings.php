@@ -80,6 +80,9 @@ if (!empty($changed)) {
 	$tpl->assign('changed', $changed);
 }
 
+$tpl->assign('gameIntroduction', $gameInfo['intro_message']);
+$tpl->assign('gameDescription', $gameInfo['description']);
+
 assignCommon($tpl);
 $tpl->display('game/admin/settings.tpl.php');
 
