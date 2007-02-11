@@ -9,8 +9,66 @@ include($this->loadTemplate('game/inc/header_game.tpl.php'));
 
 ?><h1>Game settings</h1>
 
-<h2><label for="gameStatus">Status</label></h2>
-<form action="<?php $this->eprint($this->url['self']); ?>" method="post">
+<?php
+
+if (isset($this->changed) && !empty($this->changed)) {
+?><h2>Changes</h2>
+<ul>
+<?php
+
+	if (isset($this->changed['status'])) {
+?><p><?php
+	    if ($this->changed['status']) {
+?>The game status was updated successfully to <?php
+			$this->eprint($this->changed['status']);
+?>.<?php
+	    } else {
+?>The game status was not updated successfully: either the given status was invalid or the database value could not be changed.<?php
+	    }
+?></p>
+<?php
+	}
+
+	if (isset($this->changed['finishes'])) {
+?><p><?php
+	    if ($this->changed['finishes']) {
+?>The game finishing date was updated successfully to <?php
+			$this->eprint(date('Y-m-d H:i:s', $this->changed['finishes']));
+?>.<?php
+	    } else {
+?>The game finishing date was not updated successfully: please supply the date in the format YYYY-MM-DD HH:MM:SS.<?php
+	    }
+?></p>
+<?php
+	}
+
+	if (isset($this->changed['introduction'])) {
+?><p><?php
+	    if ($this->changed['introduction']) {
+?>The game introduction was updated successfully.<?php
+	    } else {
+?>The game introduction was not updated.<?php
+	    }
+?></p>
+<?php
+	}
+
+	if (isset($this->changed['description'])) {
+?><p><?php
+	    if ($this->changed['description']) {
+?>The game description was updated successfully.<?php
+	    } else {
+?>The game description was not updated.<?php
+	    }
+?></p>
+<?php
+	}
+	
+?></ul>
+<?php
+}
+
+?><h2><label for="gameStatus">Status</label></h2><form action="<?php $this->eprint($this->url['self']); ?>" method="post">
 	<p><select name="status" id="gameStatus">
 		<option value="hidden">Hidden</option>
 		<option value="paused">Paused</option>
