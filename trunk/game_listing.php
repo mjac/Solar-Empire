@@ -271,7 +271,7 @@ if (IS_OWNER && isset($_REQUEST['newGame']) && ctype_alnum($_REQUEST['newGame'])
 	$db->query('DELETE FROM se_games WHERE db_name = \'%[1]\'', 
 	 $_REQUEST['newGame']);
 
-	$db->query('INSERT INTO se_games (db_name, name, admin, `status`, description, intro_message, num_stars, difficulty, started, finishes, processed_cleanup, processed_turns, processed_systems, processed_ships, processed_planets, processed_government) VALUES (\'%[1]\', \'Test Game!\', 1, \'paused\', \'\', \'\', 150, 3, %[2], %[3], %[2], %[2], %[2], %[2], %[2], %[2])', 
+	$db->query('INSERT INTO se_games (db_name, name, admin, `status`, description, intro_message, num_stars, started, finishes, processed_cleanup, processed_turns, processed_systems, processed_ships, processed_planets, processed_government) VALUES (\'%[1]\', \'Test Game!\', 1, \'paused\', \'\', \'\', 150, %[2], %[3], %[2], %[2], %[2], %[2], %[2], %[2])',
 	 $_REQUEST['newGame'], time(), time() + 1728000);
 }
 

@@ -39,7 +39,6 @@ CREATE TABLE se_games (
   description text NOT NULL,
   intro_message text NOT NULL,
   num_stars int unsigned NOT NULL default 150,
-  difficulty int unsigned NOT NULL default 3,
   started int unsigned NOT NULL default 0,
   finishes int unsigned NOT NULL default 0,
   processed_cleanup int unsigned NOT NULL default 0,

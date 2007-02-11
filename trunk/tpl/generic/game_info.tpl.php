@@ -5,10 +5,6 @@ if (!function_exists('formatName')) {
 	require($this->loadTemplate('game/inc/formatNames.inc.php'));
 }
 
-if (!function_exists('resolveDifficulty')) {
-	require($this->loadTemplate('inc/difficulty.inc.php'));
-}
-
 $this->pageName = 'Game information';
 $this->title = 'Detailed information about the game';
 
@@ -48,21 +44,22 @@ if (!$this->canRegister) {
 	</tr>
 	<tr>
 		<th>Players (alive) / maximum</th>
-		<td><?php $this->eprint($this->playerAmount . ' (' . 
- $this->alivePlayers . ') / ' . $this->maxPlayers); 
+		<td><?php
+$this->eprint($this->playerAmount . ' (' . $this->alivePlayers . ') / ' .
+ $this->maxPlayers);
 ?></td>
 	</tr>
 	<tr>
-		<th>Difficulty</th>
-		<td><?php echo resolveDifficulty($this->difficulty); ?></td>
-	</tr>
-	<tr>
 		<th>Started</th>
-		<td><?php echo date('l, j F Y H:i:s O', $this->started); ?></td>
+		<td><?php
+$this->eprint(date('l, j F Y H:i:s O', $this->started));
+?></td>
 	</tr>
 	<tr>
 		<th>Finishes</th>
-		<td><?php echo date('l, j F Y H:i:s O', $this->finishes); ?></td>
+		<td><?php
+$this->eprint(date('l, j F Y H:i:s O', $this->finishes));
+?></td>
 	</tr>
 	<tr>
 		<th>Variables</th>
@@ -71,21 +68,19 @@ if (!$this->canRegister) {
 if ($this->viewVars) {
 
 ?>You may view the specific variables for this game on the 
-<a href="game_vars.php?db_name=<?php $this->eprint($this->gameSelected);
+<a href="game_vars.php?db_name=<?php
+	$this->eprint($this->gameSelected);
 ?>">game variable</a> page.  Studying these can give 
 you the competitive advantage.<?php
-
 } else {
 ?>The admin has disabled viewing of game variables.<?php
 }
-
 ?></td>
 	</tr>
 </table>
 <?php
 
 if ($this->playerAmount > 0) {
-
 ?>
 <h2>Player information</h2>
 <table class="simple">
@@ -96,27 +91,40 @@ if ($this->playerAmount > 0) {
 	</tr>
 	<tr>
 	    <th>Credits</th>
-	    <td><?php echo number_format($this->playerCredits, 0); ?></td>
-	    <td><?php echo 
- number_format($this->playerCredits / $this->playerAmount, 0); ?></td>
+	    <td><?php
+	$this->eprint(number_format($this->playerCredits, 0));
+?></td>
+	    <td><?php
+	$this->eprint(number_format($this->playerCredits / $this->playerAmount, 0));
+?></td>
 	</tr>
 	<tr>
 	    <th>Turns used</th>
-	    <td><?php echo number_format($this->playerTurns); ?></td>
-	    <td><?php echo 
- number_format($this->playerTurns / $this->playerAmount, 0); ?></td>
+	    <td><?php
+	$this->eprint(number_format($this->playerTurns));
+?></td>
+	    <td><?php
+	$this->eprint(number_format($this->playerTurns / $this->playerAmount, 0));
+?></td>
 	</tr>
 	<tr>
 	    <th>Ship kills</th>
-	    <td><?php echo number_format($this->shipsKilled, 0); ?></td>
-	    <td><?php echo 
- number_format($this->shipsKilled / $this->playerAmount, 0); ?></td>
+	    <td><?php
+	$this->eprint(number_format($this->shipsKilled, 0));
+?></td>
+	    <td><?php
+	$this->eprint(number_format($this->shipsKilled / $this->playerAmount, 0));
+?></td>
 	</tr>
 	<tr>
 	    <th>Fighters killed</th>
-	    <td><?php echo number_format($this->fightersKilled, 0); ?></td>
-	    <td><?php echo 
- number_format($this->fightersKilled / $this->playerAmount, 0); ?></td>
+	    <td><?php
+	$this->eprint(number_format($this->fightersKilled, 0));
+?></td>
+	    <td><?php
+	$this->eprint(number_format($this->fightersKilled /
+	 $this->playerAmount, 0));
+?></td>
 	</tr>
 </table>
 <?php
@@ -124,7 +132,6 @@ if ($this->playerAmount > 0) {
 }
 
 if ($this->shipAmount > 0 && $this->playerAmount > 0) {
-
 ?>
 <h2>Ship statistics</h2>
 <table class="simple">

@@ -20,7 +20,6 @@ $tpl->assign('canRegister', $gameOpt['new_logins'] == 1 &&
  $gameOpt['sudden_death'] == 0);
 $tpl->assign('status', $gameInfo['status']);
 $tpl->assign('maxPlayers', $gameOpt['max_players']);
-$tpl->assign('difficulty', $gameInfo['difficulty']);
 $tpl->assign('started', $gameInfo['started']);
 $tpl->assign('finishes', $gameInfo['finishes']);
 $tpl->assign('gameSelected', $gameInfo['db_name']);

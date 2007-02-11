@@ -14,28 +14,12 @@ include($this->loadTemplate('game/inc/header_game.tpl.php'));
 	<li><a href="<?php
 $this->eprint($this->url['base'] . '/admin_edit_vars.php'); 
 ?>">Edit variables</a></li>
-	<li>Set status to <a href="<?php
-$this->eprint($this->url['base'] . '/admin.php?status=hidden'); 
-?>">hidden</a>, 
-	<a href="<?php
-$this->eprint($this->url['base'] . '/admin.php?status=paused'); 
-?>">paused</a> or 
-	<a href="<?php
-$this->eprint($this->url['base'] . '/admin.php?status=running'); 
-?>">running</a></li>
+	<li><a href="<?php
+$this->eprint($this->url['base'] . '/admin_settings.php');
+?>">Edit settings</a></li>
 	<li><a href="<?php
 $this->eprint($this->url['base'] . '/admin.php?reset=1'); 
 ?>">Reset game</a></li>
-	<li><a href="<?php
-$this->eprint($this->url['base'] . '/admin.php?difficulty=1'); 
-?>">Change stated difficulty</a></li>
-	<li><form method="post" action="<?php
-$this->eprint($this->url['base'] . '/admin.php'); 
-?>">
-		<p><input type="text" name="finishes" value="YYYY-MM-DD HH:MM:SS"
-		 class="text" />
-		<input type="submit" value="Change finish date" class="button" /></p>
-	</form></li>
 </ul>
 
 <h2>Godlike Abilities</h2>
