@@ -81,7 +81,7 @@ if (isset($this->changed) && !empty($this->changed)) {
 <?php
 foreach ($status as $value => $display) {
 ?>	<option value="<?php $this->eprint($value); ?>"<?php
-	if ($gameInfo['status'] === $value) {
+	if ($this->game['status'] === $value) {
 ?> selected="selected"<?php
 	}
 ?>><?php
@@ -97,7 +97,7 @@ foreach ($status as $value => $display) {
 <h2>Finish date</h2>
 <form action="<?php $this->eprint($this->url['self']); ?>" method="post">
 	<p><input type="text" name="finishes" value="<?php
-$this->eprint(date('Y-m-d H:i:s', $gameInfo['finishes']));
+$this->eprint(date('Y-m-d H:i:s', $this->game['finishes']));
 ?>" class="text" />
 	<input type="submit" value="Change finish date" class="button" /></p>
 </form>
