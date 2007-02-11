@@ -25,11 +25,11 @@ if (isset($this->changed) && !empty($this->changed)) {
 	if (isset($this->changed['status'])) {
 ?><p><?php
 	    if ($this->changed['status'] !== false) {
-?>The game status was updated successfully to <?php
+?>The game status was changed successfully to <?php
 			$this->eprint($this->changed['status']);
 ?>.<?php
 	    } else {
-?>The game status was not updated successfully: either the given status was invalid or the database value could not be changed.<?php
+?>The game status was not changed successfully: either the given status was invalid or the database value could not be changed.<?php
 	    }
 ?></p>
 <?php
@@ -38,11 +38,11 @@ if (isset($this->changed) && !empty($this->changed)) {
 	if (isset($this->changed['finishes'])) {
 ?><p><?php
 	    if ($this->changed['finishes'] !== false) {
-?>The game finishing date was updated successfully to <?php
+?>The game finishing date was changed successfully to <?php
 			$this->eprint(date('Y-m-d H:i:s', $this->changed['finishes']));
 ?>.<?php
 	    } else {
-?>The game finishing date was not updated successfully: please supply the date in the format YYYY-MM-DD HH:MM:SS.<?php
+?>The game finishing date was not changed successfully: please supply the date in the format YYYY-MM-DD HH:MM:SS.<?php
 	    }
 ?></p>
 <?php
@@ -51,9 +51,9 @@ if (isset($this->changed) && !empty($this->changed)) {
 	if (isset($this->changed['introduction'])) {
 ?><p><?php
 	    if ($this->changed['introduction'] !== false) {
-?>The game introduction was updated successfully.<?php
+?>The game introduction was changed successfully.<?php
 	    } else {
-?>The game introduction was not updated.<?php
+?>The game introduction was not changed.<?php
 	    }
 ?></p>
 <?php
@@ -62,9 +62,9 @@ if (isset($this->changed) && !empty($this->changed)) {
 	if (isset($this->changed['description'])) {
 ?><p><?php
 	    if ($this->changed['description'] !== false) {
-?>The game description was updated successfully.<?php
+?>The game description was changed successfully.<?php
 	    } else {
-?>The game description was not updated.<?php
+?>The game description was not changed.<?php
 	    }
 ?></p>
 <?php
