@@ -18,7 +18,7 @@ if (isset($this->changed) && !empty($this->changed)) {
 
 	if (isset($this->changed['status'])) {
 ?><p><?php
-	    if ($this->changed['status']) {
+	    if ($this->changed['status'] !== false) {
 ?>The game status was updated successfully to <?php
 			$this->eprint($this->changed['status']);
 ?>.<?php
@@ -31,7 +31,7 @@ if (isset($this->changed) && !empty($this->changed)) {
 
 	if (isset($this->changed['finishes'])) {
 ?><p><?php
-	    if ($this->changed['finishes']) {
+	    if ($this->changed['finishes'] !== false) {
 ?>The game finishing date was updated successfully to <?php
 			$this->eprint(date('Y-m-d H:i:s', $this->changed['finishes']));
 ?>.<?php
@@ -44,7 +44,7 @@ if (isset($this->changed) && !empty($this->changed)) {
 
 	if (isset($this->changed['introduction'])) {
 ?><p><?php
-	    if ($this->changed['introduction']) {
+	    if ($this->changed['introduction'] !== false) {
 ?>The game introduction was updated successfully.<?php
 	    } else {
 ?>The game introduction was not updated.<?php
@@ -55,7 +55,7 @@ if (isset($this->changed) && !empty($this->changed)) {
 
 	if (isset($this->changed['description'])) {
 ?><p><?php
-	    if ($this->changed['description']) {
+	    if ($this->changed['description'] !== false) {
 ?>The game description was updated successfully.<?php
 	    } else {
 ?>The game description was not updated.<?php

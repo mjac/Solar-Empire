@@ -11,13 +11,15 @@ if (isset($finishes) && preg_match('/^([12][0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|1[0
      $finishes, $finMatch)) {
 	$changed['finishes'] = false;
 
-	$newEnd = mktime($match[4], $match[5], $match[6], $match[2], $match[3],
-	 $match[1]);
+	$newEnd = mktime($finMatch[4], $finMatch[5], $finMatch[6], $finMatch[2],
+	 $finMatch[3], $finMatch[1]);
 
 	if ($newEnd !== -1 && $newEnd !== false) { // php > < 5.1
 		$finQuery = $db->query('UPDATE se_games SET finishes = %[1] WHERE db_name = \'[game]\'',
 		 $newEnd);
-		$changed['finishes'] = $db->affectedRows($finQuery) > 0;
+		if ($db->affectedRows($finQuery) > 0) {
+			$changed['finishes'] = $newEnd;
+		}
 	}
 }
 
@@ -39,7 +41,7 @@ if (isset($status)) {
 
 			if ($db->affectedRows($statQuery) > 0) {
 				insert_history($user['login_id'], "Changed status to $status.");
-				$changed['status'] = true;
+				$changed['status'] = $status;
 			}
 	}
 }
@@ -52,7 +54,6 @@ if (isset($introduction)) {
 
 	$introQuery = $db->query('UPDATE se_games SET intro_message = \'%[1]\' WHERE db_name = \'[game]\'',
 	 $introduction);
-
 
 	if ($db->affectedRows($introQuery) > 0) {
 		insert_history($user['login_id'], 'Changed the introduction message.');
