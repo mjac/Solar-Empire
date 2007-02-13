@@ -160,11 +160,6 @@ if ($this->player['turnsUsed'] < $this->turnsSafe) {
 ?>">Game admin</a></li>
 <?php
 	}
-	if ($this->viewOwnerPanel) {
-?>	<li><a href="<?php $this->eprint($this->url['base'] . '/owner.php'); 
-?>">Server info</a></li>
-<?php
-	}
 
 ?>
 	<li><a href="<?php

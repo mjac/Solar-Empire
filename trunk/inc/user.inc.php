@@ -858,7 +858,6 @@ function assignCommon(&$tpl)
 
 	// Administration
 	$tpl->assign('viewAdminPanel', IS_ADMIN || IS_OWNER);
-	$tpl->assign('viewOwnerPanel', IS_OWNER);
 
 	$tpl->assign('viewAdminForum', IS_ADMIN || IS_OWNER);
 	if (IS_ADMIN || IS_OWNER) {
