@@ -379,7 +379,7 @@ Get Information
 *********************/
 
 // retrieve the star data
-function &get_star()
+function &getStar()
 {
 	global $userShip, $star, $db;
 
@@ -392,21 +392,16 @@ function &get_star()
 
 
 //get distance between stars $s1 and $s2
-function get_star_dist($s1,$s2)
+function getStarDist($s1, $s2)
 {
 	global $db;
-
-	if (!(isset($s1) && isset($s2))) {
-		return 0;
-	}
 
 	$stars = $db->query("SELECT x, y FROM [game]_stars WHERE star_id = %u OR star_id = %u", array($s1, $s2));
 	$star1 = $db->fetchRow($stars);
 	$star2 = $db->fetchRow($stars);
 
-	$dist = ceil(sqrt(pow($star1['x'] - $star2['x'], 2) + pow($star1['y'] - $star2['y'], 2)));
-
-	return $dist;
+	return sqrt(($star1['x'] - $star2['x']) * ($star1['x'] - $star2['x']) +
+	 ($star1['y'] - $star2['y']) * ($star1['y'] - $star2['y']));
 }
 
 function playerDead($user)
@@ -455,14 +450,11 @@ function deathInfo($user)
 }
 
 //Choose a system at random
-function random_system_num($userId)
+function randomSystemNo($userId, $clanId)
 {
 	global $db, $user;
 
-	$randomId = $db->query('SELECT star_id FROM [game]_stars AS s ' .
-	 'LEFT JOIN [game]_planets AS p ON s.star_id = p.location ' .
-	 'WHERE p.planet_id IS NULL OR p.login_id = %u ORDER BY RAND() ' .
-	 'LIMIT 1', array($userId));
+	$randomId = $db->query('SELECT star_id FROM [game]_stars AS s LEFT JOIN [game]_planets AS p ON s.star_id = p.location LEFT JOIN [game]_users AS u ON p.user_id = u.user_id WHERE p.planet_id IS NULL OR p.login_id = %[1] OR u.clan_id = %[2] ORDER BY RAND() LIMIT 1', $userId, $clanId);
 
 	if (($sys = $db->fetchRow($randomId)) === false) {
 		return 1;

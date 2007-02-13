@@ -4,11 +4,12 @@ require_once('inc/user.inc.php');
 
 deathCheck($user);
 
-$planet_img = mt_rand(1,15);
+$planet_img = mt_rand(1, 15);
 
 $error_str = "";
-// checks
-get_star();
+
+getStar();
+
 if ($user['genesis'] < 1) {
 	$error_str .= "You don't have a genesis device.";
 } elseif ($gameOpt['uv_planet_slots_use'] && $star['planetary_slots'] < 1) {

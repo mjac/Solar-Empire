@@ -30,7 +30,7 @@ if(isset($alpha)) {
 			$db->query("update [game]_users set alpha = alpha - 1 where login_id = $user[login_id]");
 
 			post_news("$user[login_name] imploded a Alpha Bomb in system #$userShip[location]");
-			get_star();
+			getStar();
 
 			$lastresort = $db->query('SELECT s.ship_id, s.ship_name, ' .
 			 's.login_id FROM [game]_ships AS s LEFT JOIN ' .
@@ -100,7 +100,7 @@ if (attack_planet_check($user) < 1 || IS_ADMIN) {
 
 		post_news("$user[login_name] unleashed a $b_text Bomb in system #$userShip[location]");
 
-		get_star();
+		getStar();
 		if ($bomb_type == 1) { // gamma bomb
 			$bomb_damage = 200;
 		} elseif ($bomb_type == 2) { // delta bomb

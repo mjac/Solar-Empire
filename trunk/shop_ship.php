@@ -14,7 +14,8 @@ $shipWorth = floor($userShip['max_hull'] + ($userShip['max_shields'] >> 1) +
 
 if (isset($_REQUEST['action'])) {
 	if ($_REQUEST['action'] === 'sell' && $userShip !== NULL) {
-		$loc = get_star();
+		$loc = getStar();
+
 		$newId = closestShip($user['login_id'], $loc['x'], $loc['y']);
 
 		if ($newId === false) {

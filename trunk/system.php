@@ -59,23 +59,6 @@ function getAutowarp()
 	return $path;
 }
 
-require_once('inc/user.inc.php');
-require_once('inc/template.inc.php');
-require_once('inc/attack.inc.php');
-
-if (deathCheck($user)) {
-	deathInfo($user);
-}
-
-get_star();
-if (!$star) {
-	assignCommon($tpl);
-	$tpl->display('game/system_missing.tpl.php');
-	exit;
-}
-getStarLinks();
-
-
 function assignEquip(&$tpl)
 {
 	global $user;
@@ -163,6 +146,29 @@ END;
 	return $bar;
 }
 
+
+
+
+require('inc/user.inc.php');
+require('inc/template.inc.php');
+require('inc/attack.inc.php');
+
+if (deathCheck($user)) {
+	deathInfo($user);
+}
+
+getStar();
+if (!$star) {
+	assignCommon($tpl);
+	$tpl->display('game/system_missing.tpl.php');
+	exit;
+}
+getStarLinks();
+
+
+
+
+
 assignStar($tpl);
 assignEquip($tpl);
 assignCommon($tpl);
@@ -179,7 +185,7 @@ if (isset($command)) {
 	if ($db->numRows($tQuery) > 0) {
 		$toShip = $db->fetchRow($tQuery);
 		if ($toShip['location'] != $userShip['location']) {
-			$dist = get_star_dist($userShip['location'], $toShip['location']);
+			$dist = getStarDist($userShip['location'], $toShip['location']);
 			if ($user['turns'] < 2) {
 				print_page('Command Failed', "You are not able to take command of this ship remotely, as it would require <b>$dist</b> turns and you only have <b>$user[turns]</b><p>");
 			} else {
@@ -210,7 +216,7 @@ if (!empty($transburst)) {
 	}
 
 	giveTurnsPlayer(-15);
-	$new_loc = random_system_num($user['login_id']); #make a random system number up.
+	$new_loc = randomSystemNo($user['login_id'], $user['clan_id']); #make a random system number up.
 
 	$db->query('UPDATE [game]_ships SET location = %u, task = \'none\' ' .
 	 'WHERE ship_id = %u', array($new_loc, $user['ship_id']));
@@ -222,7 +228,7 @@ if (!empty($transburst)) {
 	$out .= "You and all towed ships have ended up in system <b class=b1>#$new_loc</b>";
 
 	checkShip();
-	get_star();
+	getStar();
 	getStarLinks();
 }
 
@@ -233,21 +239,21 @@ if (!empty($transwarp) && $userShip !== NULL) {
 	$tw_distance = 100;
 	$transwarp = (int)$transwarp;
 
-	$turn = floor(get_star_dist($userShip['location'], $transwarp) >> 4);
+	$turn = floor(getStarDist($userShip['location'], $transwarp) >> 4);
 	if(!shipHas($userShip, 'tw')) {
 		print_page("Transwarp", "Your ship is not equipped with a transwarp drive.");
 	} elseif($transwarp == $userShip['location']) {
 		$out .= "<p>You're already there!</p>";
 	} elseif(!starExists($transwarp)) {
 		print_page("Transwarp", "System does not exist.");
-	} elseif(get_star_dist($userShip['location'], $transwarp) > $tw_distance) {
+	} elseif(getStarDist($userShip['location'], $transwarp) > $tw_distance) {
 		print_page("Transwarp", "Your Transwarp drive cannot warp that far. Maximum Transwarp distance of $tw_distance Light Years.");
 	} elseif(!giveTurnsPlayer(-$turn)) {
 		print_page("Transwarp", "You need <b>$turn</b> turns to warp that far.");
 	} else {
 		moveUserTo($transwarp);
 
-		get_star();
+		getStar();
 		getStarLinks();
 	}
 }
@@ -259,7 +265,7 @@ if(!empty($subspace)) {
 	 array($userShip['ship_id'], $userShip['location'], $user['login_id']));
 	$num_towed = (int)current($db->fetchRow($towing));
 
-	$turn = floor(get_star_dist($userShip['location'], $subspace) >> 4);
+	$turn = floor(getStarDist($userShip['location'], $subspace) >> 4);
 	if(!shipHas($userShip, 'sj')) {
 		print_page("Sub-Space","This does not have a Sub-Space Jump Drive.");
 	} elseif($subspace == $userShip['location']) {
@@ -275,7 +281,7 @@ if(!empty($subspace)) {
 
 		moveUserTo($subspace);
 
-		get_star();
+		getStar();
 		getStarLinks();
 	}
 }
@@ -311,7 +317,7 @@ if(isset($toloc)) {
 
 			moveUserTo($toloc);
 
-			get_star();
+			getStar();
 			getStarLinks();
 		}
 	}
@@ -562,14 +568,7 @@ if ($user['show_user_ships'] == 1) {
 
 END;
 
-	$ships = $db->query('SELECT s.ship_id, s.ship_name, s.config, ' .
-	 's.hull, s.shields, s.fighters, s.towed_by, s.config, ' .
-	 's.task, s.mining_mode, t.name AS class_name, t.abbr AS ' .
-	 'class_name_abbr, b.ship_name AS tower FROM [game]_ships AS s ' .
-	 'LEFT JOIN [game]_ship_types AS t ON s.type_id = t.type_id ' .
-	 'LEFT JOIN [game]_ships AS b ON s.towed_by = b.ship_id WHERE ' .
-	 's.login_id = %u AND s.location = %u ORDER BY ship_name',
-	 array($user['login_id'], $userShip['location']));
+	$ships = $db->query('SELECT s.ship_id, s.ship_name, s.config, s.hull, s.shields, s.fighters, s.towed_by, s.config, s.task, s.mining_mode, t.name AS class_name, t.abbr AS class_name_abbr, b.ship_name AS tower FROM [game]_ships AS s LEFT JOIN [game]_ship_types AS t ON s.type_id = t.type_id LEFT JOIN [game]_ships AS b ON s.towed_by = b.ship_id WHERE s.login_id = %u AND s.location = %u ORDER BY ship_name', array($user['login_id'], $userShip['location']));
 
 	#Loop through all of a players ships in the system.
 	while ($ship = $db->fetchRow($ships)) {
@@ -611,12 +610,7 @@ END;
 
 END;
 } else { // SHOW SUMMARY OF USER SHIPS
-	$ships = $db->query('SELECT t.name, COUNT(s.ship_id), ' .
-	 'SUM(s.hull), SUM(s.shields), SUM(s.fighters) ' .
-	 ' FROM [game]_ships AS s LEFT JOIN [game]_ship_types AS t ON ' .
-	 's.type_id = t.type_id WHERE s.location = %u AND ' .
-	 's.login_id = %u GROUP BY t.type_id ORDER BY t.name',
-	 array($userShip['location'], $user['login_id']));
+	$ships = $db->query('SELECT t.name, COUNT(s.ship_id), SUM(s.hull), SUM(s.shields), SUM(s.fighters) FROM [game]_ships AS s LEFT JOIN [game]_ship_types AS t ON s.type_id = t.type_id WHERE s.location = %u AND s.login_id = %u GROUP BY t.type_id ORDER BY t.name', array($userShip['location'], $user['login_id']));
 
 	$out .= <<<END
 <table class="shipListing">
@@ -667,17 +661,7 @@ if (isset($show_enemy_ships)) {
 
 $enemyShips = '';
 if ($user['show_enemy_ships'] == 1) { // SHOW FULL LIST OF ENEMY SHIPS
-	$ships = $db->query('SELECT s.ship_id, s.ship_name, ' .
-	 's.login_id, s.hull, s.shields, s.fighters, s.config, ' .
-	 't.name AS class_name, t.abbr AS class_name_abbr, ' .
-	 'u.login_name, u.clan_id, c.symbol AS clan_sym, ' .
-	 'c.sym_color AS clan_sym_color, u.turns_run FROM ' .
-	 '[game]_ships AS s LEFT JOIN [game]_users AS u ON ' .
-	 's.login_id = u.login_id LEFT JOIN [game]_clans AS c ON ' .
-	 'u.clan_id = c.clan_id LEFT JOIN [game]_ship_types AS t ON ' .
-	 't.type_id = s.type_id WHERE s.location = %u AND ' .
-	 's.login_id != %u ORDER BY c.symbol, u.login_name, ' .
-	 's.fighters DESC', array($userShip['location'], $user['login_id']));
+	$ships = $db->query('SELECT s.ship_id, s.ship_name, s.login_id, s.hull, s.shields, s.fighters, s.config, t.name AS class_name, t.abbr AS class_name_abbr, u.login_name, u.clan_id, c.symbol AS clan_sym, c.sym_color AS clan_sym_color, u.turns_run FROM [game]_ships AS s LEFT JOIN [game]_users AS u ON s.login_id = u.login_id LEFT JOIN [game]_clans AS c ON u.clan_id = c.clan_id LEFT JOIN [game]_ship_types AS t ON t.type_id = s.type_id WHERE s.location = %u AND s.login_id != %u ORDER BY c.symbol, u.login_name, s.fighters DESC', array($userShip['location'], $user['login_id']));
 
 	if ($db->numRows($ships) > 0) {
 		$enemyShips .= <<<END

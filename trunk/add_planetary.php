@@ -80,7 +80,8 @@ if ($planet['login_id'] !== $user['login_id']) {
 			exit;
 		}
 
-		$turns = ceil(get_star_dist($userShip['location'], $target_planet['location'])) + 1;
+		$turns = ceil(getStarDist($userShip['location'],
+		 $target_planet['location'])) + 1;
 		$fuel = $turns * 20;
 
 		if ($target_planet['location'] == $planet['location']) {

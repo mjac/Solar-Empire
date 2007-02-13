@@ -181,7 +181,7 @@ END;
 		}
 	} else { #user has selected destination.
 		if ($dest_system == -1) { #user is getting the colonists from Sol. Thus needs to pay, and there is an infinite source.
-			$turn = round(get_star_dist($userShip['location'], 1) / 2 + 1) * 2;	#do maths to work out turn cost to get there
+			$turn = round(getStarDist($userShip['location'], 1) / 2 + 1) * 2;	#do maths to work out turn cost to get there
 			if($user['turns'] < $turn) { #ensure user has enough turns to get there
 				$output_str .= "You do not have enough turns.<br />It requires <b>$turn</b> turns just to get to <b class=b1>Sol</b> and back. Thats before ship loading.<p>";
 			} else { #main autoshifting bit for taking colonists from Sol
@@ -230,7 +230,7 @@ END;
 
 			db("select location,login_id,planet_name,$tech_mat,planet_id,alloc_fight,alloc_elect,alloc_organ from [game]_planets where planet_id = '$dest_system'");
 			$from_sys=dbr();
-			$turn = round(get_star_dist($userShip['location'],$from_sys['location'])/1.8 +1)*2; #work out turn cost
+			$turn = round(getStarDist($userShip['location'], $from_sys['location'])/1.8 +1)*2; #work out turn cost
 			#echo $turns_can_use = floor(($user['turns']- $turn) * 1.35);
 			if($user['turns'] < $turn) { #ensure user has enough turns to get there
 				$output_str .= "You do not have enough turns.<br />It requires <b>$turn</b> turns to get to <b class=b1>$from_sys[planet_name](#<b>$from_sys[location]</b>)</b> and back.<p>";

@@ -68,7 +68,7 @@ function deadShip($ship)
 		$type = load_ship_types();
 		$new = $type[$ship['auxiliary_ship']];
 
-		$new['location'] = random_system_num($ship['login_id']);
+		$new['location'] = randomSystemNo($ship['login_id'], $ship['clan_id']);
 		$new['ship_name'] = 'Escape-ship';
 
 		$newId = make_ship($new, $ship);
@@ -76,8 +76,7 @@ function deadShip($ship)
 		$result |= SHIP_TRANSFERRED;
 	}
 
-	$db->query('UPDATE [game]_users SET ship_id = %u WHERE ' .
-	 'login_id = %u', array($newId, $ship['login_id']));
+	$db->query('UPDATE [game]_users SET ship_id = %u WHERE login_id = %u', array($newId, $ship['login_id']));
 
 	return $result;
 }
