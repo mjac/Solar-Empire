@@ -12,8 +12,12 @@ include($this->loadTemplate('game/inc/header_game.tpl.php'));
 $this->eprint($this->map);
 ?>" alt="Complete map of the known universe" /></p>
 <ul>
-	<li><a href="$self">Normal Map</a></li>
-	<li><a href="$self?print=1">Printable Map</a></li>
+	<li><a href="<?php
+$this->eprint($this->url['self']);
+?>">Normal Map</a></li>
+	<li><a href="<?php
+$this->eprint($this->url['self'] . '?view=print');
+?>">Printable Map</a></li>
 </ul>
 
 <?php
