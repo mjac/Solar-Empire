@@ -57,15 +57,6 @@ $this->eprint($this->url['base'] . '/admin_active_users.php');
 $this->eprint($this->url['base'] . '/admin.php?more_money=1'); 
 ?>">Give money</a></li>
 </ul>
-
-<h2>General</h2>
-<ul>
-	<li><a href="<?php $this->eprint($this->url['base'] . '/admin.php?descr=1'); 
-?>">Change the game description</a></li>
-	<li><a href="<?php
-$this->eprint($this->url['base'] . '/admin.php?messag=1'); 
-?>">Change the introduction message</a></li>
-</ul>
 <?php
 
 include($this->loadTemplate('game/inc/footer_game.tpl.php'));
