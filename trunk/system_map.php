@@ -1,47 +1,32 @@
 <?php
 
-require_once('inc/user.inc.php');
+require('inc/user.inc.php');
 
-pageStart('Map of the known universe');
+$map = '';
+if (isset($view) && $view === 'print') {
+	$map = URL_BASE . '/img/maps/' . $gameInfo['db_name'] . '/print.png';
+}
 
-echo "<h1>Star Map</h1>\n";
+if (isset($find) && $gameOpt['allow_search_map'] != 0) {
+	$find = (int)$find;
 
-if(isset($print)) {
-	$map_url = 'img/' . $gameInfo['db_name'] . '_maps/psm_full.png';
-} elseif(isset($find) && $gameOpt['allow_search_map'] != 0) {
-	$star = $db->query('SELECT COUNT(*) FROM [game]_stars WHERE ' .
-	 'star_id = %u', array($find));
+	$star = $db->query('SELECT COUNT(*) FROM [game]_stars WHERE star_id = %[1]',
+	 $find);
 
 	if (current($db->fetchRow($star)) > 0) {
-		$map_url = 'system_find.php?from=' . $userShip['location'] . '&amp;to=' . $find;
+		$map = URL_BASE . '/system_find.php?from=' .
+		 $userShip['location'] . '&amp;to=' . $find;
 	}
 }
 
-if (!isset($map_url)) {
-	$map_url = 'img/' . $gameInfo['db_name'] . '_maps/sm_full.png';
+if (empty($map)) {
+	$map = URL_BASE . '/img/maps/' . $gameInfo['db_name'] . '/screen.png';
 }
 
+$tpl->assign('map', $map);
+$tpl->assign('canSearch', $gameOpt['allow_search_map'] == 1);
 
-echo <<<END
-<p><img src="$map_url" alt="Complete map of the known universe" /></p>
-<ul>
-	<li><a href="$self">Normal Map</a></li>
-	<li><a href="$self?print=1">Printable Map</a></li>
-</ul>
-
-END;
-
-if ($gameOpt['allow_search_map'] == 1) {
-	echo <<<END
-<h2>Find system</h2>
-<form action="$self" method="get">
-	<input type="text" name="find" id="find" size="4" class="text" />
-	<input type="submit" value="Search for system" class="button" />
-</form>
-
-END;
-}
-
-pageStop();
+assignCommon($tpl);
+$tpl->display('game/system_map');
 
 ?>
