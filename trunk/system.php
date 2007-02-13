@@ -21,8 +21,8 @@ function getStarLinks()
 
 		$linkTo['id'] = (int)$s[0];
 
-		$linkTo['x'] = (double)$s[1] - (double)$star['x'] + (200 / 2);
-		$linkTo['y'] = (double)$s[2] - (double)$star['y'] + (200 / 2);
+		$linkTo['x'] = (double)$s[1];
+		$linkTo['y'] = (double)$s[2];
 	}
 }
 
