@@ -25,7 +25,7 @@ $this->eprint($this->url['self'] . '?view=print');
 if ($this->canSearch) {
 ?><h2>Find system</h2>
 <form action="<?php $this->eprint($this->url['self']); ?>" method="get">
-	<input type="text" name="find" id="find" size="4" class="text" />
+	<input type="text" name="find" id="find" size="4" value="1" class="text" />
 	<input type="submit" value="Search for system" class="button" />
 </form>
 <?php

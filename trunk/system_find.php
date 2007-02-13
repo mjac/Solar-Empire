@@ -49,8 +49,6 @@ if ($starFrom['star_id'] != $from) {
 	$starTo = $starSwap;
 }
 
-$size = $gameOpt['uv_universe_size'] + 50;
-
 $findMap = imagecreatefrompng('img/maps/' . $gameInfo['db_name'] .
  '/screen.png');
 
@@ -62,15 +60,16 @@ $colText = imagecolorallocate($findMap, 0xFF, 0xFF, 0xFF);
 $colFrom = imagecolorallocate($findMap, 0xFF, 0x33, 0x33);
 $colTo = imagecolorallocate($findMap, 0x33, 0xFF, 0x33);
 
-imagestring($findMap, 5, $starFrom['x'], $starFrom['y'] - 10, "From #$from",
+imagestring($findMap, 5, $starFrom['x'] + 25, $starFrom['y'] + 20,
+ "From #$from",
  $colText);
-imagearc($findMap, $starFrom['x'] + 30, $starFrom['y'] + 25, 30, 30, 0, 360,
+imagearc($findMap, $starFrom['x'] + 50, $starFrom['y'] + 50, 30, 30, 0, 360,
  $colFrom);
 
 if ($from != $to) {
-	imagestring($findMap, 5, $starTo['x'], $starTo['y'] - 10, "To #$to",
+	imagestring($findMap, 5, $starTo['x'] + 25, $starTo['y'] + 20, "To #$to",
 	 $colText);
-	imagearc($findMap, $starTo['x'] + 30, $starTo['y'] + 25, 35, 35, 0, 360,
+	imagearc($findMap, $starTo['x'] + 50, $starTo['y'] + 50, 30, 30, 0, 360,
 	 $colTo);
 }
 
