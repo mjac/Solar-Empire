@@ -18,8 +18,8 @@ if (!function_exists('formatName')) {
 <?php
 
 		foreach ($this->star['links'] as $s) {
-			$starX = $s['x'] - $star['x'] + (200 / 2);
-			$starY = $s['y'] - $star['y'] + (200 / 2);
+			$starX = $s['x'] - $this->star['x'] + (200 / 2);
+			$starY = $s['y'] - $this->star['y'] + (200 / 2);
 
 ?>		<area shape="rect" coords="<?php
 			$this->eprint(($starX - 10) . ',' . ($starY - 10) . ',' .
@@ -34,9 +34,9 @@ if (!function_exists('formatName')) {
 	}
 
 	if (isset($this->ship) && 
-	     $this->ship['empty_bays'] != $this->ship['cargo_bays']) {
+	     $this->ship['cargo']['free'] != $this->ship['cargo']['space']) {
 ?>	<p><a href="<?php $this->eprint($this->url['self'] . '?jettison=1'); 
-?>">Jettison Cargo</a></p>
+?>">Jettison cargo</a></p>
 <?php
 	}
 	

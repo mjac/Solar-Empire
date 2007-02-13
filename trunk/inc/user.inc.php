@@ -835,6 +835,7 @@ function assignCommon(&$tpl)
 				'organics' => $userShip['organ'],
 				'electronics' => $userShip['elect'],
 				'colonists' => $userShip['colon'],
+				'space' => $userShip['cargo_bays'],
 				'free' => empty_bays($userShip)
 			),
 			'transwarp' => shipHas($userShip, 'tw'),

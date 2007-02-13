@@ -168,9 +168,6 @@ if (!$star) {
 getStarLinks();
 
 
-
-
-
 assignStar($tpl);
 assignEquip($tpl);
 assignCommon($tpl);
