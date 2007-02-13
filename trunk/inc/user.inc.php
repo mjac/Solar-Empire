@@ -378,20 +378,20 @@ function retire_user($target)
 Get Information
 *********************/
 
-// retrieve the star data
+// Retrieve the star data
 function &getStar()
 {
 	global $userShip, $star, $db;
 
-	$sQuery = $db->query('SELECT * FROM [game]_stars WHERE star_id = %u',
-	 array($userShip['location']));
-    $star = $db->fetchRow($sQuery);
+	$sQuery = $db->query('SELECT * FROM [game]_stars WHERE star_id = %[1]',
+	 $userShip['location']);
+    $star = $db->fetchRow($sQuery, ROW_ASSOC);
 
 	return $star;
 }
 
 
-//get distance between stars $s1 and $s2
+// Get distance between stars $s1 and $s2
 function getStarDist($s1, $s2)
 {
 	global $db;
