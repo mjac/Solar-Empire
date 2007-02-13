@@ -26,7 +26,11 @@ if (!$gameOpt['allow_search_map']) {
 	imageError('You are not allowed to search the map.');
 }
 
-if(!(isset($from) && isset($to))) {
+if (!isset($from)) {
+	$from = $userShip['location'];
+}
+
+if(!isset($to)) {
 	imageError('From and to where?');
 }
 
@@ -36,17 +40,21 @@ $to = (int)$to;
 $sQuery = $db->query('SELECT star_id, x, y FROM [game]_stars WHERE star_id = %[1] OR star_id = %[2]',
  $from, $to);
 
-if ($db->numRows($sQuery) < 2) {
+$sNum = $db->numRows($sQuery);
+if ($sNum < 2 && !($sNum == 1 && $from === $to)) {
 	imageError('Supply valid stars.');
 }
 
 $starFrom = $db->fetchRow($sQuery, ROW_ASSOC);
-$starTo = $db->fetchRow($sQuery, ROW_ASSOC);
 
-if ($starFrom['star_id'] != $from) {
-	$starSwap = $starFrom;
-	$starFrom = $starTo;
-	$starTo = $starSwap;
+if ($from !== $to) {
+	$starTo = $db->fetchRow($sQuery, ROW_ASSOC);
+
+	if ($starFrom['star_id'] != $from) {
+		$starSwap = $starFrom;
+		$starFrom = $starTo;
+		$starTo = $starSwap;
+	}
 }
 
 $findMap = imagecreatefrompng('img/maps/' . $gameInfo['db_name'] .
@@ -66,7 +74,7 @@ imagestring($findMap, 5, $starFrom['x'] + 25, $starFrom['y'] + 20,
 imagearc($findMap, $starFrom['x'] + 50, $starFrom['y'] + 50, 30, 30, 0, 360,
  $colFrom);
 
-if ($from != $to) {
+if ($from !== $to) {
 	imagestring($findMap, 5, $starTo['x'] + 25, $starTo['y'] + 20, "To #$to",
 	 $colText);
 	imagearc($findMap, $starTo['x'] + 50, $starTo['y'] + 50, 30, 30, 0, 360,
