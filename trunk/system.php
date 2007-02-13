@@ -2,7 +2,7 @@
 
 function getStarLinks()
 {
-	global $links, $star;
+	global $links, $star, $db;
 
 	$num = array();
 	for ($i = 1; $i <= 6; ++$i) {
@@ -16,11 +16,13 @@ function getStarLinks()
 	 implode(' OR star_id = ', $num));
 
 	$links = array();
-	while ($s = $db->fetchRow($info)) {
+	while ($s = $db->fetchRow($info, ROW_NUMERIC)) {
 		$linkTo =& $links[];
-		$linkTo['id'] = (int)$s['id'];
-		$linkTo['x'] = (double)$s['x'] - (double)$star['x'] + (200 / 2);
-		$linkTo['y'] = (double)$s['y'] - (double)$star['y'] + (200 / 2);
+
+		$linkTo['id'] = (int)$s[0];
+
+		$linkTo['x'] = (double)$s[1] - (double)$star['x'] + (200 / 2);
+		$linkTo['y'] = (double)$s[2] - (double)$star['y'] + (200 / 2);
 	}
 }
 
@@ -76,9 +78,9 @@ function assignStar(&$tpl)
 	global $links, $star, $gameInfo;
 
 	$tpl->assign('star', array(
-		'id' => $star['id'],
-		'map' => URL_BASE . '/img/' . $gameInfo['db_name'] . '_maps/sm' . 
-		 $star['id'] . '.png',
+		'id' => $star['star_id'],
+		'map' => URL_BASE . '/img/' . $gameInfo['db_name'] . '_maps/' .
+		 $star['star_id'] . '.png',
 		'links' => $links
 	));
 }

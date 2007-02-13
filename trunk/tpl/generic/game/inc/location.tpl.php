@@ -23,7 +23,7 @@ if (!function_exists('formatName')) {
 
 ?>		<area shape="rect" coords="<?php
 			$this->eprint(($starX - 10) . ',' . ($starY - 10) . ',' .
-			 ($starX + 10) . ',' . ($starY + 10);
+			 ($starX + 10) . ',' . ($starY + 10));
 ?>" href="<?php $this->eprint($this->url['self'] . '?toloc=' . $s['id']); 
 ?>" alt="System $id" />
 <?php
