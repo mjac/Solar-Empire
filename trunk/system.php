@@ -79,9 +79,11 @@ function assignStar(&$tpl)
 
 	$tpl->assign('star', array(
 		'id' => $star['star_id'],
-		'map' => URL_BASE . '/img/' . $gameInfo['db_name'] . '_maps/' .
+		'map' => URL_BASE . '/img/maps/' . $gameInfo['db_name'] . '/local/' .
 		 $star['star_id'] . '.png',
-		'links' => $links
+		'links' => $links,
+		'x' => $star['x'],
+		'y' => $star['y']
 	));
 }
 

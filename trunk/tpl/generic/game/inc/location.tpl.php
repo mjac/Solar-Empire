@@ -7,64 +7,66 @@ if (!function_exists('formatName')) {
 
 ?><div id="locBar">
 	<h2><a href="system_map.php">Map of galaxy</a></h2>
-	<p><img id="miniMap" src="<?php $this->eprint($this->star['map']); 
-?>" width="200" height="200"
-	 alt="Map of systems around <?php $this->eprint($this->star['id']); 
+	<p><img id="miniMap" src="<?php
+$this->eprint($this->star['map']);
+?>" width="200" height="200" alt="Map of systems around <?php
+$this->eprint($this->star['id']);
 ?>" usemap="#systemMap" /></p>
 <?php
 
 	if (!empty($this->star['links'])) {
 ?>	<map name="systemMap" id="#systemMap">
 <?php
-
 		foreach ($this->star['links'] as $s) {
-			$starX = $s['x'] - $this->star['x'] + (200 / 2);
-			$starY = $s['y'] - $this->star['y'] + (200 / 2);
-
+			$starX = (200 / 2) + ($s['x'] - $this->star['x']);
+			$starY = (200 / 2) + ($s['y'] - $this->star['y']);
 ?>		<area shape="rect" coords="<?php
 			$this->eprint(($starX - 10) . ',' . ($starY - 10) . ',' .
 			 ($starX + 10) . ',' . ($starY + 10));
-?>" href="<?php $this->eprint($this->url['self'] . '?toloc=' . $s['id']); 
+?>" href="<?php
+			$this->eprint($this->url['self'] . '?toloc=' . $s['id']);
 ?>" alt="System $id" />
 <?php
 		}
-
 ?>	</map>
 <?php
 	}
 
 	if (isset($this->ship) && 
 	     $this->ship['cargo']['free'] != $this->ship['cargo']['space']) {
-?>	<p><a href="<?php $this->eprint($this->url['self'] . '?jettison=1'); 
+?>	<p><a href="<?php
+		$this->eprint($this->url['self'] . '?jettison=1');
 ?>">Jettison cargo</a></p>
 <?php
 	}
 	
-if (isset($this->equip)) {
+if (isset($this->equip) && ($this->equip['genesis'] > 0 ||
+     $this->equip['alpha'] > 0 || $this->equip['gamma'] > 0 ||
+     $this->equip['delta'] > 0)) {
 ?>
 <h2>Equipment</h2>
 <?php
 
-	if($this->equip['genesis'] > 0) {
+	if ($this->equip['genesis'] > 0) {
 ?>	<p><a href="<?php $this->eprint($this->url['base'] . '/planet_build.php?location=' . $this->star['id']); 
 ?>">Genesis Device</a> (<?php $this->eprint(number_format($this->equip['genesis'])); 
 ?>)</p>
 <?php
 	}
 
-	if($this->equip['alpha'] > 0) {
+	if ($this->equip['alpha'] > 0) {
 ?>	<p><a href="<?php $this->eprint($this->url['base'] . '/bombs.php?alpha=1'); 
 ?>">Alpha Bomb</a> (<?php $this->eprint(number_format($this->equip['alpha'])); 
 ?>)</p>
 <?php
 	}
-	if($this->equip['gamma'] > 0) {
+	if ($this->equip['gamma'] > 0) {
 ?>	<p><a href="<?php $this->eprint($this->url['base'] . '/bombs.php?bomb_type=1'); 
 ?>">Gamma Bomb</a> (<?php $this->eprint(number_format($this->equip['gamma'])); 
 ?>)</p>
 <?php
 	}
-	if($this->equip['delta'] > 0) {
+	if ($this->equip['delta'] > 0) {
 ?>	<p><a href="<?php $this->eprint($this->url['base'] . '/bombs.php?bomb_type=2'); 
 ?>">Delta Bomb</a> (<?php $this->eprint(number_format($this->equip['delta'])); 
 ?>)</p>
@@ -72,7 +74,8 @@ if (isset($this->equip)) {
 	}
 }
 
-if (isset($this->ship)) {
+if (isset($this->ship) &&
+    ($this->ship['transwarp'] || $this->ship['subspace'])) {
 ?>
 <h2>Ship</h2>
 <?php
