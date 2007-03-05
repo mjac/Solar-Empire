@@ -193,7 +193,7 @@ if(isset($_REQUEST['followlink'])) {
 	}
 
 	if (empty($linkProbs)) {
-		moveUserTo($toloc);
+		moveUserTo($goto);
 
 		getStar();
 		getStarLinks();
