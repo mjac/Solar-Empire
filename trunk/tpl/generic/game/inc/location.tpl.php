@@ -24,7 +24,7 @@ $this->eprint($this->star['id']);
 			$this->eprint(($starX - 10) . ',' . ($starY - 10) . ',' .
 			 ($starX + 10) . ',' . ($starY + 10));
 ?>" href="<?php
-			$this->eprint($this->url['self'] . '?toloc=' . $s['id']);
+			$this->eprint($this->url['self'] . '?followlink=' . $s['id']);
 ?>" alt="System $id" />
 <?php
 		}

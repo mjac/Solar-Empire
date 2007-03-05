@@ -169,6 +169,43 @@ if (!$star) {
 }
 getStarLinks();
 
+$locAlerts = array();
+
+// Process page location command if given
+if(isset($_REQUEST['followlink'])) {
+	$linkProbs = array();
+	$goto = $_REQUEST['followlink'];
+
+	if (!starExists($goto)) {
+		$linkProbs[] = 'travelMissingSystem';
+	}
+
+	if ($goto == $userShip['location']) {
+		$linkProbs[] = 'travelPointless';
+	}
+
+	if (!(isLinked($star, $goto) || IS_ADMIN)) {
+	    $linkProbs[] = 'travelMissingLink';
+	}
+	
+	if (empty($problems) && !giveTurnsPlayer(-$warp_cost)) {
+		$linkProbs[] = 'travelLinkTurns';
+	}
+
+	if (empty($linkProbs)) {
+		moveUserTo($toloc);
+
+		getStar();
+		getStarLinks();
+	} else {
+	    $locAlerts = array_merge($locAlerts, $linkProbs);
+	}
+}
+
+
+if (!empty($locAlerts)) {
+	$tpl->assign('locAlerts', $locAlerts);
+}
 
 assignStar($tpl);
 assignEquip($tpl);
@@ -284,43 +321,6 @@ if(!empty($subspace)) {
 
 		getStar();
 		getStarLinks();
-	}
-}
-
-// Process page location command if given
-if(isset($toloc)) {
-	$toloc = (int)$toloc;
-
-	// Determined by largest ship in fleet
-	if ($gameOpt['ship_warp_cost'] < 0) {
-		$db->query("SELECT move_turn_cost FROM [game]_ships WHERE (login_id = '$user[login_id]' AND location = '$userShip[location]' AND (towed_by = '$user[ship_id]') OR ship_id = '$user[ship_id]') order by move_turn_cost desc limit 1");
-		$move_turn_cost_fleet = dbr();
-		$warp_cost = $move_turn_cost_fleet['move_turn_cost']; #set it to warp_cost so can keep generic
-	} else {#warp cost is set by admin
-		$warp_cost = $gameOpt['ship_warp_cost']; #set to warp_cost so as to keep generic
-	}
-
-	if ($user['turns'] < $gameOpt['ship_warp_cost'] && $gameOpt['ship_warp_cost'] > 0 && !IS_ADMIN) {
-		$out = "Sorry, you can't move because you have less than <b>$gameOpt[ship_warp_cost]</b> turn(s). <br />This is the present turn cost to move between systems, as set by the <b class=b1>Admin</b>.<p>";
-	} elseif ($gameOpt['ship_warp_cost'] < 0 && $user['turns'] < $warp_cost && !IS_ADMIN) {
-		$out = "Sorry, you can't more because you have less than <b>$warp_cost</b> turn(s).<br />This is the amount of turns required to move the largest ship in your present fleet.<br />Differernt ships use different amounts of turns to move between systems. See the help for more information.";
-	} else {
-		if ($toloc == $star['wormhole'] && attack_planet_check($user) > 0) {
-			$out .= "It is not possible to get to the wormhole to jump to that system, because the hostile fighters in this system get in the way.";
-		} elseif (!starExists($toloc)) {
-			$out = "<p>That system does not exist.</p>";
-		} elseif ($toloc == $userShip['location']) {
-			$out = "<p>You are already there.</p>";
-		} elseif (!(isLinked($star, $toloc) || IS_ADMIN)) {
-			$out = "<p>This star system does not have a link to (#<b>$toloc</b>).</p>";
-		} else {
-			giveTurnsPlayer(-$warp_cost);
-
-			moveUserTo($toloc);
-
-			getStar();
-			getStarLinks();
-		}
 	}
 }
 

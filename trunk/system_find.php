@@ -2,7 +2,7 @@
 
 require_once('inc/user.inc.php');
 
-function imageError($str, $width, $height)
+function imageError($str)
 {
 	global $gameOpt;
 
