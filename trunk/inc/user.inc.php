@@ -70,6 +70,12 @@ function giveTurns($id, $amount)
 		 $amount, $id);
 	}
 
+	if ($db->hasError($gave)) {
+		trigger_error('Could not update database with new turn amount.',
+		 E_USER_WARNING);
+		return false;
+	}
+
 	return $db->affectedRows($gave) ? true : false;
 }
 
@@ -682,8 +688,13 @@ function starExists($id)
 {
 	global $db;
 
-	$starExists = $db->query('SELECT COUNT(*) FROM [game]_stars WHERE ' .
-	 'star_id = %u', array($id));
+	$starExists = $db->query('SELECT COUNT(*) FROM [game]_stars WHERE star_id = %[1]', $id);
+
+	if ($db->hasError($starExists)) {
+	    trigger_error('Unable to ascertain whether star exists.',
+		 E_USER_WARNING);
+	    return false;
+	}
 
 	return current($db->fetchRow($starExists)) != 0;
 }

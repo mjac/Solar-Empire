@@ -188,7 +188,7 @@ if(isset($_REQUEST['followlink'])) {
 	    $linkProbs[] = 'travelMissingLink';
 	}
 	
-	if (empty($problems) && !giveTurnsPlayer(-$warp_cost)) {
+	if (empty($problems) && !giveTurnsPlayer(-$gameOpt['ship_warp_cost'])) {
 		$linkProbs[] = 'travelLinkTurns';
 	}
 
