@@ -4,6 +4,7 @@ if (!class_exists('genUniverse')) {
 	require(PATH_LIB . '/genUniverse/genUniverse.class.php');
 }
 
+/** Generates a Solar Empire universe based on the general genUniverse class */
 class generator extends genUniverse
 {
 	/** Apply game options to universe generator */
