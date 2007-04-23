@@ -45,7 +45,7 @@ CREATE TABLE se_games (
   processed_turns timestamp NOT NULL default 0,
   processed_systems timestamp NOT NULL default 0,
   processed_ships timestamp NOT NULL default 0,
-  processed_planets timestampNOT NULL default 0,
+  processed_planets timestamp NOT NULL default 0,
   processed_government timestamp NOT NULL default 0,
   PRIMARY KEY (db_name)
 ) TYPE=MyISAM;
