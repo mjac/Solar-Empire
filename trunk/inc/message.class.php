@@ -16,11 +16,12 @@ class forum
 		$this->table = $table;
 	}
 
-	function view()
+	/** Retrieve the current forum entries */
+	function view($from = false, $to = false)
 	{
 	
 	}
-	
+
 	/**
 	 * Add a message to the forum
 	 *
@@ -28,7 +29,13 @@ class forum
 	 */
 	function add($message, $fromId = false, $fromName = false, $toId = false, $toName = false)
 	{
-	
+		$problems = array();
+
+		$new = new message;
+
+		if ($new->contentText($message) === false) {
+			$problems[] = 'content';
+		}
 	}
 
 	/** Remove a message by id or all */
@@ -63,9 +70,7 @@ class message
 			return false;
 		}
 
-		$this->message = $xhtml;
-
-		return true;
+		return $xhtml;
 	}
 
 	/** Uses validMessageXML to validate messagee XHTML */

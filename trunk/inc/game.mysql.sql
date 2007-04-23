@@ -1,5 +1,19 @@
 DROP TABLE IF EXISTS gamename_bilkos;
---
+DROP TABLE IF EXISTS gamename_clans;
+DROP TABLE IF EXISTS gamename_clan_invites;
+DROP TABLE IF EXISTS gamename_db_vars;
+DROP TABLE IF EXISTS gamename_msg_forum;
+DROP TABLE IF EXISTS gamename_msg_clan;
+DROP TABLE IF EXISTS gamename_msg_player;
+DROP TABLE IF EXISTS gamename_news;
+DROP TABLE IF EXISTS gamename_ports;
+DROP TABLE IF EXISTS gamename_planets;
+DROP TABLE IF EXISTS gamename_ship_types;
+DROP TABLE IF EXISTS gamename_ships;
+DROP TABLE IF EXISTS gamename_stars;
+DROP TABLE IF EXISTS gamename_user_options;
+DROP TABLE IF EXISTS gamename_users;
+
 CREATE TABLE gamename_bilkos (
   item_id int unsigned NOT NULL,
   item_name varchar(32) NOT NULL default '',
@@ -7,14 +21,12 @@ CREATE TABLE gamename_bilkos (
   item_type int unsigned NOT NULL default 0,
   bidder_id int unsigned NOT NULL default 0,
   going_price int unsigned NOT NULL default 0,
-  timestamp int unsigned NOT NULL default 0,
+  `timestamp` timestamp NOT NULL default 0,
   active tinyint unsigned NOT NULL default 0,
   descr text NOT NULL,
   PRIMARY KEY (item_id)
 ) TYPE=MyISAM;
---
-DROP TABLE IF EXISTS gamename_clans;
---
+
 CREATE TABLE gamename_clans (
   clan_id smallint unsigned NOT NULL,
   clan_name varchar(32) NOT NULL default '',
@@ -25,17 +37,13 @@ CREATE TABLE gamename_clans (
   fighter_kills int unsigned NOT NULL default 0,
   PRIMARY KEY (clan_id)
 ) TYPE=MyISAM;
---
-DROP TABLE IF EXISTS gamename_clan_invites;
---
+
 CREATE TABLE gamename_clan_invites (
   clan_id smallint unsigned NOT NULL,
   login_id int unsigned NOT NULL,
-  invited int unsigned NOT NULL default 0
+  invited timestamp NOT NULL default 0
 ) TYPE=MyISAM;
---
-DROP TABLE IF EXISTS gamename_db_vars;
---
+
 CREATE TABLE gamename_db_vars (
   `name` varchar(32) NOT NULL default '',
   `value` int NOT NULL default 0,
@@ -44,7 +52,222 @@ CREATE TABLE gamename_db_vars (
   descript text NOT NULL,
   PRIMARY KEY (`name`)
 ) TYPE=MyISAM;
---
+
+CREATE TABLE gamename_msg_forum (
+  message_id int unsigned NOT NULL,
+  sender_id int unsigned NULL default NULL,
+  sender_name varchar(32) NULL default NULL,
+  sent timestamp NOT NULL default 0,
+  message text NOT NULL,
+  PRIMARY KEY (message_id),
+  KEY login_id (login_id),
+  KEY sent (sent)
+) TYPE=MyISAM;
+
+CREATE TABLE gamename_msg_clan (
+  message_id int unsigned NOT NULL,
+  clan_id int NOT NULL,
+  sender_id int unsigned NULL default NULL,
+  sender_name varchar(32) NULL default NULL,
+  sent timestamp NOT NULL default 0,
+  message text NOT NULL,
+  PRIMARY KEY (message_id),
+  KEY login_id (login_id),
+  KEY sent (sent)
+) TYPE=MyISAM;
+
+CREATE TABLE gamename_msg_player (
+  message_id int unsigned NOT NULL,
+  login_id int NOT NULL,
+  sender_id int unsigned NULL default NULL,
+  sender_name varchar(32) NULL default NULL,
+  sent timestamp NOT NULL default 0,
+  message text NOT NULL,
+  PRIMARY KEY (message_id),
+  KEY login_id (login_id),
+  KEY sent (sent)
+) TYPE=MyISAM;
+
+CREATE TABLE gamename_news (
+  news_id int unsigned NOT NULL,
+  `timestamp` timestamp NOT NULL default 0,
+  login_id int unsigned NOT NULL default 0,
+  headline text NOT NULL,
+  PRIMARY KEY  (news_id),
+  KEY `timestamp` (`timestamp`)
+) TYPE=MyISAM;
+
+CREATE TABLE gamename_planets (
+  planet_id int unsigned NOT NULL,
+  planet_name varchar(32) NOT NULL default '',
+  planet_type tinyint unsigned NOT NULL default 0,
+  location int unsigned NOT NULL default 0,
+  login_id int unsigned default NULL,
+  fighters int unsigned NOT NULL default 20,
+  colon int unsigned NOT NULL default 1000,
+  fighter_set tinyint unsigned NOT NULL default 0,
+  cash int unsigned NOT NULL default 0,
+  tax_rate tinyint unsigned NOT NULL default 5,
+  metal int unsigned NOT NULL default 0,
+  fuel int unsigned NOT NULL default 0,
+  elect int unsigned NOT NULL default 0,
+  organ int unsigned NOT NULL default 0,
+  alloc_fight int unsigned NOT NULL default 0,
+  alloc_elect int unsigned NOT NULL default 0,
+  alloc_organ int unsigned NOT NULL default 0,
+  pass varchar(32) NOT NULL default '',
+  planet_img tinyint unsigned default NULL,
+  shield_gen tinyint unsigned NOT NULL default 0,
+  shield_charge int unsigned NOT NULL default 0,
+  launch_pad int unsigned NOT NULL default 0,
+  missile mediumint unsigned NOT NULL default 0,
+  daily_report tinyint unsigned NOT NULL default 1,
+  PRIMARY KEY (planet_id),
+  KEY location (location),
+  KEY login_id (login_id)
+) TYPE=MyISAM;
+
+CREATE TABLE gamename_ports (
+  port_id smallint unsigned NOT NULL,
+  location smallint unsigned NOT NULL default 0,
+  metal_bonus int unsigned NOT NULL default 0,
+  fuel_bonus int unsigned NOT NULL default 0,
+  organ_bonus int unsigned NOT NULL default 0,
+  elect_bonus int unsigned NOT NULL default 0,
+  PRIMARY KEY (port_id),
+  KEY location (location)
+) TYPE=MyISAM;
+
+CREATE TABLE gamename_ship_types (
+  type_id smallint unsigned NOT NULL,
+  `name` varchar(32) NOT NULL default '',
+  abbr varchar(8) NOT NULL default '',
+  `type` varchar(16) NOT NULL default '',
+  cost int unsigned NOT NULL default 0,
+  hull int unsigned NOT NULL default 100,
+  max_hull int unsigned NOT NULL default 100,
+  max_shields int unsigned NOT NULL default 0,
+  fighters int unsigned NOT NULL default 0,
+  max_fighters int unsigned NOT NULL default 0,
+  cargo_bays smallint unsigned NOT NULL default 0,
+  mining_rate smallint unsigned NOT NULL default 0,
+  appearance varchar(32) NOT NULL default 'utility',
+  description text NOT NULL,
+  config varchar(16) NOT NULL default '',
+  upgrades tinyint unsigned NOT NULL default 0,
+  auction tinyint unsigned NOT NULL default 0,
+  move_turn_cost tinyint unsigned NOT NULL default 1,
+  point_value smallint unsigned NOT NULL default 0,
+  auxiliary_ship smallint unsigned default NULL,
+  PRIMARY KEY (type_id)
+) TYPE=MyISAM;
+
+CREATE TABLE gamename_ships (
+  ship_id int unsigned NOT NULL,
+  ship_name varchar(32) NOT NULL default '',
+  login_id int unsigned NOT NULL default 0,
+  location smallint unsigned NOT NULL default 1,
+  towed_by int unsigned default NULL,
+  type_id smallint unsigned NOT NULL default 0,
+  hull int unsigned NOT NULL default 100,
+  max_hull int unsigned NOT NULL default 100,
+  shields int unsigned NOT NULL default 100,
+  max_shields int unsigned NOT NULL default 100,
+  fighters int unsigned NOT NULL default 0,
+  max_fighters int unsigned NOT NULL default 0,
+  cargo_bays smallint unsigned NOT NULL default 0,
+  metal smallint unsigned NOT NULL default 0,
+  fuel smallint unsigned NOT NULL default 0,
+  elect smallint unsigned NOT NULL default 0,
+  organ smallint unsigned NOT NULL default 0,
+  colon smallint unsigned NOT NULL default 0,
+  task enum('none','mine','defend','defend-fleet','defend-planet','patrol') NOT NULL default 'none',
+  mining_mode enum('metal','fuel') NOT NULL default 'metal',
+  mining_rate smallint unsigned NOT NULL default 0,
+  config varchar(16) NOT NULL,
+  upgrades smallint unsigned NOT NULL default 0,
+  point_value smallint unsigned NOT NULL default 0,
+  points_killed int unsigned NOT NULL default 0,
+  auxiliary_ship smallint unsigned default NULL,
+  PRIMARY KEY  (ship_id),
+  KEY location (location),
+  KEY towed_by (towed_by),
+  KEY login_id (login_id)
+) TYPE=MyISAM;
+
+CREATE TABLE gamename_stars (
+  star_id smallint unsigned NOT NULL,
+  star_name varchar(32) NOT NULL default '',
+  x smallint unsigned NOT NULL default 0,
+  y smallint unsigned NOT NULL default 0,
+  link_1 smallint unsigned NOT NULL default 0,
+  link_2 smallint unsigned NOT NULL default 0,
+  link_3 smallint unsigned NOT NULL default 0,
+  link_4 smallint unsigned NOT NULL default 0,
+  link_5 smallint unsigned NOT NULL default 0,
+  link_6 smallint unsigned NOT NULL default 0,
+  metal int unsigned NOT NULL default 0,
+  fuel int unsigned NOT NULL default 0,
+  wormhole smallint unsigned NOT NULL default 0,
+  planetary_slots tinyint unsigned NOT NULL default 0,
+  PRIMARY KEY (star_id)
+) TYPE=MyISAM;
+
+CREATE TABLE gamename_user_options (
+  login_id int unsigned NOT NULL,
+  news_back smallint unsigned NOT NULL default 150,
+  forum_back smallint unsigned NOT NULL default 30,
+  show_sigs tinyint unsigned NOT NULL default 1,
+  show_pics tinyint unsigned NOT NULL default 1,
+  show_minimap tinyint unsigned NOT NULL default 1,
+  show_clan_ships tinyint unsigned NOT NULL default 1,
+  show_abbr_ship_class tinyint unsigned NOT NULL default 1,
+  show_rel_sym tinyint unsigned NOT NULL default 1,
+  attack_report tinyint unsigned NOT NULL default 1,
+  cursing_filter tinyint unsigned NOT NULL default 1,
+  planet_report tinyint unsigned NOT NULL default 1,
+  PRIMARY KEY (login_id)
+) TYPE=MyISAM;
+
+CREATE TABLE gamename_users (
+  login_id int unsigned NOT NULL,
+  login_name varchar(32) NOT NULL default '',
+  joined_game int unsigned NOT NULL default 0,
+  game_login_count int unsigned NOT NULL default 0,
+  turns int unsigned NOT NULL default 40,
+  turns_run int unsigned NOT NULL default 0,
+  ship_id int unsigned default NULL,
+  cash bigint unsigned NOT NULL default 10000,
+  last_attack int unsigned NOT NULL default 0,
+  last_attack_by varchar(32) NOT NULL default '',
+  ships_killed int unsigned NOT NULL default 0,
+  ships_lost int unsigned NOT NULL default 0,
+  ships_killed_points int unsigned NOT NULL default 0,
+  ships_lost_points int unsigned NOT NULL default 0,
+  show_user_ships tinyint unsigned NOT NULL default 1,
+  show_enemy_ships tinyint unsigned NOT NULL default 0,
+  genesis tinyint unsigned NOT NULL default 0,
+  clan_id smallint unsigned default NULL,
+  fighters_killed int unsigned NOT NULL default 0,
+  fighters_lost int unsigned NOT NULL default 0,
+  bounty int unsigned NOT NULL default 0,
+  score int NOT NULL default 0,
+  alpha tinyint unsigned NOT NULL default 0,
+  gamma tinyint unsigned NOT NULL default 0,
+  delta tinyint unsigned NOT NULL default 0,
+  sig varchar(128) NOT NULL default '',
+  last_request int unsigned NOT NULL default 0,
+  last_access_forum int unsigned NOT NULL default 0,
+  last_access_clan_forum int unsigned NOT NULL default 0,
+  last_access_admin_forum int unsigned NOT NULL default 0,
+  banned_time int NOT NULL default 0,
+  banned_reason tinytext default '' NOT NULL,
+  one_brob tinyint NOT NULL default 0,
+  style varchar(32) NULL default NULL,
+  PRIMARY KEY (login_id),
+  KEY login_name (login_name)
+) TYPE=MyISAM;
+
 INSERT INTO gamename_db_vars (name, value, min, max, descript) VALUES ('admin_var_show', 1, 0, 1, 'If 0, players cannot see the game vars, on the game_vars page.'),
 ('allow_search_map', 1, 0, 1, 'Determines if users are allowed to run searches to try and find a system on the map (best left for the server admin to set).'),
 ('allow_signatures', 0, 0, 1, 'If set to 1, posts will have the signatures on them. Otherwise, they will be turned off.'),
@@ -118,130 +341,7 @@ INSERT INTO gamename_db_vars (name, value, min, max, descript) VALUES ('admin_va
 ('process_ships', 3600, 1, 604800, 'The frequency of this processed task.'),
 ('process_planets', 86400, 1, 604800, 'The frequency of this processed task.'),
 ('process_government', 43200, 1, 604800, 'The frequency of this processed task.');
---
-DROP TABLE IF EXISTS gamename_msg_forum;
---
-CREATE TABLE gamename_msg_forum (
-  message_id int unsigned NOT NULL,
-  sender_id int unsigned NULL default NULL,
-  sender_name varchar(32) NULL default NULL,
-  sent int unsigned NOT NULL default 0,
-  message text NOT NULL,
-  PRIMARY KEY (message_id),
-  KEY login_id (login_id),
-  KEY sent (sent)
-) TYPE=MyISAM;
---
-DROP TABLE IF EXISTS gamename_msg_clan;
---
-CREATE TABLE gamename_msg_clan (
-  message_id int unsigned NOT NULL,
-  clan_id int NOT NULL,
-  sender_id int unsigned NULL default NULL,
-  sender_name varchar(32) NULL default NULL,
-  sent int unsigned NOT NULL default 0,
-  message text NOT NULL,
-  PRIMARY KEY (message_id),
-  KEY login_id (login_id),
-  KEY sent (sent)
-) TYPE=MyISAM;
---
-DROP TABLE IF EXISTS gamename_msg_player;
---
-CREATE TABLE gamename_msg_player (
-  message_id int unsigned NOT NULL,
-  login_id int NOT NULL,
-  sender_id int unsigned NULL default NULL,
-  sender_name varchar(32) NULL default NULL,
-  sent int unsigned NOT NULL default 0,
-  message text NOT NULL,
-  PRIMARY KEY (message_id),
-  KEY login_id (login_id),
-  KEY sent (sent)
-) TYPE=MyISAM;
---
-DROP TABLE IF EXISTS gamename_news;
---
-CREATE TABLE gamename_news (
-  news_id int unsigned NOT NULL,
-  `timestamp` int unsigned NOT NULL default 0,
-  login_id int unsigned NOT NULL default 0,
-  headline text NOT NULL,
-  PRIMARY KEY  (news_id),
-  KEY `timestamp` (`timestamp`)
-) TYPE=MyISAM;
---
-DROP TABLE IF EXISTS gamename_planets;
---
-CREATE TABLE gamename_planets (
-  planet_id int unsigned NOT NULL,
-  planet_name varchar(32) NOT NULL default '',
-  planet_type tinyint unsigned NOT NULL default 0,
-  location int unsigned NOT NULL default 0,
-  login_id int unsigned default NULL,
-  fighters int unsigned NOT NULL default 20,
-  colon int unsigned NOT NULL default 1000,
-  fighter_set tinyint unsigned NOT NULL default 0,
-  cash int unsigned NOT NULL default 0,
-  tax_rate tinyint unsigned NOT NULL default 5,
-  metal int unsigned NOT NULL default 0,
-  fuel int unsigned NOT NULL default 0,
-  elect int unsigned NOT NULL default 0,
-  organ int unsigned NOT NULL default 0,
-  alloc_fight int unsigned NOT NULL default 0,
-  alloc_elect int unsigned NOT NULL default 0,
-  alloc_organ int unsigned NOT NULL default 0,
-  pass varchar(32) NOT NULL default '',
-  planet_img tinyint unsigned default NULL,
-  shield_gen tinyint unsigned NOT NULL default 0,
-  shield_charge int unsigned NOT NULL default 0,
-  launch_pad int unsigned NOT NULL default 0,
-  missile mediumint unsigned NOT NULL default 0,
-  daily_report tinyint unsigned NOT NULL default 1,
-  PRIMARY KEY (planet_id),
-  KEY location (location),
-  KEY login_id (login_id)
-) TYPE=MyISAM;
---
-DROP TABLE IF EXISTS gamename_ports;
---
-CREATE TABLE gamename_ports (
-  port_id smallint unsigned NOT NULL,
-  location smallint unsigned NOT NULL default 0,
-  metal_bonus int unsigned NOT NULL default 0,
-  fuel_bonus int unsigned NOT NULL default 0,
-  organ_bonus int unsigned NOT NULL default 0,
-  elect_bonus int unsigned NOT NULL default 0,
-  PRIMARY KEY (port_id),
-  KEY location (location)
-) TYPE=MyISAM;
---
-DROP TABLE IF EXISTS gamename_ship_types;
---
-CREATE TABLE gamename_ship_types (
-  type_id smallint unsigned NOT NULL,
-  `name` varchar(32) NOT NULL default '',
-  abbr varchar(8) NOT NULL default '',
-  `type` varchar(16) NOT NULL default '',
-  cost int unsigned NOT NULL default 0,
-  hull int unsigned NOT NULL default 100,
-  max_hull int unsigned NOT NULL default 100,
-  max_shields int unsigned NOT NULL default 0,
-  fighters int unsigned NOT NULL default 0,
-  max_fighters int unsigned NOT NULL default 0,
-  cargo_bays smallint unsigned NOT NULL default 0,
-  mining_rate smallint unsigned NOT NULL default 0,
-  appearance varchar(32) NOT NULL default 'utility',
-  description text NOT NULL,
-  config varchar(16) NOT NULL default '',
-  upgrades tinyint unsigned NOT NULL default 0,
-  auction tinyint unsigned NOT NULL default 0,
-  move_turn_cost tinyint unsigned NOT NULL default 1,
-  point_value smallint unsigned NOT NULL default 0,
-  auxiliary_ship smallint unsigned default NULL,
-  PRIMARY KEY (type_id)
-) TYPE=MyISAM;
---
+
 INSERT INTO gamename_ship_types (type_id, name, abbr, type, cost, hull, max_hull, max_shields, fighters, max_fighters, cargo_bays, mining_rate, appearance, description, config, upgrades, auction, move_turn_cost, point_value, auxiliary_ship) VALUES (1, 'Escape Pod', 'EP', 'Escape Pod', 1000, 5, 5, 100, 0, 0, 10, 1, 'pod', 'If you''re in one of these, you''re pretty darn dead. So hurry up and get a proper ship.', '', 0, 0, 1, 5, NULL),
 (2, 'Scout Ship', 'SS', 'Scout Ship', 3000, 20, 20, 50, 10, 20, 10, 1, 'scout', 'This ship has a small mining capacity but is usually used for mobile scouting and spying.', 'hs:na', 0, 0, 0, 2, NULL),
 (3, 'Merchant Freighter', 'MF', 'Freighter', 10000, 100, 100, 200, 20, 40, 200, 2, 'freighter', 'Everyones favourite ship, and an old classic. Good for mining, early attacking and scouting.', 'fr', 1, 0, 1, 5, NULL),
@@ -261,117 +361,3 @@ INSERT INTO gamename_ship_types (type_id, name, abbr, type, cost, hull, max_hull
 (18, 'Explorer Mark I', 'EM1', 'Alien Scout', 50000, 100, 100, 5000, 100, 100, 50, 2, 'scout', 'Fell off the back of an Alien Fleet.  Massive shields protect a vulnerable interior.', 'tw:sc:ls', 0, 1, 1, 10, NULL),
 (19, 'Occultator', 'EC', 'Carrier', 10000000, 20000, 20000, 10000, 1000, 50000, 10000, 0, 'death-star', 'Welcome to the newest craze in the galaxy! A hollowed out asteroid with an Alien Battlestar''s engines nailed to its sides. The cost of this ship reflects the enourmous amount of effort required to remove the asteroids contents and fill it with fighter bays. Its gone from being a navigational hazard for ships, to a planet eliminator, and should you part with your cash, you are guaranteed hours of planet leveling fun.', 'po', 0, 0, 10, 120, 7),
 (20, 'Alien Battlestar', 'BStar', 'Flagship', 2000000, 5000, 5000, 20000, 2000, 20000, 2000, 0, 'organic-behemoth', 'If you thought the Brobdingnagian was the Emperor of Space, think again. This converted alien vessal was found derelict and is a true Flagship.  It has Subspace Jump facilities (with wormhole stabiliser)  and a scanner for good measure.', 'oo:ws:sc:sj', 0, 0, 7, 200, 7);
---
-DROP TABLE IF EXISTS gamename_ships;
---
-CREATE TABLE gamename_ships (
-  ship_id int unsigned NOT NULL,
-  ship_name varchar(32) NOT NULL default '',
-  login_id int unsigned NOT NULL default 0,
-  location smallint unsigned NOT NULL default 1,
-  towed_by int unsigned default NULL,
-  type_id smallint unsigned NOT NULL default 0,
-  hull int unsigned NOT NULL default 100,
-  max_hull int unsigned NOT NULL default 100,
-  shields int unsigned NOT NULL default 100,
-  max_shields int unsigned NOT NULL default 100,
-  fighters int unsigned NOT NULL default 0,
-  max_fighters int unsigned NOT NULL default 0,
-  cargo_bays smallint unsigned NOT NULL default 0,
-  metal smallint unsigned NOT NULL default 0,
-  fuel smallint unsigned NOT NULL default 0,
-  elect smallint unsigned NOT NULL default 0,
-  organ smallint unsigned NOT NULL default 0,
-  colon smallint unsigned NOT NULL default 0,
-  task enum('none','mine','defend','defend-fleet','defend-planet','patrol') NOT NULL default 'none',
-  mining_mode enum('metal','fuel') NOT NULL default 'metal',
-  mining_rate smallint unsigned NOT NULL default 0,
-  config varchar(16) NOT NULL,
-  upgrades smallint unsigned NOT NULL default 0,
-  point_value smallint unsigned NOT NULL default 0,
-  points_killed int unsigned NOT NULL default 0,
-  auxiliary_ship smallint unsigned default NULL,
-  PRIMARY KEY  (ship_id),
-  KEY location (location),
-  KEY towed_by (towed_by),
-  KEY login_id (login_id)
-) TYPE=MyISAM;
---
-DROP TABLE IF EXISTS gamename_stars;
---
-CREATE TABLE gamename_stars (
-  star_id smallint unsigned NOT NULL,
-  star_name varchar(32) NOT NULL default '',
-  x smallint unsigned NOT NULL default 0,
-  y smallint unsigned NOT NULL default 0,
-  link_1 smallint unsigned NOT NULL default 0,
-  link_2 smallint unsigned NOT NULL default 0,
-  link_3 smallint unsigned NOT NULL default 0,
-  link_4 smallint unsigned NOT NULL default 0,
-  link_5 smallint unsigned NOT NULL default 0,
-  link_6 smallint unsigned NOT NULL default 0,
-  metal int unsigned NOT NULL default 0,
-  fuel int unsigned NOT NULL default 0,
-  wormhole smallint unsigned NOT NULL default 0,
-  planetary_slots tinyint unsigned NOT NULL default 0,
-  PRIMARY KEY (star_id)
-) TYPE=MyISAM;
---
-DROP TABLE IF EXISTS gamename_user_options;
---
-CREATE TABLE gamename_user_options (
-  login_id int unsigned NOT NULL,
-  news_back smallint unsigned NOT NULL default 150,
-  forum_back smallint unsigned NOT NULL default 30,
-  show_sigs tinyint unsigned NOT NULL default 1,
-  show_pics tinyint unsigned NOT NULL default 1,
-  show_minimap tinyint unsigned NOT NULL default 1,
-  show_clan_ships tinyint unsigned NOT NULL default 1,
-  show_abbr_ship_class tinyint unsigned NOT NULL default 1,
-  show_rel_sym tinyint unsigned NOT NULL default 1,
-  attack_report tinyint unsigned NOT NULL default 1,
-  cursing_filter tinyint unsigned NOT NULL default 1,
-  planet_report tinyint unsigned NOT NULL default 1,
-  PRIMARY KEY (login_id)
-) TYPE=MyISAM;
---
-DROP TABLE IF EXISTS gamename_users;
---
-CREATE TABLE gamename_users (
-  login_id int unsigned NOT NULL,
-  login_name varchar(32) NOT NULL default '',
-  joined_game int unsigned NOT NULL default 0,
-  game_login_count int unsigned NOT NULL default 0,
-  turns int unsigned NOT NULL default 40,
-  turns_run int unsigned NOT NULL default 0,
-  ship_id int unsigned default NULL,
-  cash bigint unsigned NOT NULL default 10000,
-  last_attack int unsigned NOT NULL default 0,
-  last_attack_by varchar(32) NOT NULL default '',
-  ships_killed int unsigned NOT NULL default 0,
-  ships_lost int unsigned NOT NULL default 0,
-  ships_killed_points int unsigned NOT NULL default 0,
-  ships_lost_points int unsigned NOT NULL default 0,
-  show_user_ships tinyint unsigned NOT NULL default 1,
-  show_enemy_ships tinyint unsigned NOT NULL default 0,
-  genesis tinyint unsigned NOT NULL default 0,
-  clan_id smallint unsigned default NULL,
-  fighters_killed int unsigned NOT NULL default 0,
-  fighters_lost int unsigned NOT NULL default 0,
-  bounty int unsigned NOT NULL default 0,
-  score int NOT NULL default 0,
-  alpha tinyint unsigned NOT NULL default 0,
-  gamma tinyint unsigned NOT NULL default 0,
-  delta tinyint unsigned NOT NULL default 0,
-  sig varchar(128) NOT NULL default '',
-  last_request int unsigned NOT NULL default 0,
-  last_access_forum int unsigned NOT NULL default 0,
-  last_access_clan_forum int unsigned NOT NULL default 0,
-  last_access_admin_forum int unsigned NOT NULL default 0,
-  banned_time int NOT NULL default 0,
-  banned_reason tinytext default '' NOT NULL,
-  one_brob tinyint NOT NULL default 0,
-  style varchar(32) NULL default NULL,
-  PRIMARY KEY (login_id),
-  KEY login_name (login_name)
-) TYPE=MyISAM;
