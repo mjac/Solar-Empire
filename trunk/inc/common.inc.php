@@ -1,13 +1,12 @@
 <?php
 
-header('Cache-control: no-cache'); // HTTP 1.1
 mt_srand((double)microtime() * 0x7FFFFFFF);
 
-require_once('inc/config.inc.php');
-
+if (!defined('PATH_BASE')) {
+	require('inc/config.inc.php');
+}
 
 // REMOVE QUOTES
-
 if (get_magic_quotes_gpc() == 1) {
 	recursive_stripslashes($_GET);
 	recursive_stripslashes($_POST);
@@ -15,42 +14,30 @@ if (get_magic_quotes_gpc() == 1) {
 	recursive_stripslashes($_REQUEST);
 }
 
+// INPUT VALIDATION
 
-// REGISTER GLOBALS...
-
-extract($_REQUEST);
-
-$login_id = isset($_REQUEST['login_id']) ? (int)$_REQUEST['login_id'] : NULL;
-$session_id = isset($_REQUEST['session_id']) ? $_REQUEST['session_id'] : NULL;
-
-$self = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
-
-
-/**********************
-Input Checking Functions
-**********************/
-
-//allows alphanumeric and the some other characters but no spaces
-function valid_name($input)
+// Allows alphanumeric and the some other characters but no spaces
+function isUsername($input)
 {
 	return preg_match('/^[[:alnum:][:punct:]]{4,32}$/i',$input) &&
 	 !is_numeric($input);
 }
-//allows alphanumeric and the some other characters and spaces
-function valid_spaced_name($input)
+
+// Allows alphanumeric and the some other characters and spaces
+function isSpacedName($input)
 {
 	return preg_match('/^[[:alnum:][:punct:] ]{4,32}$/i', $input) &&
 	 !is_numeric($input);
 }
 
-//allows alphanumeric and the some other characters but no spaces
-function valid_input($input)
+// Allows alphanumeric and the some other characters but no spaces
+function isSimplePhrase($input)
 {
 	return preg_match('/^[[:alnum:][:punct:]]+$/i', $input);
 }
 
-//allows alphanumeric and the some other characters, as well as spaces. removes HTML and PHP.
-function correct_name($input)
+// Allows alphanumeric and the some other characters as well as spaces
+function correctName($input)
 {
 	$input = preg_replace('/[^[[:alnum:][:punct:]] ]/i', '', trim($input));
 	return empty($input) ? 'Nameless' : $input;
@@ -92,36 +79,6 @@ function recursive_stripslashes(&$var)
 			$var[$key] = stripslashes($value);
 		}
 	}
-}
-
-
-/**********************
-HTML Table Functions
-***********************/
-
-// will output the beginning of a properly formatted table putting
-//the values of the passed array in as the table headers;
-// - expects an array.
-function make_table($input)
-{
-	$ret_str = "<table class=\"simple\">\n\t<tr>\n";
-	foreach($input as $value) {
-		$ret_str .= "\t\t<th>$value</th>\n";
-	}
-	return $ret_str."\t</tr>\n";
-}
-
-//outputs a row of a table with the number values made bold;
-// -- expects a array.
-function make_row($input)
-{
-	$ret_str = "\t<tr>\n";
-
-	foreach ($input as $value) {
-		$ret_str .= "\t\t<td>$value</td>\n";
-	}
-
-	return $ret_str."\t</tr>\n";
 }
 
 
@@ -226,48 +183,6 @@ Authorisation Checking Functions
 
 // Function that will check to see if a player is logged in using session_id's
 // If user is the admin, it will set db_name, and game_info
-function checkAuth()
-{
-	global $session_id, $login_id, $account, $gameInfo, $db;
-
-	//get all details for the user with that sessionid/login_id combo
-	//if the admin, don't use the session_id as a key
-	$info = $db->query('SELECT * FROM user_accounts WHERE login_id = %[1] AND session_id = \'%[2]\'', 
-	 $login_id, $session_id);
-	$account = $db->fetchRow($info);
-
-	$next_exp = time() + SESSION_TIME_LIMIT;
-
-	// Session is invalid.
-	if ($session_id == '' || $login_id == 0 || 
-	     $session_id != $account['session_id'] ||
-	     $account['session_exp'] < time()) {//session expired or invalid
-		unset($account, $login_id, $session_id, $gameInfo);
-		return false;
-	}
-
-	$db->query('UPDATE user_accounts SET session_exp = %[1], page_views = page_views + 1 WHERE login_id = %[2]', 
-	 $next_exp, $login_id);
-
-	define('IS_OWNER', $account['login_id'] == OWNER_ID);
-
-	++$account['page_views'];
-
-	if ($account['in_game'] !== NULL) {
-		if (!$gameInfo = selectGame($account['in_game'])) {
-			$db->query('UPDATE user_accounts SET in_game = NULL WHERE login_id = %[1]', 
-			 $login_id);
-			$account['in_game'] = NULL;
-		    return false;
-		}
-
-		define('IS_ADMIN', $account['login_id'] == $gameInfo['admin']);
-
-		$account['session_exp'] = $next_exp;
-	}
-
-	return true;
-}
 
 function selectGame($db_name)
 {

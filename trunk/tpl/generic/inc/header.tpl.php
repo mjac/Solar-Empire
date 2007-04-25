@@ -1,6 +1,7 @@
 <?php
 class_exists('Savant2') || exit;
 
+header('Cache-control: no-cache'); // HTTP 1.1
 ob_start('ob_gzhandler');
 
 echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";

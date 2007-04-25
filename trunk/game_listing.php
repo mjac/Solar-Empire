@@ -4,8 +4,8 @@ require_once('inc/common.inc.php');
 require_once('inc/db.inc.php');
 require_once('inc/template.inc.php');
 
-//Function that will log a user into gamelisting
-function login_to_server($handle, $password)
+// Function that will log a user into gamelisting
+function accLogin($handle, $password)
 {
 	global $db, $tpl;
 
@@ -67,7 +67,7 @@ function login_to_server($handle, $password)
 
 // User logging into server.
 if (isset($_POST['handle']) && isset($_POST['password'])) {
-	login_to_server($_POST['handle'], $_POST['password']);
+	accLogin($_POST['handle'], $_POST['password']);
 	exit;
 }
 
@@ -303,6 +303,5 @@ $tpl->assign('canCreateGame', IS_OWNER);
 $tpl->assign('serverNews', file_get_contents('inc/server_news.inc.html'));
 
 $tpl->display('game_listing.tpl.php');
-exit;
 
 ?>
