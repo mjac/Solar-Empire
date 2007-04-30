@@ -20,10 +20,11 @@ defined('E_STRICT') || define('E_STRICT', 0x800);
 error_reporting(E_ALL & ~E_STRICT);
 
 // PATHS
-define('PATH_BASE', dirname(__FILE__) . '/..');
+define('PATH_BASE', realpath(dirname(__FILE__) . '/..'));
 define('PATH_INC', PATH_BASE . '/inc');
 define('PATH_TPL', PATH_BASE . '/tpl');
 define('PATH_LIB', PATH_BASE . '/lib');
+define('PATH_DOC', PATH_BASE . '/doc');
 define('PATH_SDA', PATH_LIB . '/sda/sda.class.php');
 define('PATH_SAVANT', PATH_LIB . '/Savant2-2.4.3/Savant2.php');
 

@@ -1,19 +1,5 @@
 <?php
 
-ob_start();
-
-if (!(file_exists('install') && is_dir('install'))) {
-	exit('The install directory must exist.');
-}
-
-require_once('lib/sda/sda.class.php');
-
-$configTpl = 'install/config.inc.php';
-$configNew = 'inc/config.inc.php';
-
-$problems = array();
-$installed = false;
-
 function checkOption($name, $var)
 {
 	if (isset($_REQUEST[$name]) && 
@@ -33,7 +19,22 @@ function currentValue($name, $default = '')
 	}
 }
 
-$db = new sda;
+require('config.inc.php');
+
+define('PATH_INSTALL', PATH_BASE . '/install');
+
+if (!(file_exists(PATH_INSTALL) && is_dir(PATH_INSTALL))) {
+	exit('The install directory must exist.');
+}
+
+$configTpl = PATH_INSTALL . '/config.inc.php';
+$configNew = PATH_INC . '/config.inc.php';
+
+$problems = array();
+$installed = false;
+
+require_once(PATH_INC . '/db.inc.php');
+
 $dbFine = false;
 $dbDsn = '';
 
@@ -44,8 +45,7 @@ if (isset($_REQUEST['dbType'])) {
 			     isset($_REQUEST['dbName']) && 
 			     isset($_REQUEST['dbUsername']) && 
 			     isset($_REQUEST['dbPassword']))) {
-				$problems[] = 'MySQL requires a hostname, database name, ' .
-				 'username and password.';
+				$problems[] = 'MySQL requires a hostname, database name, username and password.';
 				break;
 			}
 
@@ -71,8 +71,7 @@ if (isset($_REQUEST['dbType'])) {
 			     isset($_REQUEST['dbName']) && 
 			     isset($_REQUEST['dbUsername']) && 
 			     isset($_REQUEST['dbPassword']))) {
-				$problems[] = 'PostgreSQL requires a hostname, ' .
-				 'database name, username and password.';
+				$problems[] = 'PostgreSQL requires a hostname, database name, username and password.';
 				break;
 			}
 
@@ -98,27 +97,25 @@ if (isset($_REQUEST['dbType'])) {
 	}
 }
 
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 <title>Solar Empire: System Wars Installation</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" type="text/css" media="screen" 
- href="install/clear.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="install/clear.css" />
 </head>
 <body>
 <h1>Solar Empire: System Wars Installation</h1>
 <?php
 
-if (is_dir('doc') && is_readable('doc/licence.txt') && 
-     is_readable('doc/readme.txt')) {
-
-	$fpReadme = fopen('doc/readme.txt', 'r');
-	$readme = fread($fpReadme, filesize('doc/readme.txt'));
+if (is_dir(PATH_DOC) && is_readable(PATH_DOC . '/licence.txt') && 
+     is_readable(PATH_DOC . '/readme.txt')) {
+	$fpReadme = fopen(PATH_DOC . '/readme.txt', 'r');
+	$readme = fread($fpReadme, filesize(PATH_DOC . '/readme.txt'));
 	fclose($fpReadme);
 
-	$fpLicence = fopen('doc/licence.txt', 'r');
-	$licence = fread($fpLicence, filesize('doc/licence.txt'));
+	$fpLicence = fopen(PATH_DOC . '/licence.txt', 'r');
+	$licence = fread($fpLicence, filesize(PATH_DOC . '/licence.txt'));
 	fclose($fpLicence);
 
 ?>
@@ -143,7 +140,6 @@ if (is_dir('doc') && is_readable('doc/licence.txt') &&
 	<dd><select name="dbType">
 		<option value="mysql"<?php checkOption('dbType', 'mysql'); ?>>MySQL</option>
 		<option value="postgresql"<?php checkOption('dbType', 'postgresql'); ?>>PostgreSQL</option>
-		<!--<option value="sqlite"<?php checkOption('dbType', 'sqlite'); ?>>Sqlite</option>-->
 	</select></dd>
 
 	<dt>Hostname or file</dt>
@@ -222,8 +218,4 @@ if (!empty($problems)) {
 ?>
 </form>
 </body>
-</html><?php
-
-ob_end_flush();
-
-?>
+</html>
