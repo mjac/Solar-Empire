@@ -1,6 +1,5 @@
 <?php
-
-defined('PATH_SAVANT') or exit('Create constant PATH_SAVANT');
+defined('PATH_SAVANT') || exit;
 
 $styleDir = '';
 

@@ -1,6 +1,5 @@
 <?php
-
-defined('PATH_SDA') or exit('Create constant PATH_SDA');
+defined('PATH_SDA') || exit;
 
 if (!class_exists('sda')) {
 	require(PATH_SDA);

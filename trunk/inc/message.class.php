@@ -1,4 +1,5 @@
 <?php
+defined('PATH_INC') || exit;
 
 if (!class_exists('validMessageXML')) {
 	require(PATH_INC . '/validMessageXML.class.php');

@@ -1,4 +1,5 @@
 <?php
+defined('PATH_INC') || exit;
 
 class session
 {

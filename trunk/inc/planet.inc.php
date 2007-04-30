@@ -1,4 +1,5 @@
 <?php
+defined('PATH_INC') || exit;
 
 function checkPlanet($id)
 {

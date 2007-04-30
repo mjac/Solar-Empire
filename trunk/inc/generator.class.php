@@ -1,4 +1,5 @@
 <?php
+defined('PATH_LIB') || exit;
 
 if (!class_exists('genUniverse')) {
 	require(PATH_LIB . '/genUniverse/genUniverse.class.php');
