@@ -1,12 +1,12 @@
 <?php
 
-if (!(file_exists('install') && is_dir('install'))) {
-	exit('The install directory must exist.');
-}
+require('config.inc.php');
+require(PATH_INC . '/db.inc.php');
 
-require_once('inc/config.inc.php');
-require_once('inc/db.inc.php');
-require_once('install/data.inc.php');
+define('PATH_INSTALL', PATH_BASE . '/install');
+
+require(PATH_INSTALL . '/data.inc.php');
+
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -23,7 +23,7 @@ require_once('install/data.inc.php');
 if (!isset($_REQUEST['sure'])) {
 ?>
 <p><a href="<?php
-	echo htmlentities($_SERVER['SCRIPT_NAME']);
+	echo htmlentities(URL_SELF);
 ?>?sure=1">Install all the 
 database tables</a> &#8212; this will wipe all server-level data including <strong>all user accounts</strong>.</p>
 </body>

@@ -20,20 +20,15 @@ function currentValue($name, $default = '')
 }
 
 require('config.inc.php');
+require(PATH_INC . '/db.inc.php');
 
 define('PATH_INSTALL', PATH_BASE . '/install');
-
-if (!(file_exists(PATH_INSTALL) && is_dir(PATH_INSTALL))) {
-	exit('The install directory must exist.');
-}
 
 $configTpl = PATH_INSTALL . '/config.inc.php';
 $configNew = PATH_INC . '/config.inc.php';
 
 $problems = array();
 $installed = false;
-
-require_once(PATH_INC . '/db.inc.php');
 
 $dbFine = false;
 $dbDsn = '';
@@ -133,7 +128,7 @@ if (is_dir(PATH_DOC) && is_readable(PATH_DOC . '/licence.txt') &&
 
 ?>
 
-<form action="<?php echo $_SERVER['SCRIPT_NAME']; ?>" method="post">
+<form action="<?php echo htmlentities(URL_SELF); ?>" method="post">
 <h2>Database</h2>
 <dl>
 	<dt>Type</dt>
