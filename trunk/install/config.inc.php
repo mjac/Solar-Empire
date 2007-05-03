@@ -28,11 +28,11 @@ define('PATH_DOC', PATH_BASE . '/doc');
 define('PATH_SDA', PATH_LIB . '/sda/sda.class.php');
 define('PATH_SAVANT', PATH_LIB . '/Savant2-2.4.3/Savant2.php');
 
-$dir = dirname($_SERVER['SCRIPT_NAME']);
-define('URL_BASE', rtrim($dir, '\\/'));
+// URLS
+define('URL_SELF', $_SERVER['SCRIPT_NAME']);
+define('URL_BASE', rtrim(dirname(URL_SELF), '\\/'));
 define('URL_FULL', isset($_SERVER['HTTP_HOST']) ? 
  ('http://' . $_SERVER['HTTP_HOST'] . URL_BASE) : URL_BASE);
-define('URL_SELF', $_SERVER['SCRIPT_NAME']);
 define('URL_TPL', 'tpl');
 
 ?>
