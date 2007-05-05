@@ -1,25 +1,17 @@
 <?php
 
-function checkOption($name, $var)
-{
-	if (isset($_REQUEST[$name]) && 
-	     strtolower($_REQUEST[$name]) === strtolower($var)) {
-		echo ' selected="selected"';
-	}
+require('config.inc.php');
+
+require(PATH_INC . '/db.inc.php');
+
+if (!class_exists('Savant2')) {
+	require(PATH_SAVANT);
 }
+$tpl = new Savant2();
+$tpl->addPath('template', PATH_INSTALL . '/tpl');
 
-function currentValue($name, $default = '')
-{
-	if (isset($_REQUEST[$name])) {
-	    $default = substr($_REQUEST[$name], 0, 256);
-	}
-
-	if (!empty($default)) {
-		echo ' value="' . htmlentities($default) . '"';
-	}
-}
-
-require('common.inc.php');
+define('PATH_INSTALL', PATH_BASE . '/install');
+define('URL_INSTALL', URL_BASE . '/install');
 
 $configTpl = PATH_INSTALL . '/config.inc.php';
 $configNew = PATH_INC . '/config.inc.php';
@@ -30,6 +22,7 @@ $installed = false;
 $dbFine = false;
 $dbDsn = '';
 
+// Assign useful documents
 if (is_dir(PATH_DOC)) {
 	if (is_readable(PATH_DOC . '/licence.txt')) {
 		$fpReadme = fopen(PATH_DOC . '/readme.txt', 'r');
