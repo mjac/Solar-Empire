@@ -1,22 +1,11 @@
 <?php
 
-require('config.inc.php');
+require('common.inc.php');
 require(PATH_INC . '/db.inc.php');
-
-define('PATH_INSTALL', PATH_BASE . '/install');
 
 require(PATH_INSTALL . '/data.inc.php');
 
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>Solar Empire: System Wars Table Installation</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link rel="stylesheet" type="text/css" media="screen" 
- href="install/clear.css" />
-</head>
-<body>
-<h1>Solar Empire: System Wars Table Installation</h1>
+?><h1>Solar Empire: System Wars Table Installation</h1>
 
 <?php
 
@@ -26,8 +15,6 @@ if (!isset($_REQUEST['sure'])) {
 	echo htmlentities(URL_SELF);
 ?>?sure=1">Install all the 
 database tables</a> &#8212; this will wipe all server-level data including <strong>all user accounts</strong>.</p>
-</body>
-</html>
 <?php
 	exit;
 }
@@ -97,12 +84,4 @@ echo $db->hasError($newAdmin) ? 'Failure' : 'Success';
 ?></p>
 
 <h2>Result</h2>
-<p>The installation has been successful if all the tasks above are completed.   You can now <a href="index.php">sign-in</a> as <em>Admin</em> (empty password) and begin setting up your server.  Ensure you delete the following files, and set the new configuration file to read-only, to prevent a malicious user installing the server again:</p>
-<ul>
-	<li>install/*</li>
-	<li>install</li>
-	<li>install.php</li>
-	<li>install_tables.php</li>
-</ul>
-</body>
-</html>
+<p>The installation has been successful if all the tasks above are completed.   You can now <a href="index.php">sign-in</a> as <em>Admin</em> (empty password) and begin setting up your server.  Ensure you delete the install directory and set the new configuration file to read-only, preventing a malicious user installing the server again.</p>

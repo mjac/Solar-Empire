@@ -33,6 +33,6 @@ define('URL_SELF', $_SERVER['SCRIPT_NAME']);
 define('URL_BASE', rtrim(dirname(URL_SELF), '\\/'));
 define('URL_FULL', isset($_SERVER['HTTP_HOST']) ? 
  ('http://' . $_SERVER['HTTP_HOST'] . URL_BASE) : URL_BASE);
-define('URL_TPL', 'tpl');
+define('URL_TPL', URL_BASE . '/tpl');
 
 ?>

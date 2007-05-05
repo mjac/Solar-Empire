@@ -5,13 +5,13 @@ if (!class_exists('sda')) {
 	require(PATH_SDA);
 }
 
-class sdaSyswars extends sda
+class syswarsSda extends sda
 {
-	function sdaSyswars()
+	function syswarsSda()
 	{
-		$db->varFormat = '[%]'; // [game] for instance
-		$db->rowType = ROW_ASSOC;
-		$db->debug(true);
+		$this->varFormat = '[%]'; // [game] for instance
+		$this->rowType = ROW_ASSOC;
+		$this->debug(true);
 	}
 
 	function newId($table, $field)
@@ -41,6 +41,6 @@ class sdaSyswars extends sda
 	}
 };
 
-$db = new sdaSyswars;
+$db = new syswarsSda;
 
 ?>

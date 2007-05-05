@@ -1,6 +1,10 @@
 <?php
 defined('PATH_SAVANT') || exit;
 
+if (!class_exists('Savant2')) {
+	require(PATH_SAVANT);
+}
+
 $styleDir = '';
 
 $pStyles = array();
@@ -42,10 +46,6 @@ foreach ($pStyles as $try) {
 if (empty($styleDir)) {
 	trigger_error('There are no styles available.', E_USER_ERROR);
 	exit;
-}
-
-if (!class_exists('Savant2')) {
-	require(PATH_SAVANT);
 }
 
 $tpl =& new Savant2();
