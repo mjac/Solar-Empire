@@ -56,8 +56,8 @@ if (is_dir(PATH_DOC)) {
 }
 
 // Initial steps -- check if writable and exit if not
-if (!is_writable($configNew)) {
-	$instProbs[] = 'configWrite';
+if (!(is_writable($configNew) || is_writable(dirname($configNew)))) {
+	$instProbs[] = 'configWrite'; // ensure exists and is writable
 }
 
 if (!empty($instProbs)) {
@@ -143,43 +143,90 @@ if (isset($_REQUEST['dbType'])) {
 if ($dbFine) { // already connected, maybe edited DSN
 	$_SESSION['DSN'] = $dbDsn;
 } elseif (isset($_SESSION['DSN'])) {
-	$dbFine = dbCheck($_SESSION['DSN']);
+	$dbFine = dbCheck($_SESSION['DSN']); // assign dbConnect prob if needed
 }
 
 $tpl->assign('dbConnected', $dbFine);
 
+// Display if not fine or config is not going to be written
+if (!($dbFine && isset($_REQUEST['writeConfig']))) {
+	displayInst();
+}
 
-if (isset($_REQUEST['sure']) && $dbFine) {
-?>
-<h2>Writing configuration</h2>
-<?php
-	if (is_readable($configTpl)) {
-		$fp = fopen($configTpl, 'r');
-		$src = fread($fp, filesize($configTpl));
-		fclose($fp);
-
-		require_once($configTpl);
-
-		if (is_writable($configNew) || !is_file($configNew)) {
-			$fp = fopen($configNew, 'w');
-			fwrite($fp, str_replace(DB_DSN, $dbDsn, $src));
-			fclose($fp);
-?>
-<p>Success! Now install the <a href="install_tables.php">database tables</a>.</p>
-<?php
-		} else {
-			$problems[] = 'Could not save the configuration file; check the ' .
-			 'write permissions on inc/config.inc.php.';
-		}
-	} else {
-		$problems[] = 'Configuration file template does not exist.';
+// Write the configuration file
+if (isset($_REQUEST['writeConfig'])) {
+	$writeConfig = fopen($configNew, 'w');
+	if (!$writeConfig) {
+		$instProbs[] = 'writeConfig';
+		displayInst();
 	}
+
+	fwrite($writeConfig, str_replace(DB_DSN, $dbDsn, $src));
+	fclose($writeConfig);
 }
 
-?><p><input type="submit" value="Try settings" class="button" /><?php
-if ($dbFine) {
+$_SESSION['configWritten'] = true;
+$tpl->assign('configWritten', $_SESSION['configWritten']);
+
+// Install tables
+if (isset($_REQUEST['writeTables'])) {
+	require(PATH_INSTALL . '/data.inc.php');
+
+	// Insert the table schemas
+	$schema = fopen(PATH_INSTALL . '/sql/server.' . strtolower($db->type) .
+	 '.sql', 'r');
+	if (!$schema) {
+		$instProbs[] = 'dbSchema';
+		displayInst();
+	}
+
+	$schemaTables = 0;
+	$schemaTablesDone = 0;
+
+	$currentQuery = '';
+	while ($schemaLine = fgets($schema)) {
+		$currentQuery .= $schemaLine;
+		if ($schemaLine[strlen($schemaLine - 1)] === ';') {
+			$createTable = $db->query($currentQuery);
+			$currentQuery = '';
+
+			++$schemaTables;
+			if (!($db->hasError($createTable) || 
+			     $db->affectedRows($createTable) < 1)) {
+				++$schemaTablesDone;
+			}
+		}
+	}
+
+	// Insert star names
+	$count = 0;
+	$stars = fopen(PATH_INSTALL . '/starnames.txt', 'r');
+	while (!feof($stars)) {
+		$db->query('INSERT INTO starname VALUES (\'%[1]\')', fgets($stars));
+		++$count;
+	}
+
+	// Insert all the tips
+	$tipId = 0;
+	foreach ($dat['tips'] as $tips) {
+		$db->query('INSERT INTO daily_tips (tip_id, tip_content) VALUES (%[1], \'%[2]\')',
+		 ++$tipId, $tips);
+	}
+
+	/*// Option list stuff
+	$count = 0;
+	foreach ($dat['options'] as $option) {
+		$db->query('INSERT INTO option_list (option_name, option_min, option_max, option_desc, option_type) VALUES (\'%[1]\', %[2], %[3], \'%[4]\', %[5])',
+		 $option[0], $option[1], $option[2], $option[3], $option[4]);
+		++$count;
+	}*/
+
+	// Add administrator account
+	$newAdmin = $db->query('INSERT INTO user_accounts (login_id, login_name, passwd, session_exp, session_id, in_game, email_address, signed_up, last_login, login_count, last_ip, num_games_joined, page_views, real_name, total_score, style) VALUES (1, \'Admin\', \'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\', 0, \'\', NULL, \'Tyrant of the Universe\', 1, 1, 1, \'\', 0, 0, \'Game Administrator\', 0, NULL)');
+} else {
+	displayInst();
+}
+
+displayInst();
+
 ?>
-
-<input type="submit" value="Install" class="button" name="sure" /><?php
-}
-?></p>
