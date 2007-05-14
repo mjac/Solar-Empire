@@ -2,6 +2,9 @@
 
 require('config.inc.php');
 
+define('PATH_INSTALL', PATH_BASE . '/install');
+define('URL_INSTALL', URL_BASE . '/install');
+
 require(PATH_INC . '/db.inc.php');
 
 if (!class_exists('Savant2')) {
@@ -10,17 +13,24 @@ if (!class_exists('Savant2')) {
 $tpl = new Savant2();
 $tpl->addPath('template', PATH_INSTALL . '/tpl');
 
-define('PATH_INSTALL', PATH_BASE . '/install');
-define('URL_INSTALL', URL_BASE . '/install');
-
 $configTpl = PATH_INSTALL . '/config.inc.php';
 $configNew = PATH_INC . '/config.inc.php';
 
-$problems = array();
-$installed = false;
+session_start();
 
-$dbFine = false;
-$dbDsn = '';
+$instProbs = array();
+
+function displayInst()
+{
+	global $instProbs, $tpl;
+
+	if (!empty($instProbs)) {
+		$tpl->assign('instProbs', $instProbs);
+	}
+
+	$tpl->display('install.tpl.php');
+	exit;
+}
 
 // Assign useful documents
 if (is_dir(PATH_DOC)) {
@@ -45,14 +55,52 @@ if (is_dir(PATH_DOC)) {
 	}
 }
 
+// Initial steps -- check if writable and exit if not
+if (!is_writable($configNew)) {
+	$instProbs[] = 'configWrite';
+}
+
+if (!empty($instProbs)) {
+	displayInst();
+}
+
+
+// Go back to database stage if required
+if (isset($_REQUEST['dbReset']) && isset($_SESSION['DSN'])) {
+	unset($_SESSION['DSN']);
+}
+
+// Sort out the database
+$dbFine = false;
+$dbDsn = '';
+
+function dbCheck($dbDsn)
+{
+	global $db, $tpl, $instProbs;
+	
+	$dbConnected = $db->connect($dbDsn);
+
+	if (!$db->hasError($dbConnected)) {
+		return true;
+	}
+
+	$instProbs[] = 'dbConnect';
+	$tpl->assign('dbConnError', $db->error($result));
+
+	return false;
+}
+
 if (isset($_REQUEST['dbType'])) {
 	switch ($_REQUEST['dbType']) {
 		case 'mysql':
+			$tpl->assign('dbType', 'MySQL');
 			if (!(isset($_REQUEST['dbHostname']) && 
 			     isset($_REQUEST['dbName']) && 
 			     isset($_REQUEST['dbUsername']) && 
 			     isset($_REQUEST['dbPassword']))) {
-				$problems[] = 'MySQL requires a hostname, database name, username and password.';
+				$tpl->assign('dbRequires', array('hostname', 'database name',
+				 'username', 'password'));
+				$instProbs[] = 'dbRequirements';
 				break;
 			}
 
@@ -62,23 +110,18 @@ if (isset($_REQUEST['dbType'])) {
 			 (isset($_REQUEST['dbPort']) ? (':' . (int)$_REQUEST['dbPort']) : 
 			 '') . '/' . rawurlencode($_REQUEST['dbName']);
 
-			$result = $db->connect($dbDsn);
-
-			if (!$db->hasError($result)) {
-				$dbFine = true;
-				break;
-			}
-
-			$problems[] = 'Could not connect to the database: ' . 
-			 $db->error($result);
+			$dbFine = dbCheck($dbDsn);
 			break;
 
 		case 'postgresql':
+			$tpl->assign('dbType', 'PostgreSQL');
 			if (!(isset($_REQUEST['dbHostname']) && 
 			     isset($_REQUEST['dbName']) && 
 			     isset($_REQUEST['dbUsername']) && 
 			     isset($_REQUEST['dbPassword']))) {
-				$problems[] = 'PostgreSQL requires a hostname, database name, username and password.';
+				$tpl->assign('dbRequires', array('hostname', 'database name',
+				 'username', 'password'));
+				$instProbs[] = 'dbRequirements';
 				break;
 			}
 
@@ -88,28 +131,23 @@ if (isset($_REQUEST['dbType'])) {
 			 (isset($_REQUEST['dbPort']) ? (':' . (int)$_REQUEST['dbPort']) : 
 			 '') . '/' . rawurlencode($_REQUEST['dbName']);
 
-			$result = $db->connect($dbDsn);
-
-			if (!$db->hasError($result)) {
-				$dbFine = true;
-				break;
-			}
-
-			$problems[] = 'Could not connect to the database: ' . 
-			 $db->error($result);
+			$dbFine = dbCheck($dbDsn);
 			break;
 
 		default:
-			$problems[] = 'That database type is not supported.';
+			$instProbs[] = 'dbType';
 	}
 }
 
-if ($dbFine) {
-?>
-<h3>Connected!</h3>
-<p>The generated DSN string is <code><?php echo htmlentities($dbDsn); ?></code></p>
-<?php
+// Need to connect for the next few steps
+if ($dbFine) { // already connected, maybe edited DSN
+	$_SESSION['DSN'] = $dbDsn;
+} elseif (isset($_SESSION['DSN'])) {
+	$dbFine = dbCheck($_SESSION['DSN']);
 }
+
+$tpl->assign('dbConnected', $dbFine);
+
 
 if (isset($_REQUEST['sure']) && $dbFine) {
 ?>
