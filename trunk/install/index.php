@@ -1,232 +1,372 @@
 <?php
 
-require('config.inc.php');
-
-define('PATH_INSTALL', PATH_BASE . '/install');
-define('URL_INSTALL', URL_BASE . '/install');
-
-require(PATH_INC . '/db.inc.php');
-
-if (!class_exists('Savant2')) {
-	require(PATH_SAVANT);
-}
-$tpl = new Savant2();
-$tpl->addPath('template', PATH_INSTALL . '/tpl');
-
-$configTpl = PATH_INSTALL . '/config.inc.php';
-$configNew = PATH_INC . '/config.inc.php';
-
-session_start();
-
-$instProbs = array();
-
-function displayInst()
+/**
+ * Installer for System Wars
+ * @author Michael J.A. Clark <mjac@mjac.co.uk>
+ */ 
+class swInstall
 {
-	global $instProbs, $tpl;
-
-	if (!empty($instProbs)) {
-		$tpl->assign('instProbs', $instProbs);
-	}
-
-	$tpl->display('install.tpl.php');
-	exit;
-}
-
-// Assign useful documents
-if (is_dir(PATH_DOC)) {
-	if (is_readable(PATH_DOC . '/licence.txt')) {
-		$fpReadme = fopen(PATH_DOC . '/readme.txt', 'r');
-		$readme = @fread($fpReadme, filesize(PATH_DOC . '/readme.txt'));
-		fclose($fpReadme);
-
-		if ($readme) {
-			$tpl->assign('readme', $readme);
-		}
-	}
-
-	if (is_readable(PATH_DOC . '/readme.txt')) {
-		$fpLicence = fopen(PATH_DOC . '/licence.txt', 'r');
-		$licence = @fread($fpLicence, filesize(PATH_DOC . '/licence.txt'));
-		fclose($fpLicence);
-
-		if ($licence) {
-			$tpl->assign('licence', $licence);
-		}
-	}
-}
-
-// Initial steps -- check if writable and exit if not
-if (!(is_writable($configNew) || is_writable(dirname($configNew)))) {
-	$instProbs[] = 'configWrite'; // ensure exists and is writable
-}
-
-if (!empty($instProbs)) {
-	displayInst();
-}
-
-
-// Go back to database stage if required
-if (isset($_REQUEST['dbReset']) && isset($_SESSION['DSN'])) {
-	unset($_SESSION['DSN']);
-}
-
-// Sort out the database
-$dbFine = false;
-$dbDsn = '';
-
-function dbCheck($dbDsn)
-{
-	global $db, $tpl, $instProbs;
+	/** Stores the template class */
+	var $tpl;
 	
-	$dbConnected = $db->connect($dbDsn);
+	/** Stores the database class */
+	var $db;
 
-	if (!$db->hasError($dbConnected)) {
+	/** Installer problems */
+	var $problems = array();
+
+	/** Variables each database type requires */
+	var $dbRequires = array(
+		'mysql' => array('hostname', 'database', 'username', 'password'),
+		'postgresql' => array('hostname', 'database', 'username', 'password')
+	);
+
+	/** Initialise */
+	function swInstall()
+	{
+		include('config.inc.php') || exit('Configuration template must exist.');
+		
+		define('PATH_INSTALL', PATH_BASE . '/install');
+		define('URL_INSTALL', URL_BASE . '/install');
+		
+		if (!class_exists('Savant2')) {
+			include(PATH_SAVANT) || exit('Savant2 template system missing.');
+		}
+		$this->tpl = new Savant2();
+		$this->tpl->addPath('template', PATH_INSTALL . '/tpl');
+
+		if (!include(PATH_INC . '/db.inc.php')) {
+			$this->problems[] = 'dbInclude';
+			$this->display();
+			return;
+		}
+
+		session_start();
+	}
+
+	/** Display and exit */
+	function display()
+	{
+		if (!empty($this->problems)) {
+			$this->tpl->assign('instProbs', $this->problems);
+		}
+		$this->tpl->display('install.tpl.php');
+		exit;
+	}
+
+
+
+	/** Assign the readme to the template if it exists */
+	function readme()
+	{
+		if (!is_readable(PATH_DOC . '/readme.txt')) {
+			return;
+		}
+
+		$fpReadme = fopen(PATH_DOC . '/readme.txt', 'r');
+		if ($fpReadme) {
+			$readme = fread($fpReadme, filesize(PATH_DOC . '/readme.txt'));
+			fclose($fpReadme);
+		
+			if ($readme) {
+				$this->tpl->assign('readme', $readme);
+			}
+		}
+	}
+
+	/** Perform standard file checks on required installer files */
+	function fileCheck()
+	{
+		$probCount = count($this->problems);
+
+		// Only allow if writable or directory writable
+		if (!(is_writable(PATH_INC . '/config.inc.php') ||
+		     is_writable(PATH_INC))) {
+			$this->problems[] = 'configWrite';
+		}
+
+		return $probCount === count($this->problems);
+	}
+
+
+
+	/** Make sure licence has been accepted */
+	function licenceCheck()
+	{
+		if (isset($_REQUEST['licence'])) {
+			switch ($_REQUEST['licence']) {
+				case 'accept':
+					$_SESSION['licenceAccept'] = true;
+					return true;
+				case 'reject':
+					$this->licenceReset();
+					return false;
+			}
+		}
+
+		// Ensure they accept the licence
+		$licenceOkay = false;
+		if (is_readable(PATH_DOC . '/licence.txt')) {
+			$fpLicence = fopen(PATH_DOC . '/licence.txt', 'r');
+	
+			if ($fplicence) {
+				$this->tpl->assign('licence', fread($fpLicence,
+				 filesize(PATH_DOC . '/licence.txt'));
+				fclose($fpLicence);
+				$licenceOkay = true;
+			}
+		}
+
+		// Could not open and assign the licence
+		if (!$licenseOkay) {
+			$this->problems[] = 'licenceOpen';
+		}
+
+		return false;
+	}
+
+	/** Reset licence state */
+	function licenceReset()
+	{
+		unset($_SESSION['licenceAccept']);
+		unset($_REQUEST['licence']);
+	}
+
+
+
+	/** Check for submitted database information */
+	function dbCheck()
+	{
+		if (isset($_REQUEST['db'])) {
+			if (isset($_REQUEST['db']['reset'])) {
+				$this->dbReset();
+			}
+
+			$this->dbTypeCheck();
+			$this->dbPrefix();
+		}
+
+		if (isset($_SESSION['DSN'])) {
+			$dbConnect = $this->db->connect($_SESSION['DSN']);
+			return true;
+		}
+
+		return false;
+	}
+
+	/** Reset database submission */
+	function dbReset()
+	{
+		unset($_SESSION['DSN']);
+		unset($_SESSION['dbPrefix']);
+		unset($_REQUEST['db']);
+	}
+
+	/** Connect to a database or assign errors */
+	function dbConnect($dbDsn)
+	{
+		$dbConnected = $this->db->connect($dbDsn);
+	
+		if ($this->db->hasError($dbConnected)) {
+			$this->tpl->assign('dbConnectError', $this->db->error($result));
+			return false;
+		}
+
+		$this->db->close();
 		return true;
 	}
 
-	$instProbs[] = 'dbConnect';
-	$tpl->assign('dbConnError', $db->error($result));
+	/** Ensure all variables are provided */
+	function dbRequireCheck($dbType)
+	{
+		if (!(isset($_REQUEST['db']) && isset($dbRequires[$dbType]))) {
+			$this->problems[] = 'dbRequirements';
+			return false;
+		}
 
-	return false;
-}
+		$reqMissing = array();
+		foreach ($dbRequires[$dbType] as $reqName) {
+			if (!isset($_REQUEST['db'][$reqName])) {
+				$reqMissing[] = $reqName;
+			}		
+		}
+		
+		if (!empty($reqMissing)) {	
+			$this->problems[] = 'dbRequirements';
+			$tpl->assign('dbRequires', $reqMissing);
+			return false;
+		}
 
-if (isset($_REQUEST['dbType'])) {
-	switch ($_REQUEST['dbType']) {
-		case 'mysql':
-			$tpl->assign('dbType', 'MySQL');
-			if (!(isset($_REQUEST['dbHostname']) && 
-			     isset($_REQUEST['dbName']) && 
-			     isset($_REQUEST['dbUsername']) && 
-			     isset($_REQUEST['dbPassword']))) {
-				$tpl->assign('dbRequires', array('hostname', 'database name',
-				 'username', 'password'));
-				$instProbs[] = 'dbRequirements';
+		return true;
+	}
+
+	/** Verifies database type is valid and can connect */
+	function dbTypeCheck()
+	{
+		if (!isset($_REQUEST['db']['type'])) {
+			return false;
+		}
+
+		$dbDsn = '';
+		switch ($_REQUEST['db']['type']) {
+			case 'mysql':
+				$tpl->assign('dbType', 'MySQL');
+				if (!$this->dbRequireCheck($_REQUEST['db']['type'])) {
+					break;
+				}
+	
+				$dbDsn = 'mysql://' . 
+				 rawurlencode($_REQUEST['db']['username']) . ':' .
+				 rawurlencode($_REQUEST['db']['password']) . '@' . 
+				 rawurlencode($_REQUEST['db']['hostname']) . 
+				 (isset($_REQUEST['db']['port']) ? (':' .
+				 (int)$_REQUEST['db']['port']) : '') . '/' .
+				 rawurlencode($_REQUEST['db']['database']);
+
+				if (!$this->dbConnect($dbDsn)) {
+					$dbDsn = '';
+				}
 				break;
-			}
+	
+			case 'postgresql':
+				$tpl->assign('dbType', 'PostgreSQL');
+				if (!$this->dbRequireCheck($_REQUEST['db']['type'])) {
+					break;
+				}
 
-			$dbDsn = 'mysql://' . rawurlencode($_REQUEST['dbUsername']) .
-			 ':' . rawurlencode($_REQUEST['dbPassword']) . '@' . 
-			 rawurlencode($_REQUEST['dbHostname']) . 
-			 (isset($_REQUEST['dbPort']) ? (':' . (int)$_REQUEST['dbPort']) : 
-			 '') . '/' . rawurlencode($_REQUEST['dbName']);
+				$dbDsn = 'postgresql://' . 
+				 rawurlencode($_REQUEST['db']['username']) . ':' .
+				 rawurlencode($_REQUEST['db']['password']) . '@' . 
+				 rawurlencode($_REQUEST['db']['hostname']) . 
+				 (isset($_REQUEST['db']['port']) ? (':' .
+				 (int)$_REQUEST['db']['port']) : '') . '/' .
+				 rawurlencode($_REQUEST['db']['database']);
 
-			$dbFine = dbCheck($dbDsn);
-			break;
-
-		case 'postgresql':
-			$tpl->assign('dbType', 'PostgreSQL');
-			if (!(isset($_REQUEST['dbHostname']) && 
-			     isset($_REQUEST['dbName']) && 
-			     isset($_REQUEST['dbUsername']) && 
-			     isset($_REQUEST['dbPassword']))) {
-				$tpl->assign('dbRequires', array('hostname', 'database name',
-				 'username', 'password'));
-				$instProbs[] = 'dbRequirements';
+				if (!$this->dbConnect($dbDsn)) {
+					$dbDsn = '';
+				}
 				break;
+
+			default:
+				$this->problems[] = 'dbType';
+		}
+
+		if (empty($dbDsn)) {
+			$this->problems[] = 'dbConnect';
+			return false;
+		}
+
+		$_SESSION['DSN'] = $dbDsn;
+		return true;
+	}
+
+	/** Assign some kind of database table prefix */
+	function dbPrefix()
+	{
+		if (isset($_REQUEST['db']) && isset($_REQUEST['db']['prefix'])) {
+			if (preg_match('/[a-z_]/i', $_REQUEST['db']['prefix'])) {
+				$_SESSION['dbPrefix'] = $_REQUEST['db']['prefix'];
+				return true;
 			}
+			$this->problems[] = 'dbPrefix';
+		}
 
-			$dbDsn = 'postgresql://' . rawurlencode($_REQUEST['dbUsername']) .
-			 ':' . rawurlencode($_REQUEST['dbPassword']) . '@' . 
-			 rawurlencode($_REQUEST['dbHostname']) . 
-			 (isset($_REQUEST['dbPort']) ? (':' . (int)$_REQUEST['dbPort']) : 
-			 '') . '/' . rawurlencode($_REQUEST['dbName']);
+		// Blank if invalid or missing
+		if (!isset($_SESSION['dbPrefix'])) {
+			$_SESSION['dbPrefix'] = '';
+			return false;
+		}
 
-			$dbFine = dbCheck($dbDsn);
-			break;
-
-		default:
-			$instProbs[] = 'dbType';
-	}
-}
-
-// Need to connect for the next few steps
-if ($dbFine) { // already connected, maybe edited DSN
-	$_SESSION['DSN'] = $dbDsn;
-} elseif (isset($_SESSION['DSN'])) {
-	$dbFine = dbCheck($_SESSION['DSN']); // assign dbConnect prob if needed
-}
-
-$tpl->assign('dbConnected', $dbFine);
-
-// Display if not fine or config is not going to be written
-if (!($dbFine && isset($_REQUEST['writeConfig']))) {
-	displayInst();
-}
-
-// Write the configuration file
-if (isset($_REQUEST['writeConfig'])) {
-	$writeConfig = fopen($configNew, 'w');
-	if (!$writeConfig) {
-		$instProbs[] = 'writeConfig';
-		displayInst();
+		return true;
 	}
 
-	fwrite($writeConfig, str_replace(DB_DSN, $dbDsn, $src));
-	fclose($writeConfig);
-}
 
-$_SESSION['configWritten'] = true;
-$tpl->assign('configWritten', $_SESSION['configWritten']);
 
-// Install tables
-if (isset($_REQUEST['writeTables'])) {
-	require(PATH_INSTALL . '/data.inc.php');
-
-	// Insert the table schemas
-	$schema = fopen(PATH_INSTALL . '/sql/server.' . strtolower($db->type) .
-	 '.sql', 'r');
-	if (!$schema) {
-		$instProbs[] = 'dbSchema';
-		displayInst();
+	function configCheck()
+	{
+		// Write the configuration file
+		if (isset($_REQUEST['configWrite'])) {
+			$writeConfig = fopen($configNew, 'w');
+			if (!$writeConfig) {
+				$this->problems[] = 'configWrite';
+				displayInst();
+			}
+		
+			fwrite($writeConfig, str_replace(DB_DSN, $dbDsn, $src));
+			fclose($writeConfig);
+		}
+		
+		$_SESSION['configWritten'] = true;
+		$tpl->assign('configWritten', $_SESSION['configWritten']);
 	}
 
-	$schemaTables = 0;
-	$schemaTablesDone = 0;
-
-	$currentQuery = '';
-	while ($schemaLine = fgets($schema)) {
-		$currentQuery .= $schemaLine;
-		if ($schemaLine[strlen($schemaLine - 1)] === ';') {
-			$createTable = $db->query($currentQuery);
-			$currentQuery = '';
-
-			++$schemaTables;
-			if (!($db->hasError($createTable) || 
-			     $db->affectedRows($createTable) < 1)) {
-				++$schemaTablesDone;
+	function tables()
+	{
+		require(PATH_INSTALL . '/data.inc.php');
+	
+		// Insert the table schemas
+		$schema = fopen(PATH_INSTALL . '/sql/server.' . strtolower($db->type) .
+		 '.sql', 'r');
+		if (!$schema) {
+			$this->problems[] = 'dbSchema';
+			displayInst();
+		}
+	
+		$schemaTables = 0;
+		$schemaTablesDone = 0;
+	
+		$currentQuery = '';
+		while (!feof($schema)) {
+			$currentQuery .= fgets($schema);
+			if ($currentQuery[strlen($currentQuery) - 1] === ';') {
+				$createTable = $db->query($currentQuery);
+				$currentQuery = '';
+	
+				++$schemaTables;
+				if (!($db->hasError($createTable) || 
+				     $db->affectedRows($createTable) < 1)) {
+					++$schemaTablesDone;
+				}
 			}
 		}
+	
+		// Insert star names
+		$starNames = 0;
+		$starNamesDone = 0;
+		$stars = fopen(PATH_INSTALL . '/starnames.txt', 'r');
+		while (!feof($stars)) {
+			++$starNames;
+			$starName = $db->query('INSERT INTO [server]starname VALUES (%[1])',
+			 trim(fgets($stars)));
+			if (!($db->hasError($starName) || 
+			     $db->affectedRows($starName) < 1)) {
+				++$starNamesDone;
+			}
+		}
+	
+		// Insert all the tips
+		$tipNo = 0;
+		$tipNoDone = 0;
+		foreach ($dat['tips'] as $tipContent) {
+			$tipQuery = $db->query('INSERT INTO [server]tip (tip_id, tip_content) VALUES (%[1], \'%[2]\')',
+			 ++$tipNo, $tipContent);
+			if (!($db->hasError($starName) || 
+			     $db->affectedRows($starName) < 1)) {
+				++$tipNoDone;
+			}
+		}
+	
+		// Add administrator account
+		if (!class_exists('sha256')) {
+			require(PATH_LIB . '/sha256/sha256.class.php');
+		}
+		require(PATH_LIB . '/sha256/sha256.class.php');
+	
+		$newAdmin = $db->query('INSERT INTO [server]account (login_id, login_name, passwd, session_exp, session_id, in_game, email_address, signed_up, last_login, login_count, last_ip, num_games_joined, page_views, real_name, total_score, style) VALUES (1, \'Admin\', 0x' . sha256::hash() . ', 0, \'\', NULL, \'Tyrant of the Universe\', 1, 1, 1, \'\', 0, 0, \'Game administrator\', 0, NULL)');
 	}
-
-	// Insert star names
-	$count = 0;
-	$stars = fopen(PATH_INSTALL . '/starnames.txt', 'r');
-	while (!feof($stars)) {
-		$db->query('INSERT INTO starname VALUES (\'%[1]\')', fgets($stars));
-		++$count;
-	}
-
-	// Insert all the tips
-	$tipId = 0;
-	foreach ($dat['tips'] as $tips) {
-		$db->query('INSERT INTO daily_tips (tip_id, tip_content) VALUES (%[1], \'%[2]\')',
-		 ++$tipId, $tips);
-	}
-
-	/*// Option list stuff
-	$count = 0;
-	foreach ($dat['options'] as $option) {
-		$db->query('INSERT INTO option_list (option_name, option_min, option_max, option_desc, option_type) VALUES (\'%[1]\', %[2], %[3], \'%[4]\', %[5])',
-		 $option[0], $option[1], $option[2], $option[3], $option[4]);
-		++$count;
-	}*/
-
-	// Add administrator account
-	$newAdmin = $db->query('INSERT INTO user_accounts (login_id, login_name, passwd, session_exp, session_id, in_game, email_address, signed_up, last_login, login_count, last_ip, num_games_joined, page_views, real_name, total_score, style) VALUES (1, \'Admin\', \'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\', 0, \'\', NULL, \'Tyrant of the Universe\', 1, 1, 1, \'\', 0, 0, \'Game Administrator\', 0, NULL)');
-} else {
-	displayInst();
 }
 
-displayInst();
+/*
 
+*/
 ?>

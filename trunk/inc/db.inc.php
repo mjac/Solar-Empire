@@ -5,9 +5,9 @@ if (!class_exists('sda')) {
 	require(PATH_SDA);
 }
 
-class syswarsSda extends sda
+class swDatabase extends sda
 {
-	function syswarsSda()
+	function swDatabase()
 	{
 		$this->varFormat = '[%]'; // [game] for instance
 		$this->rowType = ROW_ASSOC;
@@ -41,6 +41,6 @@ class syswarsSda extends sda
 	}
 };
 
-$db = new syswarsSda;
+$db = new swDatabase;
 
 ?>
