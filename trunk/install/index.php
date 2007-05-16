@@ -54,24 +54,33 @@ class swInstall
 		exit;
 	}
 
+	/** Process install */
+	function process()
+	{
+		$this->readme();
+	}
+
 
 
 	/** Assign the readme to the template if it exists */
 	function readme()
 	{
 		if (!is_readable(PATH_DOC . '/readme.txt')) {
-			return;
+			return false;
 		}
 
-		$fpReadme = fopen(PATH_DOC . '/readme.txt', 'r');
+		$fpReadme = fopen(PATH_DOC . '/readme.txt', 'rb');
 		if ($fpReadme) {
 			$readme = fread($fpReadme, filesize(PATH_DOC . '/readme.txt'));
 			fclose($fpReadme);
 		
 			if ($readme) {
 				$this->tpl->assign('readme', $readme);
+				return true;
 			}
 		}
+
+		return false;
 	}
 
 	/** Perform standard file checks on required installer files */
@@ -107,11 +116,11 @@ class swInstall
 		// Ensure they accept the licence
 		$licenceOkay = false;
 		if (is_readable(PATH_DOC . '/licence.txt')) {
-			$fpLicence = fopen(PATH_DOC . '/licence.txt', 'r');
+			$fpLicence = fopen(PATH_DOC . '/licence.txt', 'rb');
 	
 			if ($fplicence) {
 				$this->tpl->assign('licence', fread($fpLicence,
-				 filesize(PATH_DOC . '/licence.txt'));
+				 filesize(PATH_DOC . '/licence.txt')));
 				fclose($fpLicence);
 				$licenceOkay = true;
 			}
@@ -286,7 +295,7 @@ class swInstall
 	{
 		// Write the configuration file
 		if (isset($_REQUEST['configWrite'])) {
-			$writeConfig = fopen($configNew, 'w');
+			$writeConfig = fopen($configNew, 'wb');
 			if (!$writeConfig) {
 				$this->problems[] = 'configWrite';
 				displayInst();
@@ -305,8 +314,8 @@ class swInstall
 		require(PATH_INSTALL . '/data.inc.php');
 	
 		// Insert the table schemas
-		$schema = fopen(PATH_INSTALL . '/sql/server.' . strtolower($db->type) .
-		 '.sql', 'r');
+		$schema = fopen(PATH_INSTALL . '/sql/server.' .
+		 strtolower($db->type) . '.sql', 'rb');
 		if (!$schema) {
 			$this->problems[] = 'dbSchema';
 			displayInst();
@@ -333,7 +342,7 @@ class swInstall
 		// Insert star names
 		$starNames = 0;
 		$starNamesDone = 0;
-		$stars = fopen(PATH_INSTALL . '/starnames.txt', 'r');
+		$stars = fopen(PATH_INSTALL . '/starnames.txt', 'rb');
 		while (!feof($stars)) {
 			++$starNames;
 			$starName = $db->query('INSERT INTO [server]starname VALUES (%[1])',
