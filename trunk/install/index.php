@@ -424,8 +424,8 @@ class swInstall
 			foreach ($dat['tips'] as $tipContent) {
 				$tipQuery = $this->db->query('INSERT INTO [server]tip (tip_id, tip_content) VALUES (%[1], \'%[2]\')',
 				 ++$tipNo, $tipContent);
-				if (!($this->db->hasError($starName) || 
-				     $this->db->affectedRows($starName) < 1)) {
+				if (!($this->db->hasError($tipQuery) || 
+				     $this->db->affectedRows($tipQuery) < 1)) {
 					++$tipNoDone;
 				}
 			}
@@ -442,7 +442,6 @@ class swInstall
 		if (!class_exists('sha256')) {
 			require(PATH_LIB . '/sha256/sha256.class.php');
 		}
-		require(PATH_LIB . '/sha256/sha256.class.php');
 
 		$delAccount = $this->db->query('DELETE FROM [server]account');
 		$newAdmin = $this->db->query('INSERT INTO [server]account (login_id, login_name, passwd, session_exp, session_id, in_game, email_address, signed_up, last_login, login_count, last_ip, num_games_joined, page_views, real_name, total_score, style) VALUES (1, \'Admin\', 0x' . sha256::hash($_REQUEST['adminPassword']) . ', 0, \'\', NULL, \'Tyrant of the Universe\', 1, 1, 1, \'\', 0, 0, \'Game administrator\', 0, NULL)');
