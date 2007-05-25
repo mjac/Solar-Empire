@@ -3,11 +3,12 @@ class_exists('Savant2') || exit;
 
 $insDbProbs = array(
 	'dbType' => 'That database type is not supported',
-	'dbDetails' => 'These additional details are required' .
-	 implode(', ', $this->dbRequires),
+	'dbDetails' => 'Additional details are required' .
+	 (isset($this->dbRequires) ? (': ' .
+	 implode(', ', $this->dbRequires)) : ''),
 	'dbConnect' => 'Could not connect to the database using the details you provided' .
 	 (isset($this->dbConnectErr) ? ('; the error reported was ' . 
-	 $this->dbConnectErr) : ll),
+	 $this->dbConnectErr) : ''),
 	'dbPrefix' => 'That database prefix is invalid, use only alphanumeric characters and underscores'
 );
 
@@ -34,22 +35,22 @@ if (isset($this->instProbs) && !empty($this->instProbs)) {
 <form action="<?php $this->eprint(URL_SELF); ?>#insDbForm" method="post">
 	<dl>
 		<dt><label for="dbType">Type</label></dt>
-		<dd><select name="dbType">
+		<dd><select name="dbType" id="dbType">
 			<option value="mysql">MySQL</option>
 			<option value="postgresql">PostgreSQL</option>
 		</select></dd>
 	
 		<dt><label for="dbHostname">Hostname or file</label></dt>
-		<dd><input name="dbHostname"<?php currentValue('dbHostname', 'localhost'); ?> class="text" /></dd>
+		<dd><input name="dbHostname" id="dbHostname" class="text" /></dd>
 	
 		<dt><label for="dbName">Name</label></dt>
-		<dd><input name="dbName"<?php currentValue('dbName', 'solaremp'); ?> class="text" /></dd>
+		<dd><input name="dbName" id="dbName" class="text" /></dd>
 	
 		<dt><label for="dbUsername">Username</label></dt>
-		<dd><input name="dbUsername"<?php currentValue('dbUsername'); ?> class="text" /></dd>
+		<dd><input name="dbUsername" id="dbUsername" class="text" /></dd>
 	
 		<dt><label for="dbPassword">Password</label></dt>
-		<dd><input name="dbPassword"<?php currentValue('dbPassword'); ?> class="text" /></dd>
+		<dd><input name="dbPassword" id="dbPassword" class="text" /></dd>
 
 		<dt><input type="submit" value="Try configuration" class="button" /></dt>
 	</dl>
