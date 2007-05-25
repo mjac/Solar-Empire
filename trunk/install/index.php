@@ -184,30 +184,6 @@ class swInstall
 		return true;
 	}
 
-	/** Ensure all variables are provided */
-	function dbRequireCheck($dbType)
-	{
-		if (!(isset($_REQUEST['db']) && isset($dbRequires[$dbType]))) {
-			$this->problems[] = 'dbType';
-			return false;
-		}
-
-		$reqMissing = array();
-		foreach ($dbRequires[$dbType] as $reqName) {
-			if (!isset($_REQUEST['db'][$reqName])) {
-				$reqMissing[] = $reqName;
-			}		
-		}
-		
-		if (!empty($reqMissing)) {	
-			$this->problems[] = 'dbDetails';
-			$tpl->assign('dbRequires', $reqMissing);
-			return false;
-		}
-
-		return true;
-	}
-
 	/** Verifies database type is valid and can connect */
 	function dbTypeCheck()
 	{
@@ -266,6 +242,30 @@ class swInstall
 		}
 
 		$_SESSION['DSN'] = $dbDsn;
+		return true;
+	}
+
+	/** Ensure all variables are provided */
+	function dbRequireCheck($dbType)
+	{
+		if (!isset($this->dbRequires[$dbType])) {
+			$this->problems[] = 'dbType';
+			return false;
+		}
+
+		$reqMissing = array();
+		foreach ($this->dbRequires[$dbType] as $reqName) {
+			if (!isset($_REQUEST['db'][$reqName])) {
+				$reqMissing[] = $reqName;
+			}		
+		}
+		
+		if (!empty($reqMissing)) {	
+			$this->problems[] = 'dbDetails';
+			$tpl->assign('dbRequires', $reqMissing);
+			return false;
+		}
+
 		return true;
 	}
 
