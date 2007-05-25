@@ -1,12 +1,12 @@
-DROP TABLE IF EXISTS PREFIXaccount;
-DROP TABLE IF EXISTS PREFIXforum;
-DROP TABLE IF EXISTS PREFIXgame;
-DROP TABLE IF EXISTS PREFIXhistory;
-DROP TABLE IF EXISTS PREFIXpoption;
-DROP TABLE IF EXISTS PREFIXstarname;
-DROP TABLE IF EXISTS PREFIXtip;
+DROP TABLE IF EXISTS [server]account;
+DROP TABLE IF EXISTS [server]forum;
+DROP TABLE IF EXISTS [server]game;
+DROP TABLE IF EXISTS [server]history;
+DROP TABLE IF EXISTS [server]poption;
+DROP TABLE IF EXISTS [server]starname;
+DROP TABLE IF EXISTS [server]tip;
 
-CREATE TABLE PREFIXaccount (
+CREATE TABLE [server]account (
   acc_id int unsigned NOT NULL,
   acc_handle varchar(32) NOT NULL default '',
   acc_password binary(32) NOT NULL default 0,
@@ -22,7 +22,7 @@ CREATE TABLE PREFIXaccount (
   UNIQUE KEY acc_handle (acc_handle)
 ) TYPE=MyISAM;
 
-CREATE TABLE PREFIXforum (
+CREATE TABLE [server]forum (
   game_id tinyint unsigned NULL default NULL,
   msg_id int unsigned NOT NULL default 0,
   msg_sent datetime NOT NULL default 0,
@@ -32,7 +32,7 @@ CREATE TABLE PREFIXforum (
   PRIMARY KEY (message_id)
 ) TYPE=MyISAM;
 
-CREATE TABLE PREFIXgame (
+CREATE TABLE [server]game (
   game_id varchar(16) NOT NULL default '',
   game_name varchar(32) NOT NULL default '',
   game_admin int unsigned NOT NULL default 1,
@@ -50,7 +50,7 @@ CREATE TABLE PREFIXgame (
   PRIMARY KEY (db_name)
 ) TYPE=MyISAM;
 
-CREATE TABLE PREFIXhistory (
+CREATE TABLE [server]history (
   acc_id int unsigned NOT NULL,
   game_id tinyint unsigned NULL default NULL,
   hist_date datetime NOT NULL default 0,
@@ -58,7 +58,7 @@ CREATE TABLE PREFIXhistory (
   hist_ip varchar(16) NOT NULL default ''
 ) TYPE=MyISAM;
 
-CREATE TABLE PREFIXpoption (
+CREATE TABLE [server]poption (
   opt_name varchar(32) NOT NULL default '',
   opt_min int NOT NULL default 0,
   opt_max int NOT NULL default 0,
@@ -67,11 +67,11 @@ CREATE TABLE PREFIXpoption (
   PRIMARY KEY  (option_name)
 ) TYPE=MyISAM;
 
-CREATE TABLE PREFIXstarname (
+CREATE TABLE [server]starname (
   star_name varchar(32) NOT NULL
 ) TYPE=MyISAM;
 
-CREATE TABLE PREFIXtip (
+CREATE TABLE [server]tip (
   tip_id smallint unsigned NOT NULL,
   tip_content text NOT NULL,
   PRIMARY KEY (tip_id)

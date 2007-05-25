@@ -412,7 +412,7 @@ class swInstall
 			}
 		}
 
-		if ($starNames && $starNames === $starNamesDone) {
+		if (!($starNames && $starNames === $starNamesDone)) {
 			$this->problems[] = 'tableStarNames';
 		}
 
@@ -432,7 +432,7 @@ class swInstall
 				}
 			}
 	
-			if ($tipNo && $tipNo === $tipNoDone) {
+			if (!($tipNo && $tipNo === $tipNoDone)) {
 				$this->problems[] = 'tableTips';
 			}
 		} else {
