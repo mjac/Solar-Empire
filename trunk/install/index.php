@@ -52,8 +52,12 @@ class swInstall
 
 		if ($this->licenceCheck()) {
 			if ($this->dbCheck()) {
-				if (!($this->tableStructure() && $this->tableData())) {
-					$stage = 'schema';
+				if ($this->configCheck()) {
+					if (!($this->tableStructure() && $this->tableData())) {
+						$stage = 'schema';
+					}
+				} else {
+					$stage = 'config';
 				}
 			} else {
 				$stage = 'database';
@@ -71,6 +75,7 @@ class swInstall
 	}
 
 
+	// LICENCE
 
 	/** Assign the readme to the template if it exists */
 	function readme()
@@ -93,8 +98,6 @@ class swInstall
 		return false;
 	}
 
-
-
 	/** Make sure licence has been accepted */
 	function licenceCheck()
 	{
@@ -104,6 +107,8 @@ class swInstall
 					$_SESSION['licenceAccept'] = true;
 					return true;
 				case 'reject':
+					$this->configReset();
+					$this->dbReset();
 					$this->licenceReset();
 					return false;
 			}
@@ -142,12 +147,14 @@ class swInstall
 	}
 
 
+	// DATABASE
 
 	/** Check for submitted database information */
 	function dbCheck()
 	{
 		if (isset($_REQUEST['db'])) {
 			if (isset($_REQUEST['db']['reset'])) {
+				$this->configReset();
 				$this->dbReset();
 			}
 
@@ -291,28 +298,35 @@ class swInstall
 	}
 
 
+	// CONFIGURATION
 
 	/** Write configuration */
 	function configCheck()
 	{
-		// Write the configuration file
 		if (isset($_REQUEST['configWrite'])) {
-			$writeConfig = fopen($configNew, 'wb');
+			$writeConfig = fopen(PATH_INC . '/config.inc.php', 'wb');
 			if (!$writeConfig) {
 				$this->problems[] = 'configWrite';
-				displayInst();
+				return false;
 			}
-		
+
 			fwrite($writeConfig, str_replace(DB_DSN, $dbDsn, $src));
 			fclose($writeConfig);
 		}
-		
+
 		$_SESSION['configWritten'] = true;
-		$this->tpl->assign('configWritten', $_SESSION['configWritten']);
+		return true;
+	}
+
+	/** Reset configuration */
+	function configReset()
+	{
+		unset($_SESSION['configWritten']);
+		unlink(PATH_INC . '/config.inc.php');
 	}
 
 
-
+	// TABLES
 
 	/** Perform database table and structure installation */
 	function tableCheck()
@@ -332,8 +346,8 @@ class swInstall
 		$schema = fopen(PATH_INSTALL . '/sql/server.' .
 		 strtolower($this->db->type) . '.sql', 'rb');
 		if (!$schema) {
-			$this->problems[] = 'dbSchema';
-			displayInst();
+			$this->problems[] = 'dbSchemaFile';
+			return false;
 		}
 	
 		$schemaTables = 0;
@@ -353,6 +367,13 @@ class swInstall
 				}
 			}
 		}
+
+		if ($schemaTables !== $schemaTablesDone) {
+			$this->problems[] = 'dbSchemaCreate';
+			return false;
+		}
+
+		return true;
 	}
 
 	/** Install database table data */
