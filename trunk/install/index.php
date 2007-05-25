@@ -257,6 +257,7 @@ class swInstall
 
 			default:
 				$this->problems[] = 'dbType';
+				return false;
 		}
 
 		if (empty($dbDsn)) {
