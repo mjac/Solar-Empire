@@ -218,7 +218,7 @@ class swInstall
 		$dbDsn = '';
 		switch ($_REQUEST['db']['type']) {
 			case 'mysql':
-				$tpl->assign('dbType', 'MySQL');
+				$this->tpl->assign('dbType', 'MySQL');
 				if (!$this->dbRequireCheck($_REQUEST['db']['type'])) {
 					break;
 				}
@@ -237,7 +237,7 @@ class swInstall
 				break;
 	
 			case 'postgresql':
-				$tpl->assign('dbType', 'PostgreSQL');
+				$this->tpl->assign('dbType', 'PostgreSQL');
 				if (!$this->dbRequireCheck($_REQUEST['db']['type'])) {
 					break;
 				}
@@ -306,7 +306,7 @@ class swInstall
 		}
 		
 		$_SESSION['configWritten'] = true;
-		$tpl->assign('configWritten', $_SESSION['configWritten']);
+		$this->tpl->assign('configWritten', $_SESSION['configWritten']);
 	}
 
 
