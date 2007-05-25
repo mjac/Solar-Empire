@@ -113,7 +113,7 @@ class swInstall
 		if (is_readable(PATH_DOC . '/licence.txt')) {
 			$fpLicence = fopen(PATH_DOC . '/licence.txt', 'rb');
 	
-			if ($fplicence) {
+			if ($fpLicence) {
 				$this->tpl->assign('licence', fread($fpLicence,
 				 filesize(PATH_DOC . '/licence.txt')));
 				fclose($fpLicence);
@@ -122,7 +122,7 @@ class swInstall
 		}
 
 		// Could not open and assign the licence
-		if (!$licenseOkay) {
+		if (!$licenceOkay) {
 			$this->problems[] = 'licenceOpen';
 		}
 
