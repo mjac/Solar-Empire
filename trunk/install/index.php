@@ -71,6 +71,7 @@ class swInstall
 			$this->tpl->assign('instProbs', $this->problems);
 		}
 
+		$this->tpl->assign('stage', $stage);
 		$this->tpl->display($stage . '.tpl.php');
 	}
 
