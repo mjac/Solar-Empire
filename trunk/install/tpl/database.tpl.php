@@ -41,19 +41,19 @@ if (isset($this->instProbs) && !empty($this->instProbs)) {
 		</select></dd>
 	
 		<dt><label for="dbHostname">Hostname or file</label></dt>
-		<dd><input name="db[hostname]" id="dbHostname" class="text" value="localhost" /></dd>
+		<dd><input type="text" name="db[hostname]" id="dbHostname" class="text" value="localhost" /></dd>
 	
 		<dt><label for="dbDatabase">Database</label></dt>
-		<dd><input name="db[database]" id="dbDatabase" class="text" /></dd>
+		<dd><input type="text" name="db[database]" id="dbDatabase" class="text" /></dd>
 	
 		<dt><label for="dbUsername">Username</label></dt>
-		<dd><input name="db[username]" id="dbUsername" class="text" /></dd>
+		<dd><input type="text" name="db[username]" id="dbUsername" class="text" /></dd>
 	
 		<dt><label for="dbPassword">Password</label></dt>
-		<dd><input name="db[password]" id="dbPassword" class="text" /></dd>
+		<dd><input type="text" name="db[password]" id="dbPassword" class="text" /></dd>
 	
 		<dt><label for="dbPrefix">Table prefix</label></dt>
-		<dd><input name="db[prefix]" id="dbPrefix" class="text" value="sw_" /></dd>
+		<dd><input type="text" name="db[prefix]" id="dbPrefix" class="text" value="sw_" /></dd>
 
 		<dt><input type="submit" value="Connect to database" class="button" /></dt>
 	</dl>

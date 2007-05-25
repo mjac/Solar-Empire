@@ -53,8 +53,8 @@ class swInstall
 		if ($this->licenceCheck()) {
 			if ($this->dbCheck()) {
 				if ($this->configCheck()) {
-					if (!($this->tableStructure() && $this->tableData())) {
-						$stage = 'schema';
+					if (!$this->tableCheck()) {
+						$stage = 'tables';
 					}
 				} else {
 					$stage = 'config';
@@ -346,7 +346,7 @@ class swInstall
 		$schema = fopen(PATH_INSTALL . '/sql/server.' .
 		 strtolower($this->db->type) . '.sql', 'rb');
 		if (!$schema) {
-			$this->problems[] = 'dbSchemaFile';
+			$this->problems[] = 'tableSchemaOpen';
 			return false;
 		}
 	
@@ -357,19 +357,19 @@ class swInstall
 		while (!feof($schema)) {
 			$currentQuery .= fgets($schema);
 			if ($currentQuery[strlen($currentQuery) - 1] === ';') {
-				$createTable = $db->query($currentQuery);
+				$createTable = $this->db->query($currentQuery);
 				$currentQuery = '';
 	
 				++$schemaTables;
-				if (!($db->hasError($createTable) || 
-				     $db->affectedRows($createTable) < 1)) {
+				if (!($this->db->hasError($createTable) || 
+				     $this->db->affectedRows($createTable) < 1)) {
 					++$schemaTablesDone;
 				}
 			}
 		}
 
 		if ($schemaTables !== $schemaTablesDone) {
-			$this->problems[] = 'dbSchemaCreate';
+			$this->problems[] = 'tableSchemaInsert';
 			return false;
 		}
 
@@ -379,13 +379,8 @@ class swInstall
 	/** Install database table data */
 	function tableData()
 	{
-		if (!include(PATH_INSTALL . '/data.inc.php')) {
-			$this->problems[] = 'dbData';
-			return false;
-		}
-
 		// Insert star names
-		$delStarName = $db->query('DELETE FROM [server]starname');
+		$delStarName = $this->db->query('DELETE FROM [server]starname');
 
 		$starNames = 0;
 		$starNamesDone = 0;
@@ -394,30 +389,42 @@ class swInstall
 		if ($starNameFp) {
 			while (!feof($starNameFp)) {
 				++$starNames;
-				$starName = $db->query('INSERT INTO [server]starname VALUES (%[1])',
+				$starName = $this->db->query('INSERT INTO [server]starname VALUES (%[1])',
 				 trim(fgets($starNameFp)));
-				if (!($db->hasError($starName) || 
-				     $db->affectedRows($starName) < 1)) {
+				if (!($this->db->hasError($starName) || 
+				     $this->db->affectedRows($starName) < 1)) {
 					++$starNamesDone;
 				}
 			}
-		} else {
-			$this->problems[] = 'starNameMissing';
 		}
-	
-		// Insert all the tips
-		$delTip = $db->query('DELETE FROM [server]tip');
 
-		$tipNo = 0;
-		$tipNoDone = 0;
-		foreach ($dat['tips'] as $tipContent) {
-			$tipQuery = $db->query('INSERT INTO [server]tip (tip_id, tip_content) VALUES (%[1], \'%[2]\')',
-			 ++$tipNo, $tipContent);
-			if (!($db->hasError($starName) || 
-			     $db->affectedRows($starName) < 1)) {
-				++$tipNoDone;
-			}
+		if ($starNames && $starNames === $starNamesDone) {
+			$this->problems[] = 'tableStarNames';
 		}
+
+		// Data
+		if (include(PATH_INSTALL . '/data.inc.php')) {
+			// Insert all the tips
+			$delTip = $this->db->query('DELETE FROM [server]tip');
+	
+			$tipNo = 0;
+			$tipNoDone = 0;
+			foreach ($dat['tips'] as $tipContent) {
+				$tipQuery = $this->db->query('INSERT INTO [server]tip (tip_id, tip_content) VALUES (%[1], \'%[2]\')',
+				 ++$tipNo, $tipContent);
+				if (!($this->db->hasError($starName) || 
+				     $this->db->affectedRows($starName) < 1)) {
+					++$tipNoDone;
+				}
+			}
+	
+			if ($tipNo && $tipNo === $tipNoDone) {
+				$this->problems[] = 'tableTips';
+			}
+		} else {
+			$this->problems[] = 'tableData';
+		}
+
 
 		// Add administrator account
 		if (!class_exists('sha256')) {
@@ -425,11 +432,13 @@ class swInstall
 		}
 		require(PATH_LIB . '/sha256/sha256.class.php');
 
-		$delAccount = $db->query('DELETE FROM [server]account');
-		$newAdmin = $db->query('INSERT INTO [server]account (login_id, login_name, passwd, session_exp, session_id, in_game, email_address, signed_up, last_login, login_count, last_ip, num_games_joined, page_views, real_name, total_score, style) VALUES (1, \'Admin\', 0x' . sha256::hash($_REQUEST['adminPassword']) . ', 0, \'\', NULL, \'Tyrant of the Universe\', 1, 1, 1, \'\', 0, 0, \'Game administrator\', 0, NULL)');
+		$delAccount = $this->db->query('DELETE FROM [server]account');
+		$newAdmin = $this->db->query('INSERT INTO [server]account (login_id, login_name, passwd, session_exp, session_id, in_game, email_address, signed_up, last_login, login_count, last_ip, num_games_joined, page_views, real_name, total_score, style) VALUES (1, \'Admin\', 0x' . sha256::hash($_REQUEST['adminPassword']) . ', 0, \'\', NULL, \'Tyrant of the Universe\', 1, 1, 1, \'\', 0, 0, \'Game administrator\', 0, NULL)');
+		if ($this->db->hasEror($newAdmin)) {
+			$this->problems[] = 'tableAdmin';
+		}
 
-		return empty($this->problems) && ($tipNo === $tipNoDone) &&
-		 ($starNames === $starNamesDone);
+		return empty($this->problems);
 	}
 }
 
