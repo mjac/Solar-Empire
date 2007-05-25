@@ -168,7 +168,7 @@ class swInstall
 		$dbConnected = $this->db->connect($dbDsn);
 	
 		if ($this->db->hasError($dbConnected)) {
-			$this->tpl->assign('dbConnectError', $this->db->error($result));
+			$this->tpl->assign('dbConnectErr', $this->db->error($result));
 			return false;
 		}
 
@@ -180,7 +180,7 @@ class swInstall
 	function dbRequireCheck($dbType)
 	{
 		if (!(isset($_REQUEST['db']) && isset($dbRequires[$dbType]))) {
-			$this->problems[] = 'dbReqInitial';
+			$this->problems[] = 'dbType';
 			return false;
 		}
 
@@ -192,7 +192,7 @@ class swInstall
 		}
 		
 		if (!empty($reqMissing)) {	
-			$this->problems[] = 'dbReqMissing';
+			$this->problems[] = 'dbDetails';
 			$tpl->assign('dbRequires', $reqMissing);
 			return false;
 		}
@@ -264,7 +264,7 @@ class swInstall
 	function dbPrefix()
 	{
 		if (isset($_REQUEST['db']) && isset($_REQUEST['db']['prefix'])) {
-			if (preg_match('/[a-z_]/i', $_REQUEST['db']['prefix'])) {
+			if (preg_match('/[a-z0-9_]/i', $_REQUEST['db']['prefix'])) {
 				$_SESSION['dbPrefix'] = $_REQUEST['db']['prefix'];
 				return true;
 			}

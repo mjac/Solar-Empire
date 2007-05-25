@@ -2,9 +2,13 @@
 class_exists('Savant2') || exit;
 
 $insDbProbs = array(
-	'dbReqInitial',
-	'dbReqMissing',
-	'dbConnect'
+	'dbType' => 'That database type is not supported',
+	'dbDetails' => 'These additional details are required' .
+	 implode(', ', $this->dbRequires),
+	'dbConnect' => 'Could not connect to the database using the details you provided' .
+	 (isset($this->dbConnectErr) ? ('; the error reported was ' . 
+	 $this->dbConnectErr) : ll),
+	'dbPrefix' => 'That database prefix is invalid, use only alphanumeric characters and underscores'
 );
 
 include($this->loadTemplate('header.tpl.php'));
