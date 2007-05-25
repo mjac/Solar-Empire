@@ -311,6 +311,18 @@ class swInstall
 
 
 
+
+	/** Perform database table and structure installation */
+	function tableCheck()
+	{
+		// Check for input before processing anything
+		if (!isset($_REQUEST['adminPassword'])) {
+			return false;
+		}
+
+		return $this->tableStructure() && $this->tableData();
+	}
+
 	/** Install database table structure */
 	function tableStructure()
 	{
@@ -367,7 +379,7 @@ class swInstall
 				}
 			}
 		} else {
-		
+			$this->problems[] = 'starNameMissing';
 		}
 	
 		// Insert all the tips
@@ -391,8 +403,11 @@ class swInstall
 		require(PATH_LIB . '/sha256/sha256.class.php');
 
 		$delAccount = $db->query('DELETE FROM [server]account');
-		$newAdmin = $db->query('INSERT INTO [server]account (login_id, login_name, passwd, session_exp, session_id, in_game, email_address, signed_up, last_login, login_count, last_ip, num_games_joined, page_views, real_name, total_score, style) VALUES (1, \'Admin\', 0x' . sha256::hash() . ', 0, \'\', NULL, \'Tyrant of the Universe\', 1, 1, 1, \'\', 0, 0, \'Game administrator\', 0, NULL)');
-	}	
+		$newAdmin = $db->query('INSERT INTO [server]account (login_id, login_name, passwd, session_exp, session_id, in_game, email_address, signed_up, last_login, login_count, last_ip, num_games_joined, page_views, real_name, total_score, style) VALUES (1, \'Admin\', 0x' . sha256::hash($_REQUEST['adminPassword']) . ', 0, \'\', NULL, \'Tyrant of the Universe\', 1, 1, 1, \'\', 0, 0, \'Game administrator\', 0, NULL)');
+
+		return empty($this->problems) && ($tipNo === $tipNoDone) &&
+		 ($starNames === $starNamesDone);
+	}
 }
 
 $installer = new swInstall;

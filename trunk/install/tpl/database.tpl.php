@@ -35,24 +35,27 @@ if (isset($this->instProbs) && !empty($this->instProbs)) {
 <form action="<?php $this->eprint(URL_SELF); ?>#insDbForm" method="post">
 	<dl>
 		<dt><label for="dbType">Type</label></dt>
-		<dd><select name="dbType" id="dbType">
+		<dd><select name="db[type]" id="dbType">
 			<option value="mysql">MySQL</option>
 			<option value="postgresql">PostgreSQL</option>
 		</select></dd>
 	
 		<dt><label for="dbHostname">Hostname or file</label></dt>
-		<dd><input name="dbHostname" id="dbHostname" class="text" /></dd>
+		<dd><input name="db[hostname]" id="dbHostname" class="text" /></dd>
 	
-		<dt><label for="dbName">Name</label></dt>
-		<dd><input name="dbName" id="dbName" class="text" /></dd>
+		<dt><label for="dbDatabase">Database</label></dt>
+		<dd><input name="db[database]" id="dbDatabase" class="text" /></dd>
 	
 		<dt><label for="dbUsername">Username</label></dt>
-		<dd><input name="dbUsername" id="dbUsername" class="text" /></dd>
+		<dd><input name="db[username]" id="dbUsername" class="text" /></dd>
 	
 		<dt><label for="dbPassword">Password</label></dt>
-		<dd><input name="dbPassword" id="dbPassword" class="text" /></dd>
+		<dd><input name="db[password]" id="dbPassword" class="text" /></dd>
+	
+		<dt><label for="dbPrefix">Table prefix</label></dt>
+		<dd><input name="db[prefix]" id="dbPrefix" class="text" value="sw_" /></dd>
 
-		<dt><input type="submit" value="Try configuration" class="button" /></dt>
+		<dt><input type="submit" value="Connect to database" class="button" /></dt>
 	</dl>
 </form>
 <?php
