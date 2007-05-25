@@ -177,7 +177,7 @@ class swInstall
 		$dbConnected = $this->db->connect($dbDsn);
 	
 		if ($this->db->hasError($dbConnected)) {
-			$this->tpl->assign('dbConnectErr', $this->db->error($result));
+			$this->tpl->assign('dbConnectErr', $this->db->error($dbConnected));
 			return false;
 		}
 
