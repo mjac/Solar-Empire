@@ -147,7 +147,7 @@ class swInstall
 		}
 
 		// Could be set by $this->dbTypeCheck, true only if success though
-		if (isset($_SESSION['DSN']) && $this->db->connect($_SESSION['DSN']) {
+		if (isset($_SESSION['DSN']) && $this->db->connect($_SESSION['DSN'])) {
 			return true;
 		}
 
