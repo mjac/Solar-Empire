@@ -7,8 +7,8 @@ $insDbProbs = array(
 	 (isset($this->dbRequires) ? (': ' .
 	 implode(', ', $this->dbRequires)) : ''),
 	'dbConnect' => 'Could not connect to the database using the details you provided' .
-	 (isset($this->dbConnectErr) ? ('; the error reported was ' . 
-	 $this->dbConnectErr) : ''),
+	 (isset($this->dbConnectErr) ? ('; the error reported was <em>' . 
+	 $this->dbConnectErr . '</em>') : ''),
 	'dbPrefix' => 'That database prefix is invalid, use only alphanumeric characters and underscores'
 );
 

@@ -163,7 +163,8 @@ class swInstall
 		}
 
 		// Could be set by $this->dbTypeCheck, true only if success though
-		if (isset($_SESSION['DSN']) && $this->db->connect($_SESSION['DSN'])) {
+		if (isset($_SESSION['DSN']) &&
+		     !$this->db->hasError($this->db->connect($_SESSION['DSN']))) {
 			return true;
 		}
 
@@ -304,13 +305,23 @@ class swInstall
 	function configCheck()
 	{
 		if (isset($_REQUEST['configWrite'])) {
+			$openConfig = fopen('config.inc.php', 'rb');
 			$writeConfig = fopen(PATH_INC . '/config.inc.php', 'wb');
+
+			if (!$openConfig) {
+				$this->problems[] = 'configOpen';
+			}
 			if (!$writeConfig) {
 				$this->problems[] = 'configWrite';
-				return false;
+			}
+			if (!($openConfig && $writeConfig)) {
 			}
 
-			fwrite($writeConfig, str_replace(DB_DSN, $dbDsn, $src));
+			$configSrc = fread($openConfig, filesize('config.inc.php'));
+			fclose($openConfig);
+
+			fwrite($writeConfig, str_replace(DB_DSN, $_SESSION['DSN'],
+			 $configSrc));
 			fclose($writeConfig);
 
 			$_SESSION['configWritten'] = true;
