@@ -165,6 +165,8 @@ class swInstall
 		// Could be set by $this->dbTypeCheck, true only if success though
 		if (isset($_SESSION['DSN']) &&
 		     !$this->db->hasError($this->db->connect($_SESSION['DSN']))) {
+			$this->db->addVar('server', isset($_SESSION['dbPrefix']) ?
+			 $_SESSION['dbPrefix'] : '');
 			return true;
 		}
 
@@ -207,7 +209,7 @@ class swInstall
 				if (!$this->dbRequireCheck($_REQUEST['db']['type'])) {
 					break;
 				}
-	
+
 				$dbDsn = 'mysql://' . 
 				 rawurlencode($_REQUEST['db']['username']) . ':' .
 				 rawurlencode($_REQUEST['db']['password']) . '@' . 
@@ -443,6 +445,7 @@ class swInstall
 			require(PATH_LIB . '/sha256/sha256.class.php');
 		}
 
+		// Should use some kind of user class instead of raw insert
 		$delAccount = $this->db->query('DELETE FROM [server]account');
 		$newAdmin = $this->db->query('INSERT INTO [server]account (login_id, login_name, passwd, session_exp, session_id, in_game, email_address, signed_up, last_login, login_count, last_ip, num_games_joined, page_views, real_name, total_score, style) VALUES (1, \'Admin\', 0x' . sha256::hash($_REQUEST['adminPassword']) . ', 0, \'\', NULL, \'Tyrant of the Universe\', 1, 1, 1, \'\', 0, 0, \'Game administrator\', 0, NULL)');
 		if ($this->db->hasError($newAdmin)) {
