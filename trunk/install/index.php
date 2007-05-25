@@ -330,7 +330,7 @@ class swInstall
 	{
 		// Insert the table schemas
 		$schema = fopen(PATH_INSTALL . '/sql/server.' .
-		 strtolower($db->type) . '.sql', 'rb');
+		 strtolower($this->db->type) . '.sql', 'rb');
 		if (!$schema) {
 			$this->problems[] = 'dbSchema';
 			displayInst();
