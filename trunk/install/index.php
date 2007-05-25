@@ -58,6 +58,23 @@ class swInstall
 	function process()
 	{
 		$this->readme();
+
+		$stage = 'complete';
+
+		if ($this->licenceCheck()) {
+			if ($this->dbCheck()) {
+				if (!($this->tableStructure() && $this->tableData())) {
+					$stage = 'dbSchema';
+				}
+			} else {
+				$stage = 'database';
+			}
+		} else {
+			$stage = 'licence';
+		}
+
+		$this->tpl->assign('stage', $stage);
+		$this->display();
 	}
 
 
@@ -81,20 +98,6 @@ class swInstall
 		}
 
 		return false;
-	}
-
-	/** Perform standard file checks on required installer files */
-	function fileCheck()
-	{
-		$probCount = count($this->problems);
-
-		// Only allow if writable or directory writable
-		if (!(is_writable(PATH_INC . '/config.inc.php') ||
-		     is_writable(PATH_INC))) {
-			$this->problems[] = 'configWrite';
-		}
-
-		return $probCount === count($this->problems);
 	}
 
 
@@ -291,6 +294,7 @@ class swInstall
 
 
 
+	/** Write configuration */
 	function configCheck()
 	{
 		// Write the configuration file
@@ -309,10 +313,11 @@ class swInstall
 		$tpl->assign('configWritten', $_SESSION['configWritten']);
 	}
 
-	function tables()
+
+
+	/** Install database table structure */
+	function tableStructure()
 	{
-		require(PATH_INSTALL . '/data.inc.php');
-	
 		// Insert the table schemas
 		$schema = fopen(PATH_INSTALL . '/sql/server.' .
 		 strtolower($db->type) . '.sql', 'rb');
@@ -338,22 +343,40 @@ class swInstall
 				}
 			}
 		}
-	
+	}
+
+	/** Install database table data */
+	function tableData()
+	{
+		if (!include(PATH_INSTALL . '/data.inc.php')) {
+			$this->problems[] = 'dbData';
+			return false;
+		}
+
 		// Insert star names
+		$delStarName = $db->query('DELETE FROM [server]starname');
+
 		$starNames = 0;
 		$starNamesDone = 0;
+
 		$stars = fopen(PATH_INSTALL . '/starnames.txt', 'rb');
-		while (!feof($stars)) {
-			++$starNames;
-			$starName = $db->query('INSERT INTO [server]starname VALUES (%[1])',
-			 trim(fgets($stars)));
-			if (!($db->hasError($starName) || 
-			     $db->affectedRows($starName) < 1)) {
-				++$starNamesDone;
+		if ($starNameFp) {
+			while (!feof($starNameFp)) {
+				++$starNames;
+				$starName = $db->query('INSERT INTO [server]starname VALUES (%[1])',
+				 trim(fgets($starNameFp)));
+				if (!($db->hasError($starName) || 
+				     $db->affectedRows($starName) < 1)) {
+					++$starNamesDone;
+				}
 			}
+		} else {
+		
 		}
 	
 		// Insert all the tips
+		$delTip = $db->query('DELETE FROM [server]tip');
+
 		$tipNo = 0;
 		$tipNoDone = 0;
 		foreach ($dat['tips'] as $tipContent) {
@@ -364,18 +387,16 @@ class swInstall
 				++$tipNoDone;
 			}
 		}
-	
+
 		// Add administrator account
 		if (!class_exists('sha256')) {
 			require(PATH_LIB . '/sha256/sha256.class.php');
 		}
 		require(PATH_LIB . '/sha256/sha256.class.php');
-	
+
+		$delAccount = $db->query('DELETE FROM [server]account');
 		$newAdmin = $db->query('INSERT INTO [server]account (login_id, login_name, passwd, session_exp, session_id, in_game, email_address, signed_up, last_login, login_count, last_ip, num_games_joined, page_views, real_name, total_score, style) VALUES (1, \'Admin\', 0x' . sha256::hash() . ', 0, \'\', NULL, \'Tyrant of the Universe\', 1, 1, 1, \'\', 0, 0, \'Game administrator\', 0, NULL)');
-	}
+	}	
 }
 
-/*
-
-*/
 ?>

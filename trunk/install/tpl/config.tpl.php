@@ -1,5 +1,5 @@
 <?php
-defined('PATH_SAVANT') || exit();
+isset($this) || exit();
 
 $insConfProbs = array(
 );
@@ -46,8 +46,8 @@ if (isset($this->problems) && !empty($this->problems)) {
 	<dl>
 		<dt><label for="dbType">Type</label></dt>
 		<dd><select name="dbType">
-			<option value="mysql"<?php checkOption('dbType', 'mysql'); ?>>MySQL</option>
-			<option value="postgresql"<?php checkOption('dbType', 'postgresql'); ?>>PostgreSQL</option>
+			<option value="mysql">MySQL</option>
+			<option value="postgresql">PostgreSQL</option>
 		</select></dd>
 	
 		<dt><label for="dbHostname">Hostname or file</label></dt>

@@ -3,16 +3,16 @@
 require('inc/admin.inc.php');
 require('inc/template.inc.php');
 
-if (!class_exists('generator')) {
+if (!class_exists('swGenerator')) {
 	require('inc/generator.class.php');
 }
-if (!class_exists('autoBenchmark')) {
+if (!class_exists('benchmarkAuto')) {
 	require('lib/benchmark/benchmark.class.php');
 }
 
 set_time_limit(60);
 
-$uni = new generator;
+$uni = new swGenerator;
 
 $action = isset($_REQUEST['action']) ? strtolower($_REQUEST['action']) : '';
 $tpl->assign('action', $action);

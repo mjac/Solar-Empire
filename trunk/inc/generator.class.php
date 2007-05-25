@@ -5,11 +5,15 @@ if (!class_exists('genUniverse')) {
 	require(PATH_LIB . '/genUniverse/genUniverse.class.php');
 }
 
-/** Generates a Solar Empire universe based on the general genUniverse class */
-class generator extends genUniverse
+/**
+ * Generates a System Wars universe
+ *
+ * Based on the general genUniverse class.
+ */
+class swGenerator extends genUniverse
 {
 	/** Apply game options to universe generator */
-	function generator()
+	function swGenerator()
 	{
 		global $gameOpt;
 
@@ -119,7 +123,7 @@ class generator extends genUniverse
 		$db->query('ALTER TABLE [game]_stars ORDER BY star_id ASC');
 	}
 
-	/** Fill arrays from the database*/
+	/** Fill arrays from the database */
 	function loadData()
 	{
 		global $db;
@@ -132,7 +136,7 @@ class generator extends genUniverse
 		while ($star = $db->fetchRow($allStars, ROW_NUMERIC)) {
 			$newStar =& $this->stars[];
 
-			$newStar = new genStarLoad;
+			$newStar = new swStarLoad;
 			$newStar->id = (int)$star[0];
 			$newStar->name = $star[1];
 			$newStar->x = (int)$star[2];
@@ -178,7 +182,12 @@ class generator extends genUniverse
 	}
 };
 
-class genStarLoad extends genStar
+/**
+ * Initial type for database stars
+ * 
+ * Used for processing before being turned into swGenerator form.
+ */
+class swStarLoad extends genStar
 {
 	var $linksId = array();
 	var $wormholeId;

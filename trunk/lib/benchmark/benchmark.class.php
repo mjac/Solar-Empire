@@ -32,9 +32,9 @@ class benchmark
 
 
 /** Faster interface for benchmark */
-class autoBenchmark extends benchmark
+class benchmarkAuto extends benchmark
 {
-	function autoBenchmark()
+	function benchmarkAuto()
 	{
 		$this->start();
 	}
