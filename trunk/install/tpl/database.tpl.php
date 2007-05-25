@@ -36,12 +36,12 @@ if (isset($this->instProbs) && !empty($this->instProbs)) {
 	<dl>
 		<dt><label for="dbType">Type</label></dt>
 		<dd><select name="db[type]" id="dbType">
-			<option value="mysql">MySQL</option>
+			<option value="mysql" selected="selected">MySQL</option>
 			<option value="postgresql">PostgreSQL</option>
 		</select></dd>
 	
 		<dt><label for="dbHostname">Hostname or file</label></dt>
-		<dd><input name="db[hostname]" id="dbHostname" class="text" /></dd>
+		<dd><input name="db[hostname]" id="dbHostname" class="text" value="localhost" /></dd>
 	
 		<dt><label for="dbDatabase">Database</label></dt>
 		<dd><input name="db[database]" id="dbDatabase" class="text" /></dd>
