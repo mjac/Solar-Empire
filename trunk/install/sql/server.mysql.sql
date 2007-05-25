@@ -29,7 +29,7 @@ CREATE TABLE [server]forum (
   msg_sender_id varchar(32) NOT NULL default '',
   msg_sender_name varchar(32) NOT NULL default '',
   msg_content text NOT NULL,
-  PRIMARY KEY (message_id)
+  PRIMARY KEY (msg_id)
 ) TYPE=MyISAM;
 
 CREATE TABLE [server]game (
@@ -47,7 +47,7 @@ CREATE TABLE [server]game (
   game_proc_ship datetime NOT NULL default 0,
   game_proc_planet datetime NOT NULL default 0,
   game_proc_government datetime NOT NULL default 0,
-  PRIMARY KEY (db_name)
+  PRIMARY KEY (game_id)
 ) TYPE=MyISAM;
 
 CREATE TABLE [server]history (
@@ -64,7 +64,7 @@ CREATE TABLE [server]poption (
   opt_max int NOT NULL default 0,
   opt_desc text NOT NULL,
   opt_type tinyint unsigned NOT NULL default 1,
-  PRIMARY KEY  (option_name)
+  PRIMARY KEY  (opt_name)
 ) TYPE=MyISAM;
 
 CREATE TABLE [server]starname (
