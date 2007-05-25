@@ -370,7 +370,9 @@ class swInstall
 		$currentQuery = '';
 		while (!feof($schema)) {
 			$currentQuery .= fgets($schema);
-			if ($currentQuery[strlen($currentQuery) - 1] === ';') {
+			$trimmedQuery = trim($currentQuery);
+			if ($trimmedQuery !== '' &&
+			     $trimmedQuery[strlen($trimmedQuery) - 1] === ';') {
 				$createTable = $this->db->query($currentQuery);
 				$currentQuery = '';
 	
@@ -382,7 +384,7 @@ class swInstall
 			}
 		}
 
-		if ($schemaTables !== $schemaTablesDone) {
+		if (!($schemaTables && $schemaTables === $schemaTablesDone)) {
 			$this->problems[] = 'tableSchemaInsert';
 			return false;
 		}
