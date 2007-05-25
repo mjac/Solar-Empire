@@ -337,7 +337,9 @@ class swInstall
 	function configReset()
 	{
 		unset($_SESSION['configWritten']);
-		unlink(PATH_INC . '/config.inc.php');
+		if (file_exists(PATH_INC . '/config.inc.php')) {
+			unlink(PATH_INC . '/config.inc.php');
+		}
 	}
 
 
