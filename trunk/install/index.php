@@ -29,7 +29,7 @@ class swInstall
 		}
 		
 		define('PATH_INSTALL', PATH_BASE . '/install');
-		define('URL_INSTALL', URL_BASE . '/install');
+		define('URL_INSTALL', URL_BASE);
 		
 		if (!(class_exists('Savant2') || include(PATH_SAVANT))) {
 			exit('Savant2 template system missing.');
