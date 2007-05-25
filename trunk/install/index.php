@@ -312,10 +312,11 @@ class swInstall
 
 			fwrite($writeConfig, str_replace(DB_DSN, $dbDsn, $src));
 			fclose($writeConfig);
+
+			$_SESSION['configWritten'] = true;
 		}
 
-		$_SESSION['configWritten'] = true;
-		return true;
+		return isset($_SESSION['configWritten']) && $_SESSION['configWritten'];
 	}
 
 	/** Reset configuration */
