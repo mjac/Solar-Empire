@@ -1,39 +1,24 @@
 <?php
-isset($this) || exit();
+class_exists('Savant2') || exit;
 
-$insConfProbs = array(
+$insDbProbs = array(
+	'dbReqInitial',
+	'dbReqMissing',
+	'dbConnect'
 );
 
-?><h2>Documents</h2>
+include($this->loadTemplate('header.tpl.php'));
 
-<h3>Readme</h3>
-<p><?php
-if (isset($this->readme)) {
-?><textarea rows="10" cols="80"><?php $this->eprint($this->readme); ?></textarea><?php
-} else {
-?>General information is missing.<?php
-}
-?></p>
-
-<h3>Licence</h3>
-<p><?php
-if (isset($this->licence)) {
-?><textarea rows="10" cols="80"><?php $this->eprint($this->licence); ?></textarea><?php
-} else {
-?>Licence information is missing.<?php
-}
-?></p>
-
-<h2 id="insconfForm">Database configuration</h2>
+?><h2 id="insDbForm">Database configuration</h2>
 <?php
-if (isset($this->problems) && !empty($this->problems)) {
+if (isset($this->instProbs) && !empty($this->instProbs)) {
 ?><h3>Problems with your submission</h3>
 <ul>
 <?php
-	foreach ($this->problems as $problem) {
-		if (isset($insConfProbs[$problem])) {
+	foreach ($this->instProbs as $problem) {
+		if (isset($insDbProbs[$problem])) {
 ?>
-	<li><?php $this->eprint($insConfProbs[$problem]); ?></li>
+	<li><?php $this->eprint($insDbProbs[$problem]); ?></li>
 <?php
 		}
 	}
@@ -42,7 +27,7 @@ if (isset($this->problems) && !empty($this->problems)) {
 <?php
 }
 ?>
-<form action="<?php $this->eprint(URL_SELF); ?>#insconfForm" method="post">
+<form action="<?php $this->eprint(URL_SELF); ?>#insDbForm" method="post">
 	<dl>
 		<dt><label for="dbType">Type</label></dt>
 		<dd><select name="dbType">
@@ -62,18 +47,9 @@ if (isset($this->problems) && !empty($this->problems)) {
 		<dt><label for="dbPassword">Password</label></dt>
 		<dd><input name="dbPassword"<?php currentValue('dbPassword'); ?> class="text" /></dd>
 
-		<dt><label for="email">Your e-mail address</label></dt>
-		<dd><input type="text" id="email" name="email" size="40" class="text<?php
-if (isset($this->problems) && in_array('invalidEmail', $this->problems)) {
-	echo ' invalid';
-}
-?>"<?php
-if (isset($this->email)) {
-	echo ' value="' . $this->escape($this->email) . '"';
-}
-?> /></dd>
-
 		<dt><input type="submit" value="Try configuration" class="button" /></dt>
 	</dl>
 </form>
-
+<?php
+include($this->loadTemplate('footer.tpl.php'));
+?>

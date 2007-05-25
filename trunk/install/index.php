@@ -35,46 +35,34 @@ class swInstall
 		$this->tpl = new Savant2();
 		$this->tpl->addPath('template', PATH_INSTALL . '/tpl');
 
-		if (!include(PATH_INC . '/db.inc.php')) {
-			$this->problems[] = 'dbInclude';
-			$this->display();
-			return;
-		}
+		include(PATH_INC . '/db.inc.php') || exit('Database include missing.');
 
 		session_start();
-	}
-
-	/** Display and exit */
-	function display()
-	{
-		if (!empty($this->problems)) {
-			$this->tpl->assign('instProbs', $this->problems);
-		}
-		$this->tpl->display('install.tpl.php');
-		exit;
 	}
 
 	/** Process install */
 	function process()
 	{
-		$this->readme();
-
 		$stage = 'complete';
 
 		if ($this->licenceCheck()) {
 			if ($this->dbCheck()) {
 				if (!($this->tableStructure() && $this->tableData())) {
-					$stage = 'dbSchema';
+					$stage = 'schema';
 				}
 			} else {
 				$stage = 'database';
 			}
 		} else {
+			$this->readme();
 			$stage = 'licence';
 		}
 
-		$this->tpl->assign('stage', $stage);
-		$this->display();
+		if (!empty($this->problems)) {
+			$this->tpl->assign('instProbs', $this->problems);
+		}
+
+		$this->tpl->display($stage . '.tpl.php');
 	}
 
 
@@ -158,8 +146,8 @@ class swInstall
 			$this->dbPrefix();
 		}
 
-		if (isset($_SESSION['DSN'])) {
-			$dbConnect = $this->db->connect($_SESSION['DSN']);
+		// Could be set by $this->dbTypeCheck, true only if success though
+		if (isset($_SESSION['DSN']) && $this->db->connect($_SESSION['DSN']) {
 			return true;
 		}
 
@@ -192,7 +180,7 @@ class swInstall
 	function dbRequireCheck($dbType)
 	{
 		if (!(isset($_REQUEST['db']) && isset($dbRequires[$dbType]))) {
-			$this->problems[] = 'dbRequirements';
+			$this->problems[] = 'dbReqInitial';
 			return false;
 		}
 
@@ -204,7 +192,7 @@ class swInstall
 		}
 		
 		if (!empty($reqMissing)) {	
-			$this->problems[] = 'dbRequirements';
+			$this->problems[] = 'dbReqMissing';
 			$tpl->assign('dbRequires', $reqMissing);
 			return false;
 		}
@@ -398,5 +386,8 @@ class swInstall
 		$newAdmin = $db->query('INSERT INTO [server]account (login_id, login_name, passwd, session_exp, session_id, in_game, email_address, signed_up, last_login, login_count, last_ip, num_games_joined, page_views, real_name, total_score, style) VALUES (1, \'Admin\', 0x' . sha256::hash() . ', 0, \'\', NULL, \'Tyrant of the Universe\', 1, 1, 1, \'\', 0, 0, \'Game administrator\', 0, NULL)');
 	}	
 }
+
+$installer = new swInstall;
+$installer->process();
 
 ?>
