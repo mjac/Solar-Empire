@@ -24,18 +24,18 @@ class swInstall
 	/** Initialise */
 	function swInstall()
 	{
-		include('config.inc.php') || exit('Configuration template must exist.');
+		@include('config.inc.php') || exit('Configuration template must exist.');
 		
 		define('PATH_INSTALL', PATH_BASE . '/install');
 		define('URL_INSTALL', URL_BASE . '/install');
 		
 		if (!class_exists('Savant2')) {
-			include(PATH_SAVANT) || exit('Savant2 template system missing.');
+			@include(PATH_SAVANT) || exit('Savant2 template system missing.');
 		}
 		$this->tpl = new Savant2();
 		$this->tpl->addPath('template', PATH_INSTALL . '/tpl');
 
-		include(PATH_INC . '/db.inc.php') || exit('Database include missing.');
+		@include(PATH_INC . '/db.inc.php') || exit('Database include missing.');
 
 		session_start();
 	}
