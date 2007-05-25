@@ -108,6 +108,10 @@ class swInstall
 			}
 		}
 
+		if (isset($_SESSION['licenceAccept'])) {
+			return true;
+		}
+
 		// Ensure they accept the licence
 		$licenceOkay = false;
 		if (is_readable(PATH_DOC . '/licence.txt')) {
