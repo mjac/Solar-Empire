@@ -14,9 +14,9 @@ CREATE TABLE [server]account (
   acc_created datetime NOT NULL default 0,
   acc_accessed datetime NOT NULL default 0,
   acc_accesses int unsigned NOT NULL default 0,
-  acc_ip int unsigned NOT NULL default '',
-  acc_games smallint unsigned NOT NULL default 0,
   acc_requests int unsigned NOT NULL default 0,
+  acc_ip int unsigned NOT NULL default 0,
+  acc_games smallint unsigned NOT NULL default 0,
   acc_name varchar(64) NOT NULL default '',
   PRIMARY KEY (acc_id),
   UNIQUE KEY acc_handle (acc_handle)

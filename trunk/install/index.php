@@ -449,7 +449,10 @@ class swInstall
 
 		// Should use some kind of user class instead of raw insert
 		$delAccount = $this->db->query('DELETE FROM [server]account');
-		$newAdmin = $this->db->query('INSERT INTO [server]account (login_id, login_name, passwd, session_exp, session_id, in_game, email_address, signed_up, last_login, login_count, last_ip, num_games_joined, page_views, real_name, total_score, style) VALUES (1, \'Admin\', 0x' . sha256::hash($_REQUEST['adminPassword']) . ', 0, \'\', NULL, \'Tyrant of the Universe\', 1, 1, 1, \'\', 0, 0, \'Game administrator\', 0, NULL)');
+		$newAdmin = $this->db->query('INSERT INTO [server]account (acc_id, acc_handle, acc_password, acc_created, acc_accessed, acc_accesses, acc_requests, acc_ip) VALUES (1, \'Admin\', 0x' .
+		 sha256::hash($_REQUEST['adminPassword']) . 
+		 ', %[1], %[1], 1, 1, %[2])', time(),
+		 (double)sprintf('%u', ip2long($_SERVER['REMOTE_ADDR'])));
 		if ($this->db->hasError($newAdmin)) {
 			$this->problems[] = 'tableAdmin';
 		}
