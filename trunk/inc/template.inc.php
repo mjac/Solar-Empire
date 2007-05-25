@@ -38,7 +38,7 @@ foreach ($pStyles as $try) {
 		}
 	}
 
-	if (!empty($styleDir) && is_dir(URL_TPL . '/' . $styleDir)) {
+	if (!empty($styleDir) && is_dir(PATH_TPL . '/' . $styleDir)) {
 		break;
 	}
 }
