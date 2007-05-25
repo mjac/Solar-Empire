@@ -377,8 +377,7 @@ class swInstall
 				$currentQuery = '';
 	
 				++$schemaTables;
-				if (!($this->db->hasError($createTable) || 
-				     $this->db->affectedRows($createTable) < 1)) {
+				if (!$this->db->hasError($createTable)) {
 					++$schemaTablesDone;
 				}
 			}
@@ -426,7 +425,7 @@ class swInstall
 			$tipNo = 0;
 			$tipNoDone = 0;
 			foreach ($dat['tips'] as $tipContent) {
-				$tipQuery = $this->db->query('INSERT INTO [server]tip (tip_id, tip_content) VALUES (%[1], \'%[2]\')',
+				$tipQuery = $this->db->query('INSERT INTO [server]tip (tip_id, tip_content) VALUES (%[1], %[2])',
 				 ++$tipNo, $tipContent);
 				if (!($this->db->hasError($tipQuery) || 
 				     $this->db->affectedRows($tipQuery) < 1)) {
