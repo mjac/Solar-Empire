@@ -19,22 +19,22 @@ $stages = array(
 	'complete' => ''
 );
 
-?><ul>
-<?php
+?><ul id="stage"
+	><?php
 foreach ($stages as $stageName => $stageUrl) {
-?>	<li><?php
 	if ($stageName === $this->stage) {
+?><li class="active"><?php
 		$this->eprint(ucfirst($stageName));
+?></li
+><?php
 		break;
 	} else {
-?><a href="<?php
+?><li><a href="<?php
 		$this->eprint($stageUrl);
 ?>"><?php
 		$this->eprint(ucfirst($stageName));
-?></a><?php
+?></a></li
+	><?php
 	}
-?></li>
-<?php
 }
-?>
-</ul>
+?></ul>

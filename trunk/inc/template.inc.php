@@ -18,7 +18,7 @@ if (isset($account) && isset($account['style']) &&
 $pStyles[] = DEFAULT_STYLE;
 
 foreach ($pStyles as $try) {
-	$xml = URL_TPL . '/' . $try . '.xml';
+	$xml = PATH_TPL . '/' . $try . '.xml';
 	if (!(is_file($xml) && is_readable($xml))) {
 		continue;
 	}
