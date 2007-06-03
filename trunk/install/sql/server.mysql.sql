@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS [server]starname;
 DROP TABLE IF EXISTS [server]tip;
 
 CREATE TABLE [server]account (
-  acc_id int unsigned NOT NULL,
+  acc_id int unsigned NOT NULL auto_increment,
   acc_handle varchar(32) NOT NULL default '',
   acc_password binary(32) NOT NULL default 0,
   acc_email varchar(64) NOT NULL default '',
