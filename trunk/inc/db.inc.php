@@ -12,6 +12,8 @@ class swDatabase extends sda
 		$this->varFormat = '[%]'; // [game] for instance
 		$this->rowType = ROW_ASSOC;
 		$this->debug(true);
+
+		$this->addVar('server', TABLE_PREFIX);
 	}
 
 	function newId($table, $field)

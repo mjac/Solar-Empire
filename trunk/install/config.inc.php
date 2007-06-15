@@ -1,12 +1,7 @@
 <?php
 
-// DSN String - type://user:pass@host/database
-define('DB_DSN', 'mysql://USER:PASSWORD@localhost/DATABASE');
-
 // SERVER DEFINITIONS
 define('SE_VERSION', 'VERSION');
-header('X-Powered-By: System Wars ' . SE_VERSION);
-
 define('OWNER_ID', 1);
 define('DEFAULT_STYLE', 'generic');
 
@@ -14,6 +9,10 @@ define('DEFAULT_STYLE', 'generic');
 define('SESSION_TIME_LIMIT', 3600);
 define('COOKIE_LENGTH', 86400);
 define('USER_VALIDATION_LENGTH', 86400);
+
+// DSN String - type://user:pass@host/database
+define('DB_DSN', 'DB_DSN=HERE');
+define('DB_PREFIX', 'DB_PREFIX=HERE');
 
 // SYSTEM DEFINITIONS
 defined('E_STRICT') || define('E_STRICT', 0x800);

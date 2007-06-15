@@ -25,8 +25,8 @@ $this->eprint($this->url['base'] . '/register.php');
 	</dl><?php
 if (isset($this->authProblem) && !empty($this->authProblem)) {
 	$authProblem = array(
-		'existQuery' => 'There was a problem checking whether that account exists',
-		'accountMissing' => 'There is no account associated with that account name, password combination'
+		'existQuery' => 'A problem occurred while verifying account information',
+		'accountMissing' => 'An account is not associated with the details provided'
 	);
 ?>
 	<h3>Problems</h3>

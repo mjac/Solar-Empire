@@ -163,8 +163,8 @@ class swInstall
 		}
 
 		// Could be set by $this->dbTypeCheck, true only if success though
-		if (isset($_SESSION['DSN']) &&
-		     !$this->db->hasError($this->db->connect($_SESSION['DSN']))) {
+		if (isset($_SESSION['dbDSN']) &&
+		     !$this->db->hasError($this->db->connect($_SESSION['dbDSN']))) {
 			$this->db->addVar('server', isset($_SESSION['dbPrefix']) ?
 			 $_SESSION['dbPrefix'] : '');
 			return true;
@@ -176,7 +176,7 @@ class swInstall
 	/** Reset database submission */
 	function dbReset()
 	{
-		unset($_SESSION['DSN']);
+		unset($_SESSION['dbDSN']);
 		unset($_SESSION['dbPrefix']);
 		unset($_REQUEST['db']);
 	}
@@ -222,25 +222,6 @@ class swInstall
 					$dbDsn = '';
 				}
 				break;
-	
-			/*case 'postgresql':
-				$this->tpl->assign('dbType', 'PostgreSQL');
-				if (!$this->dbRequireCheck($_REQUEST['db']['type'])) {
-					break;
-				}
-
-				$dbDsn = 'postgresql://' . 
-				 rawurlencode($_REQUEST['db']['username']) . ':' .
-				 rawurlencode($_REQUEST['db']['password']) . '@' . 
-				 rawurlencode($_REQUEST['db']['hostname']) . 
-				 (isset($_REQUEST['db']['port']) ? (':' .
-				 (int)$_REQUEST['db']['port']) : '') . '/' .
-				 rawurlencode($_REQUEST['db']['database']);
-
-				if (!$this->dbConnect($dbDsn)) {
-					$dbDsn = '';
-				}
-				break;*/
 
 			default:
 				$this->problems[] = 'dbType';
@@ -252,7 +233,7 @@ class swInstall
 			return false;
 		}
 
-		$_SESSION['DSN'] = $dbDsn;
+		$_SESSION['dbDSN'] = $dbDsn;
 		return true;
 	}
 
@@ -317,13 +298,14 @@ class swInstall
 				$this->problems[] = 'configWrite';
 			}
 			if (!($openConfig && $writeConfig)) {
+				return false;
 			}
 
 			$configSrc = fread($openConfig, filesize('config.inc.php'));
 			fclose($openConfig);
 
-			fwrite($writeConfig, str_replace(DB_DSN, $_SESSION['DSN'],
-			 $configSrc));
+			fwrite($writeConfig, str_replace(array(DB_DSN, DB_PREFIX),
+			 array($_SESSION['dbDSN'], $_SESSION['dbPrefix']), $configSrc));
 			fclose($writeConfig);
 
 			$_SESSION['configWritten'] = true;
