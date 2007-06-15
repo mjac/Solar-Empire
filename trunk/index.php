@@ -23,7 +23,7 @@ if (isset($_REQUEST['handle']) && isset($_REQUEST['password'])) {
 	}
 
 	$uQuery = $db->query('SELECT acc_id FROM [server]account WHERE acc_handle = %[1] AND acc_password = 0x' . 
-	 sprintf('%X', sha256::hash($_REQUEST['password'])), $handle);
+	 sprintf('%X', sha256::hash($_REQUEST['password'])), $_REQUEST['handle']);
 	if ($db->hasError($uQuery)) {
 		$authProblem[] = 'existQuery';
 	} elseif ($db->numRows($uQuery) < 1) {
