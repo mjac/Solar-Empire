@@ -5,10 +5,10 @@ $insDbProbs = array(
 	'dbType' => 'That database type is not supported',
 	'dbDetails' => 'Additional details are required' .
 	 (isset($this->dbRequires) ? (': ' .
-	 implode(', ', $this->dbRequires)) : ''),
+	 $this->escape(implode(', ', $this->dbRequires))) : ''),
 	'dbConnect' => 'Could not connect to the database using the details you provided' .
 	 (isset($this->dbConnectErr) ? ('; the error reported was <em>' . 
-	 $this->dbConnectErr . '</em>') : ''),
+	 $this->escape($this->dbConnectErr) . '</em>') : ''),
 	'dbPrefix' => 'That database prefix is invalid, use only alphanumeric characters and underscores'
 );
 
@@ -23,7 +23,7 @@ if (isset($this->instProbs) && !empty($this->instProbs)) {
 	foreach ($this->instProbs as $problem) {
 		if (isset($insDbProbs[$problem])) {
 ?>
-	<li><?php $this->eprint($insDbProbs[$problem]); ?></li>
+	<li><?php echo $insDbProbs[$problem]; ?></li>
 <?php
 		}
 	}
@@ -50,7 +50,7 @@ if (isset($this->instProbs) && !empty($this->instProbs)) {
 		<dd><input type="text" name="db[username]" id="dbUsername" class="text" /></dd>
 	
 		<dt><label for="dbPassword">Password</label></dt>
-		<dd><input type="text" name="db[password]" id="dbPassword" class="text" /></dd>
+		<dd><input type="password" name="db[password]" id="dbPassword" class="text" /></dd>
 	
 		<dt><label for="dbPrefix">Table prefix</label></dt>
 		<dd><input type="text" name="db[prefix]" id="dbPrefix" class="text" value="sw_" /></dd>

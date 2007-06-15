@@ -111,7 +111,6 @@ class swInstall
 					$this->configReset();
 					$this->dbReset();
 					$this->licenceReset();
-					return false;
 			}
 		}
 
