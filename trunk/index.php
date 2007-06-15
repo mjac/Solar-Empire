@@ -1,6 +1,7 @@
 <?php
 
 require('inc/config.inc.php');
+
 if (!class_exists('sda')) {
 	require(PATH_INC . '/db.inc.php');
 }

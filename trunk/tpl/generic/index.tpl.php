@@ -9,7 +9,9 @@ include($this->loadTemplate('inc/header_splash.tpl.php'));
 ?><form id="login" action="<?php
 $this->eprint($this->url['self']);
 ?>" method="post">
-	<h2><a href="register.php">Create an account</a></h2>
+	<h2><a href="<?php
+$this->eprint($this->url['base'] . '/register.php');
+?>">Create an account</a></h2>
 
 	<h2>Continue the War</h2>
 	<dl>
@@ -20,7 +22,26 @@ $this->eprint($this->url['self']);
 		<dd><input type="password" name="password" id="password" class="text" /></dd>
 
 		<dt><input type="submit" value="Enter game" class="button" /></dt>
-	</dl>
+	</dl><?php
+if (isset($this->authProblem) && !empty($this->authProblem)) {
+	$authProblem = array(
+		'existQuery' => 'There was a problem checking whether that account exists',
+		'accountMissing' => 'There is no account associated with that account name, password combination'
+	);
+?>
+	<h3>Problems</h3>
+	<ul>
+<?php
+	foreach ($this->authProblem as $probId) {
+		if (isset($authProblem[$probId])) {
+?>		<li><?php $this->eprint($authProblem[$probId]); ?></li>
+<?php
+		}
+	}
+?>	</ul>
+<?php
+}
+?>
 </form>
 
 <div id="loginContent">
