@@ -13,7 +13,7 @@ class swDatabase extends sda
 		$this->rowType = ROW_ASSOC;
 		$this->debug(true);
 
-		$this->addVar('server', TABLE_PREFIX);
+		$this->addVar('server', DB_PREFIX);
 	}
 
 	function newId($table, $field)
