@@ -43,7 +43,4 @@ class swDatabase extends sda
 	}
 };
 
-$db = new swDatabase;
-$db->start();
-
 ?>

@@ -2,9 +2,12 @@
 
 require('inc/config.inc.php');
 
-if (!class_exists('sda')) {
+if (!class_exists('swDatabase')) {
 	require(PATH_INC . '/db.inc.php');
 }
+$db = new swDatabase;
+$db->start();
+
 if (!class_exists('session')) {
 	require(PATH_INC . '/session.class.php');
 }

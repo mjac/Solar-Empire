@@ -40,7 +40,11 @@ class swInstall
 		if (!include(PATH_INC . '/db.inc.php')) {
 			exit('Database include missing.');
 		}
-		$this->db =& $db;
+		if (!(class_exists('swDatabase') ||
+		     @include(PATH_INC . '/db.inc.php'))) {
+			exit('Database include missing.');
+		}
+		$this->db = new swDatabase;
 
 		session_start();
 	}
