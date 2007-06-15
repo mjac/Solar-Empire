@@ -24,7 +24,7 @@ class session
 		$_SESSION = array();
 	
 		if (isset($_COOKIE[session_name()])) {
-			setcookie(session_name(), '', time() - 42000, '/');
+			setcookie(session_name(), '', time() - 86400, '/');
 		}
 	
 		session_destroy();
@@ -60,15 +60,10 @@ class session
 		return true;
 	}
 
-	function switchAccount($accId)
-	{
-		$_SESSION['account'] = $accId;
-	}
-
 	function updateAccount()
 	{
-		$this->db->query('UPDATE [server]account SET acc_requests = acc_requests + 1, acc_accessed = FROM_UNIXTIME(%[1]) WHERE acc_id = %[2]',
-		 time(), $_SESSION['account']);
+		$this->db->query('UPDATE [server]account SET acc_requests = acc_requests + 1, acc_accessed = FROM_UNIXTIME(%[1]), acc_ip = %[2] WHERE acc_id = %[3]',
+		 time(), $this->ipToUlong($this->ipAddress()), $_SESSION['account']);
 	}
 
 	function ipAddress()

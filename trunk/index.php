@@ -28,18 +28,18 @@ if (isset($_REQUEST['handle']) && isset($_REQUEST['password'])) {
 		$authProblem[] = 'existQuery';
 	} elseif ($db->numRows($uQuery) < 1) {
 		$authProblem[] = 'accountMissing';
-		//insert_history($userInfo['login_id'], 'Login attempt failed');
+		// Log invalid attempt
 	} else {
 		$accId = (double)$db->fetchField($uQuery);
 
 		$updateQuery = $db->query('UPDATE [server]account SET acc_accessed = %[1], acc_accesses = acc_accesses + 1, acc_ip = %[4] WHERE acc_id = %[5]', 
 		 time(), $session->ipToUlong($session->ipAddress()), $accId);
 		if (!$db->hasError($updateQuery)) {
-			$session->switchAccount($accId);
+			$session->create($accId);
     		header('Location: gamelisting.php');
 			return;
 		}
-		//insert_history($userInfo['login_id'], 'Authenticated');
+		// Record login
 	}
 
 	if (!empty($authProblem)) {
