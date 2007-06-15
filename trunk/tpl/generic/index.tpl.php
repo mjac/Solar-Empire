@@ -6,8 +6,8 @@ $this->title = 'Competitive, web based, space combat game';
 
 include($this->loadTemplate('inc/header_splash.tpl.php'));
 
-?><form id="login" action="<?php 
-$this->eprint($this->url['base'] . '/game_listing.php'); 
+?><form id="login" action="<?php
+$this->eprint($this->url['self']);
 ?>" method="post">
 	<h2><a href="register.php">Create an account</a></h2>
 
@@ -24,7 +24,6 @@ $this->eprint($this->url['base'] . '/game_listing.php');
 </form>
 
 <div id="loginContent">
-
 <h1>Welcome to System Wars</h1>
 
 <h2>Introduction</h2>
@@ -35,13 +34,10 @@ $this->eprint($this->url['base'] . '/game_listing.php');
 <p>Visit the <a href="http://forum.syswars.com/">global forums</a> to learn more and help develop this open-source game.</p>
 
 <h2>Operational Servers</h2>
-<p><a href="http://sourceforge.net/projects/solar-empire/"><img 
- src="http://sourceforge.net/sflogo.php?group_id=16534&amp;type=3"
- width="125" height="37" alt="Solar Empire sourceforge project" 
- style="float: right; padding: 1em;" /></a></p>
+<p><a href="http://sourceforge.net/projects/solar-empire/"><img src="http://sourceforge.net/sflogo.php?group_id=16534&amp;type=3" width="125" height="37" alt="Solar Empire sourceforge project" style="float: right; padding: 1em;" /></a></p>
 <ul>
 	<li><a href="http://www.solar-empire.net/">Endless War</a></li>
-	<li><a href="http://qse.tradelair.com/">Tradelair</a></li>
+	<li><a href="http://game.quantum-star.com/">QS: Generations</a></li>
 	<li><a href="http://www.imperial-empire-se.com/">Imperial Empire</a></li>
 	<li><a href="http://solarempire.fuoriradio.com/">Italian Server</a></li>
 </ul>
