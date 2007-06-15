@@ -43,7 +43,7 @@ class session
 			return false;
 		}
 	
-		$accQuery = $this->db->query('SELECT COUNT(*) FROM [global]account WHERE acc_id = %[1]',
+		$accQuery = $this->db->query('SELECT COUNT(*) FROM [server]account WHERE acc_id = %[1]',
 		 $_SESSION['account']);
 		if ($db->numRows($accQuery) < 1) { // user does not exist
 			return false;
@@ -60,10 +60,30 @@ class session
 		return true;
 	}
 
+	function switchAccount($accId)
+	{
+		$_SESSION['account'] = $accId;
+	}
+
 	function updateAccount()
 	{
-		$this->db->query('UPDATE [global]account SET acc_requests = acc_requests + 1, acc_accessed = FROM_UNIXTIME(%[1]) WHERE acc_id = %[2]',
+		$this->db->query('UPDATE [server]account SET acc_requests = acc_requests + 1, acc_accessed = FROM_UNIXTIME(%[1]) WHERE acc_id = %[2]',
 		 time(), $_SESSION['account']);
+	}
+
+	function ipAddress()
+	{
+		return $_SERVER['REMOTE_ADDR'];
+	}
+
+	function ipToUlong($ipStr)
+	{
+		return (double)sprintf('%u', ip2long($ipStr));
+	}
+
+	function ipFromUlong($ipUlong)
+	{
+		return long2ip((int)$ipUlong);
 	}
 /*
 	function inGame()

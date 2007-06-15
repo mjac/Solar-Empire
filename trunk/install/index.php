@@ -2,7 +2,7 @@
 
 /**
  * Installer for System Wars
- * @author Michael J.A. Clark <mjac@mjac.co.uk>
+ * @author Michael J.A. Clark <mjac@mjac.co.uk> 
  */ 
 class swInstall
 {
@@ -224,7 +224,7 @@ class swInstall
 				}
 				break;
 	
-			case 'postgresql':
+			/*case 'postgresql':
 				$this->tpl->assign('dbType', 'PostgreSQL');
 				if (!$this->dbRequireCheck($_REQUEST['db']['type'])) {
 					break;
@@ -241,7 +241,7 @@ class swInstall
 				if (!$this->dbConnect($dbDsn)) {
 					$dbDsn = '';
 				}
-				break;
+				break;*/
 
 			default:
 				$this->problems[] = 'dbType';
