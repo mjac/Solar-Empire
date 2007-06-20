@@ -1,0 +1,728 @@
+#!/usr/bin/perl
+
+use DBI;
+
+# load configs
+open(CONFIG, "config.dat.php");
+$check = -1;
+while(<CONFIG>){
+	$check += 0.5;
+	if($check==1){
+		$database=$_;
+		chomp($database);
+		$database =~ tr/\r/\n/;
+		chomp($database);
+	}elsif($check==2){
+		$database_host=$_;
+		chomp($database_host);
+		$database_host =~ tr/\r/\n/;
+		chomp($database_host);
+	}elsif($check==3){
+		$database_user=$_;
+		chomp($database_user);
+		$database_user =~ tr/\r/\n/;
+		chomp($database_user);
+	}elsif($check==4){
+		$database_password=$_;
+		chomp($database_password);
+		$database_password =~ tr/\r/\n/;
+		chomp($database_password);
+	}elsif($check==6){
+		$game_path=$_;
+		chomp($game_path);
+		$game_path =~ tr/\r/\n/;
+		chomp($game_path);
+	}
+}
+close(CONFIG);
+
+
+$dbh2||=DBI->connect("DBI:mysql:$database;$database_host", $database_user,$database_password);
+kill 9,$$ unless $dbh2;
+
+
+#run the maint but only when maints should be run. This allows lots of games on 1 server to have their maints run at different times using just one maint as their source.
+#maint must be run at 0, 20, and 40 past the hour
+$game_db = $dbh2->prepare("select db_name from se_games where status >= 1 && paused != 1");
+
+$game_db->execute();
+
+while($games = $game_db->fetchrow_hashref()) {
+
+	#count time taken to run this maint.
+	$start_time = time();
+
+	$db_name = $games->{db_name};
+	print "\nDatabase: $db_name\n";
+	$dbh||=DBI->connect("DBI:mysql:$database;$database_host", $database_user,$database_password);
+	kill 9,$$ unless $dbh;
+
+#	srand(time() ^ ($$ + ($$ << 15)));
+
+
+
+#=======================================
+# Misc
+#=======================================
+
+
+
+#Quick maint:
+
+#Set missile launch pads 1hr nearer completion
+$dbh->do("update ${db_name}_planets set launch_pad = launch_pad -1 where launch_pad > 1");
+
+
+# Get vars
+$turns_safe = find_var("select value from ${db_name}_db_vars where name = 'turns_safe'");
+$scatter = find_var("select value from ${db_name}_db_vars where name = 'keep_sol_clear'");
+$hourly_shields = find_var("select value from ${db_name}_db_vars where name = 'hourly_shields'");
+$r_e = find_var("select value from ${db_name}_db_vars where name = 'random_events'");
+$alternate_mining = find_var("select value from ${db_name}_db_vars where name = 'alternate_play_1'");
+$hourly_turns = find_var("select value from ${db_name}_db_vars where name = 'hourly_turns'");
+$max_turns = find_var("select value from ${db_name}_db_vars where name = 'max_turns'");
+$uv_needs_gen = find_var("select value from ${db_name}_db_vars where name = 'uv_needs_gen'");
+$bilkos_time = find_var("select value from ${db_name}_db_vars where name = 'bilkos_time'");
+$flag_res = find_var("select value from ${db_name}_db_vars where name = 'flag_research'");
+$flag_rpe = find_var("select value from ${db_name}_db_vars where name = 'random_player_events'");
+$enable_politics = find_var("select value from ${db_name}_db_vars where name = 'enable_politics'");
+
+$db = $dbh->prepare("select num_stars from se_games where db_name = '$db_name'");
+$db->execute();
+$num_ss = $db->fetchrow_hashref();
+
+
+#=======================================
+# Ship Scatter
+#=======================================
+
+if($scatter == 1) {
+	#select users who have at least one ship in sol, update the db so as to give them a warning their ships will be scattered, or if this is their first hour in sol then update to give them a second hour.
+	$db2 = $dbh->prepare("select s.login_id, s.login_name from ${db_name}_ships s, ${db_name}_users u where s.location = '1' && s.login_id > '3' && u.turns_run > '$turns_safe' && u.login_id = s.login_id && s.ship_id != '1' group by u.login_id");
+	$db2->execute();
+	@no_scat = @_;
+	while($up_sec_scat = $db2->fetchrow_hashref()) {
+		$dbh->do("insert into ${db_name}_messages (timestamp,sender_name,sender_id, login_id, text) values(".time().",'$up_sec_scat->{login_name}','$up_sec_scat->{login_id}','$up_sec_scat->{login_id}','You left at least one of your ships in the Sol System (#<b>1</b>) during the last hourly maintenence. <br><br>Should the ship(s) be in there during the next maintence they will scattered around the universe.')");
+		$dbh->do("update ${db_name}_users set second_scatter = second_scatter+1 where login_id = '$up_sec_scat->{login_id}'");
+		push(@no_scat,$up_sec_scat->{login_id});
+	}
+
+	$db2 = $dbh->prepare("select s.login_name,s.login_id,s.ship_name,s.ship_id,u.ship_id as command from ${db_name}_ships s, ${db_name}_users u where s.location = '1' && s.login_id > '3' && u.turns_run > '$turns_safe' && u.login_id = s.login_id && s.ship_id != '1' && u.second_scatter = '2'");
+	$db2->execute();
+
+	while($scat_ship = $db2->fetchrow_hashref()) {
+		$go_to = int(rand($num_ss->{num_stars}-1)) +1;
+		$dbh->do("insert into ${db_name}_messages (timestamp,sender_name,sender_id, login_id, text) values(".time().",'$scat_ship->{login_name}','$scat_ship->{login_id}','$scat_ship->{login_id}','Your <b class=b1>$scat_ship->{ship_name}</b> has been moved to system #<b>$go_to</b> from system #<b>1</b>. <br>This is because the Admin wants to keep system #<b>1</b> (Sol) clear.')");
+	    $dbh->do("update ${db_name}_ships set location = '$go_to', towed_by='0', mine_mode='0' where ship_id = '$scat_ship->{ship_id}'");
+	    $dbh->do("update ${db_name}_users set second_scatter = 0 where login_id = '$scat_ship->{login_id}'");
+		#scattering the ship the user is commanding? then set user[location] to there as well.
+		if($scat_ship->{ship_id} == $scat_ship->{command}){
+			$dbh->do("update ${db_name}_users set location = '$go_to' where login_id = '$scat_ship->{login_id}'");
+		}
+	}
+	#code to update the users that do not have ships in sol, so as their scatter code is decreased down to 0.
+	my $y=0;
+	my $no_update = "";
+	foreach (@no_scat) {
+		if($y>0){
+			$no_update .= " &&";
+		}
+		$no_update .= " login_id !='".$no_scat[$y]."'";
+	$y++;
+	}
+
+	if($y > 0){
+		$dbh->do("update ${db_name}_users set second_scatter = 0 where".$no_update);
+	}
+
+}
+
+	# shields
+	$dbh->do("update ${db_name}_ships set shields = shields + '$hourly_shields' where config REGEXP 'fr'");
+	$dbh->do("update ${db_name}_ships set shields = shields + '$hourly_shields' * 0.5 where config REGEXP 'bs'");
+	$dbh->do("update ${db_name}_ships set shields = shields + '$hourly_shields' * 1.5 where config REGEXP 'sv'");
+	$dbh->do("update ${db_name}_ships set shields = shields + '$hourly_shields' * 2 where config REGEXP 'sw'");
+	$dbh->do("update ${db_name}_ships set shields = shields + '$hourly_shields' * 0.25 where config REGEXP 'sh'");
+	$dbh->do("update ${db_name}_ships set shields = shields + '$hourly_shields'");
+	$dbh->do("update ${db_name}_planets set shield_charge = shield_charge + '$hourly_shields' * shield_gen where shield_gen > 0");
+	$al_she = $hourly_shields*3;
+	$dbh->do("update ${db_name}_ships set shields = shields + '$al_she' where shipclass > '200' && shipclass < '300'");
+	$dbh->do("update ${db_name}_ships set shields = max_shields where shields > max_shields");
+	$dbh->do("update ${db_name}_planets set shield_charge = shield_charge + '$al_she' where shield_charge < shield_gen * 1000");
+	$dbh->do("update ${db_name}_planets set shield_charge = shield_gen * 1000 where shield_charge > shield_gen * 1000");
+
+
+	#Random event things
+	if($r_e >= 2){
+
+		$db2 = $dbh->prepare("select star_id from ${db_name}_stars where event_random = '2' || event_random = '12'");
+		$db2->execute();
+		while($to_do = $db2->fetchrow_hashref()) {
+			$dbh->do("update ${db_name}_ships set shields = 0 where location = '$to_do->{star_id}' && login_id != '1'");
+		}
+
+		$otherstuff=$dbh->prepare("select s.fighters,s.ship_id,s.login_id,s.ship_name,s.location,s.login_name,s.class_name from ${db_name}_ships s,${db_name}_users u,${db_name}_stars star where s.location = star.star_id && star.event_random = '2' && u.login_id = s.login_id && s.shipclass != 2 && u.turns_run > '$turns_safe' && u.login_id != '1'");
+		$otherstuff->execute();
+		while($neb_ships = $otherstuff->fetchrow_hashref()) {
+			$fig_kill = int(rand(10)) +1;
+			if ($fig_kill > $neb_ships->{fighters}) {
+			$dbh->do("delete from ${db_name}_ships where ship_id = '$neb_ships->{ship_id}'");
+				$db2 = $dbh->prepare("select ship_id,location,ship_name from ${db_name}_ships where login_id = '$neb_ships->{login_id}'");
+				$db2->execute();
+				$other = $db2->fetchrow_hashref();
+				if($other) {
+					$dbh->do("update ${db_name}_users set ship_id = $other->{ship_id}, location = '$other->{location}' where login_id = '$neb_ships->{login_id}'");
+					$dbh->do("insert into ${db_name}_messages (timestamp,sender_name,sender_id, login_id, text) values(".time().",'Nebulae','$neb_ships->{login_id}','$neb_ships->{login_id}','The nebulae in #<b>$neb_ships->{location}</b> did <b>$fig_kill</b> damage to your <b class=b1>$neb_ships->{ship_name}</b>, destroying it. Command was transfered to the <b class=b1>$other->{ship_name}</b>.')");
+					$dbh->do("insert into ${db_name}_news (timestamp, headline, login_id) values (".time().",'<b class=b1>$neb_ships->{login_name}</b> lost a <b class=b1>$neb_ships->{class_name}</b> to a nebulae.','$neb_ships->{login_id}')");
+				} else {
+					$rand_star = $neb_ships->{location} - 1;
+					$dbh->do("insert into ${db_name}_messages (timestamp,sender_name,sender_id, login_id, text) values(".time().",'Nebulae','$neb_ships->{login_id}','$neb_ships->{login_id}','The nebulae in #<b>$neb_ships->{location}</b> did <b>$fig_kill</b> damage to your <b class=b1>$neb_ships->{ship_name}</b>, destroying it. You ejected in an escape pod.')");
+					$dbh->do("insert into ${db_name}_ships (ship_name, login_id, login_name, shipclass, class_name, location, point_value) values('Escape Pod','$neb_ships->{login_id}','$neb_ships->{login_name}',2,'Escape Pod','$rand_star',5)");
+					$db2 = $dbh->prepare("select ship_id from ${db_name}_ships where login_id = '$neb_ships->{login_id}'");
+					$db2->execute();
+					$ship_id = $db2->fetchrow_hashref();
+					$dbh->do("update ${db_name}_users set location = '$rand_star', ship_id ='$ship_id->{ship_id}' where login_id = '$neb_ships->{login_id}'");
+				}
+			} else {
+				$dbh->do("update ${db_name}_ships set fighters = fighters - $fig_kill where ship_id = $neb_ships->{ship_id}");
+				$dbh->do("insert into ${db_name}_messages (timestamp,sender_id,login_id,text) values(".time().",'$neb_ships->{login_id}','$neb_ships->{login_id}','The nebulae in #<b>$neb_ships->{location}</b> did <b>$fig_kill</b> damage to your <b class=b1>$neb_ships->{ship_name}</b>.')");
+			}
+		}
+	}
+
+
+#=======================================
+# Mining
+#=======================================
+
+	# metal mining
+	if($alternate_mining == 1){ #alternate
+	    $db = $dbh->prepare("select s.ship_id,s.location,s.mine_rate_metal as mine_rate,s.cargo_bays,s.metal,s.fuel,s.elect,s.organ,s.colon,u.turns_run,star.event_random,star.metal AS star_metal from ${db_name}_stars star, ${db_name}_ships s, ${db_name}_users u where s.mine_mode = 1 && u.login_id = s.login_id && star.star_id = s.location && s.location != 1 && star.metal > 0 && (s.cargo_bays - s.metal - s.fuel - s.elect - s.organ - s.colon) > 0 && s.mine_rate_metal > 0");
+	} else {#normal
+		$db = $dbh->prepare("select s.ship_id,s.location, sum(s.mine_rate_metal + s.mine_rate_fuel) as mine_rate,s.cargo_bays,s.metal,s.fuel,s.elect,s.organ,s.colon,u.turns_run,star.event_random,star.metal AS star_metal from ${db_name}_stars star, ${db_name}_ships s, ${db_name}_users u where s.mine_mode = 1 && u.login_id = s.login_id && star.star_id = s.location && s.location != 1 && star.metal > 0 && (s.cargo_bays - s.metal - s.fuel - s.elect - s.organ - s.colon) > 0 && (s.mine_rate_metal > 0 || s.mine_rate_fuel > 0) group by s.ship_id");
+	}
+    #$db = $dbh->prepare("select s.ship_id,s.location,s.mine_rate_metal,s.mine_rate_fuel,s.cargo_bays,s.metal,s.fuel,s.elect,s.organ,s.colon,u.turns_run,star.event_random,star.metal AS star_metal from ${db_name}_stars star, ${db_name}_ships s, ${db_name}_users u where s.mine_mode = 1 && u.login_id = s.login_id && star.star_id = s.location && s.location != 1 && star.metal > 0");
+    
+	$db->execute();
+
+	while($ship = $db->fetchrow_hashref()) {
+		if($metal_fix->{$ship->{location}} == -999999){
+			next;
+		} elsif($metal_fix->{$ship->{location}}){
+			$ship->{star_metal} = $metal_fix->{$ship->{location}};
+		} else {
+			$metal_fix->{$ship->{location}} = $ship->{star_metal};
+		}
+
+		if($ship->{event_random} eq 4 || $ship->{event_random} eq 5) {
+			if(rand() > .75) {
+				$n = $ship->{mine_rate} + 1;
+			} elsif(rand() < .25) {
+				$n = $ship->{mine_rate} - 1;
+			} else {
+				$n = $ship->{mine_rate};
+			}
+			$n = $n * 4;
+
+		} else {
+
+			if(rand() > .75) {
+				$n = $ship->{mine_rate} + 1;
+			} elsif(rand() < .25) {
+				$n = $ship->{mine_rate} - 1;
+			} else {
+				$n = $ship->{mine_rate};
+			}
+
+			if($ship->{star_metal} < $n) {
+				$n = $ship->{star_metal};
+			}
+		}
+
+		$free_cargo = $ship->{cargo_bays} - ($ship->{metal} + $ship->{fuel} + $ship->{elect} + $ship->{organ} + $ship->{colon});
+		if($free_cargo < $n) {
+			$n = $free_cargo;
+		}
+		if($n < 0) {
+			$n = 0;
+		}
+
+		$dbh->do("update ${db_name}_ships set metal = metal + '$n' where ship_id = $ship->{ship_id}");
+		if($ship->{event_random} != 4) {
+			$dbh->do("update ${db_name}_stars set metal = metal - $n where star_id = '$ship->{location}'");
+			if($metal_fix->{$ship->{location}} - $n <1){
+				$metal_fix->{$ship->{location}} = -999999;
+			} else {
+				$metal_fix->{$ship->{location}} -= $n;
+			}
+		}
+	}#end metal mining while loop.
+   
+	#fuel Mining
+    if($alternate_mining == 1){ #alternate
+	    $db = $dbh->prepare("select s.ship_id,s.location,s.mine_rate_fuel as mine_rate,s.cargo_bays,s.metal,s.fuel,s.elect,s.organ,s.colon,u.turns_run,star.event_random,star.fuel AS star_fuel from ${db_name}_stars star, ${db_name}_ships s, ${db_name}_users u where s.mine_mode = 2 && u.login_id = s.login_id && star.star_id = s.location && s.location != 1 && star.fuel > 0 && (s.cargo_bays - s.metal - s.fuel - s.elect - s.organ - s.colon) > 0 && s.mine_rate_fuel > 0 group by ship_id");
+	} else {#normal
+		$db = $dbh->prepare("select s.ship_id,s.location,sum(s.mine_rate_fuel+s.mine_rate_metal) as mine_rate,s.cargo_bays,s.metal,s.fuel,s.elect,s.organ,s.colon,u.turns_run,star.event_random,star.fuel AS star_fuel from ${db_name}_stars star, ${db_name}_ships s, ${db_name}_users u where s.mine_mode = 2 && u.login_id = s.login_id && star.star_id = s.location && s.location != 1 && star.fuel > 0 && (s.cargo_bays - s.metal - s.fuel - s.elect - s.organ - s.colon) > 0 && (s.mine_rate_fuel > 0 || s.mine_rate_metal > 0) group by s.ship_id");
+	}
+
+	#$db = $dbh->prepare("select s.ship_id,s.location,s.mine_rate,s.cargo_bays,s.metal,s.fuel,s.elect,s.organ,s.colon,u.turns_run,star.event_random,star.fuel AS star_fuel from ${db_name}_stars star, ${db_name}_ships s, ${db_name}_users u where s.mine_mode = 2 && u.login_id = s.login_id && star.star_id = s.location && s.location != 1 && star.fuel > 0");
+
+    $db->execute();
+
+    while($ship = $db->fetchrow_hashref()) {
+		if($fuel_fix->{$ship->{location}} == -999999){
+			next;
+		} elsif($fuel_fix->{$ship->{location}}){
+			$ship->{star_fuel} = $fuel_fix->{$ship->{location}};
+		} else {
+			$fuel_fix->{$ship->{location}} = $ship->{star_fuel};
+		}
+
+		if(($ship->{event_random} eq 2 && $ship->{turns_run} > $turns_safe) || $ship->{event_random} eq 5) {
+			if(rand() > .75) {
+				$n = $ship->{mine_rate} + 1;
+			} elsif(rand() < .25) {
+				$n = $ship->{mine_rate} - 1;
+			} else {
+				$n = $ship->{mine_rate};
+			}
+			$n = $n * 2;
+
+		} else {
+
+			if(rand() > .75) {
+				$n = $ship->{mine_rate} + 1;
+			} elsif(rand() < .25) {
+				$n = $ship->{mine_rate} - 1;
+			} else {
+				$n = $ship->{mine_rate};
+			}
+			
+			if($ship->{star_fuel} < $n) {
+				$n = $ship->{star_fuel};
+			}
+		}
+
+		$free_cargo = $ship->{cargo_bays} - ($ship->{metal} + $ship->{fuel} + $ship->{elect} + $ship->{organ} + $ship->{colon});
+		if($free_cargo < $n) {
+			$n = $free_cargo;
+		}
+		if($n < 0) {
+			$n = 0;
+		}
+
+		$dbh->do("update ${db_name}_ships set fuel = fuel + '$n' where ship_id = $ship->{ship_id}");
+		if($ship->{event_random} != 2) {
+			$dbh->do("update ${db_name}_stars set fuel = fuel - $n where star_id = '$ship->{location}'");
+			if($fuel_fix->{$ship->{location}} - $n <1){
+				$fuel_fix->{$ship->{location}} = -999999;
+			} else {
+				$fuel_fix->{$ship->{location}} -= $n;
+			}
+		}
+	}#end fuel mining while loop.
+
+	# turns
+	$dbh->do("update ${db_name}_users set turns = turns + '$hourly_turns'");
+	$dbh->do("update ${db_name}_users set turns = '$max_turns' where turns > '$max_turns'");
+
+	# check regen
+	if($uv_needs_gen == 1) {
+		print "Generating Universe\n";
+		$dbh->do("update ${db_name}_db_vars set value = 0 where name = 'uv_needs_gen'");
+		`$game_path\\build_universe.pl $db_name`;
+		print "Universe Generated\n";
+	}
+
+
+
+#=======================================
+# Bilkos
+#=======================================
+
+# Get a var:
+$bil_seconds = $bilkos_time * 3600;
+
+
+$dbh->do("delete from ${db_name}_bilkos where timestamp <=".time()."- ($bil_seconds * 2) && bidder_id = 0 && active=1");
+
+
+$db = $dbh->prepare("select bidder_id,item_name,item_id from ${db_name}_bilkos where timestamp <= ".time()." - $bil_seconds && active = 1 && bidder_id > 0");
+$db->execute();
+while($lots = $db->fetchrow_hashref()){
+	$dbh->do("insert into ${db_name}_messages (timestamp,sender_name,sender_id, login_id, text) values(".time().",'Bilkos','$lots->{bidder_id}','$lots->{bidder_id}','You have successfully won lot #<b>$lots->{item_id}</b> (<b class=b1>$lots->{item_name}</b>). <p>You should come to the Auction House in <b class=b1>Sol</b> to collect your goods.')");
+	$dbh->do("update ${db_name}_bilkos set active=0 where item_id = '$lots->{item_id}'");
+}
+
+
+#number generated is random. between 0 and 99.
+#3 per 4 hours or so a new item may be added. (75 = 3/4 of 100)
+#if > 90, then planetary item.
+# > 78 then misc
+# > 55 then ships
+# > 45 then equipment
+# > 25 then upgrades
+
+$turnip = rand(99);
+if($turnip > 25){
+my $i_name = "";
+
+	if($turnip > 90){ #planetary.
+		$i_type = 5;
+		if($turnip > 94.5){
+			$i_code = int(rand(5)) + 4;
+			$i_name = "Shield Gen Lvl <b>$i_code</b>";
+			$i_price = $i_code * 4000;
+			$i_descr = "A level <b>$i_code</b> Shield Generater for a planet (Normal lvl is 3). <br>Increases Shield Capacity, and Shield Generation Rate. Can be used as an upgrade, or a new Generator.";
+		} else{
+			$i_code = "MLPad";
+			$i_name = "Missile Launch Pad";
+			$i_price = 100000;
+			$i_descr = "Missile Launch Pad. Used once. No build time necassary, just install and go.";
+		}
+	} elsif($turnip > 78){ #misc - turns.
+		$i_type = 4;
+		$i_code = int(rand(70)) + 10;
+		$i_name = "Turns <b>$i_code</b>";
+		$i_price = $i_code * 110;
+		$i_descr = "<b>$i_code</b> turns that can be used for whatever you want.";
+	} elsif($turnip > 55){ #ships
+		#get a random ship and put it up for auction.
+		$db = $dbh->prepare("select count(*) as maths from ${db_name}_ship_types where config NOT REGEXP 'oo' && type_id != 1 && type_id != 2 && auction =1");
+		$db->execute();
+		$temp = $db->fetchrow_hashref();
+		$things = int(rand($temp->{maths}))+1;
+		$db = $dbh->prepare("select type_id from ${db_name}_ship_types where config NOT REGEXP 'oo' && type_id != 1 && type_id != 2 && auction =1");
+		$db->execute();
+		$stuff = $db->fetchrow_hashref();
+
+		for ($i=1;$i<$things;$i++) {
+			$stuff = $db->fetchrow_hashref();
+		}
+		$go_id = $stuff->{type_id};
+
+		#Put stuff into DB
+		$i_type = 1;
+		$db = $dbh->prepare("select type_id,name,cost,max_shields,fighters,max_fighters,upgrades,config,descr from ${db_name}_ship_types where type_id = $go_id");
+		$db->execute();
+		$ships = $db->fetchrow_hashref();
+		$i_code = "ship".$ships->{type_id};
+		$i_name = "$ships->{name}";
+		$i_price = $ships->{cost};
+		$i_descr = "<b class=b1>Specs:</b> $ships->{max_shields} Shield Capacity; $ships->{fighters}/$ships->{max_fighters} Fighters; $ships->{upgrades} Upgrade Pods; Config: $ships->{config}.<p>$ships->{descr}";
+	} elsif($turnip > 45){ #equipment
+		$i_type = 2;
+		$flag_bomb = find_var("select value from ${db_name}_db_vars where name = 'flag_bomb'");
+		$cost_bomb = find_var("select value from ${db_name}_db_vars where name = 'cost_bomb'");
+		if($turnip > 49 && $flag_bomb < 2){
+			$i_code="warpack";
+			$i_name="WarPack";
+			$i_price=$cost_bomb*4;
+			$i_descr="A collection of 2 Alpha bombs and 4 Gamma Bombs, all in one package.";
+		} else {
+			$i_code="deltabomb";
+			$i_name="Delta Bomb";
+			$i_price=15*$cost_bomb;
+			$i_descr="One Bomb that will nullify all shields on all ships in the system AND then do <b>5000</b> damage to each of the ships!.<br><br>Note: Player may only own one Delta Bomb at a time!";
+		}
+	} else { # upgrades
+		$enable_superweapons = find_var("select value from ${db_name}_db_vars where name = 'enable_superweapons'");
+		$i_type = 3;
+		if($turnip > 41){
+			$i_code="fig1500";
+			$i_name="1500 Fighter Bays";
+			$i_price=50000;
+			$i_descr="Capable of fitting 1500 fighters into one upgrade pod this is a must for the war-hungry.";
+		} elsif($turnip > 37){
+			$i_code="attack_pack";
+			$i_name="Attack Pack";
+			$i_price=20000;
+			$i_descr="Increases a ships shield capacity by 200 and fighter capacity by 700, all with one upgrade.";
+		} elsif($turnip > 32.5){
+			$i_code="fig500";
+			$i_name="500 Fighter Bays";
+			$i_price=10000;
+			$i_descr="This Nifty little upgrade allows you to squeeze 500 fighters into one upgrade pod.";
+		} elsif($turnip > 28 || $enable_superweapons == 1){ #only put in terras if they are available.
+			$i_code="upbs";
+			$i_name="Battleship Conversion";
+			$i_price=20000;
+			$i_descr="Enables a ship to do more damage when attacking, and increases shields per hour by <b>50%</b>.<br>(already installed on normal battleships).";
+		} elsif($turnip > 25) {
+			$i_code="up2";
+			$i_name="Terra Maelstrom (Upgrade)";
+			$i_price=1000000;
+			$i_descr="The only upgrade for the Brobdingnagian (Can only be used on Brobdingnagians). Rare, but extremely potent, this replaces the Quark Disrupter with a weapon that is capable of crippling planets.<br>Get it while its available.";
+		}
+	}
+
+#$i_type
+#$i_code
+#$i_name
+#$i_price
+#$i_descr
+	$dbh->do("insert into ${db_name}_bilkos (timestamp,item_type,item_code,item_name,going_price,descr,active) values(".time().",'$i_type','$i_code','$i_name','$i_price','$i_descr',1)");
+}
+
+
+
+#=======================================
+# More Random Events
+#=======================================
+
+#random event things.
+if($r_e > 0){	#ensure the random events var is set, otherwise could get a divide by 0 error
+	#remove mining rush.
+	$db = $dbh->prepare("select star_id from ${db_name}_stars where event_random = '4'");
+	$db->execute();
+	$star_var = $db->fetchrow_hashref();
+	if($star_var) {
+
+		$temp = (1000 / ($r_e * $num_ss->{num_stars})) + 4;
+		$temp2 = int(rand($temp));
+		if($temp2 == 0) {
+			$dbh->do("update ${db_name}_stars set event_random = 0 where star_id = $star_var->{star_id}");
+			$dbh->do("insert into ${db_name}_news (timestamp, headline, login_id) values (".time().",'The rich metal deposits in <b class=b1>system $star_var->{star_id}</b> have been exhausted. Mining rates in that system have returned to normal.','-10')");
+			print "Mining Rush Added.\n";
+		}
+	}
+
+
+	#remove Solar Storm
+	$db = $dbh->prepare("select star_id,star_name from ${db_name}_stars where event_random = '12'");
+	$db->execute();
+
+	while($star_var = $db->fetchrow_hashref()){
+		$temp = (1800 / ($r_e * $num_ss->{num_stars})) + 4;
+		$temp2 = int(rand($temp));
+		if($temp2 == 0) {
+			$dbh->do("update ${db_name}_stars set event_random = 0 where star_id = $star_var->{star_id}");
+			$dbh->do("insert into ${db_name}_news (timestamp, headline, login_id) values (".time().",'The Solar Activity in the <b class=b1>$star_var->{star_name}</b> system (#<b>$star_var->{star_id}</b>), has gone back to more normal levels, meaning the Solar Storm has abated.','-10')");
+			print "Solar Storm Removed.\n";
+		}
+	}
+}
+
+#Solar Storm
+if ($r_e > 1) {
+	$temp = (2000 / ($r_e * $num_ss->{num_stars})) + 1;
+
+	$chance = int(rand($temp));
+	if ($chance < 2) {
+		$to_go = int(rand($num_ss->{num_stars}));
+		$db = $dbh->prepare("select event_random,star_name from ${db_name}_stars where star_id = '$to_go'");
+		$db->execute();
+		$is_it = $db->fetchrow_hashref();
+		if ($is_it->{event_random} == 0) {
+			$dbh->do("update ${db_name}_stars set event_random = 12 where star_id = '$to_go'");
+			$dbh->do("insert into ${db_name}_news (timestamp, headline, login_id) values (".time().",'Due to increased Solar Activity in the <b class=b1>$is_it->{star_name}</b> system (#<b>$to_go</b>), a Solar Storm has been created.','-10')");
+			print "Solar Storm added.\n";
+		}
+	}
+}
+
+
+#=======================================
+# Research
+#=======================================
+
+if ($flag_res == 1) {
+	$htech = find_var("select value from ${db_name}_db_vars where name = 'hourly_tech'");
+	$dbh->do("update ${db_name}_planets set tech = tech + '$htech' where colon < 20000 && research_fac > 0");
+	$dbh->do("update ${db_name}_planets set tech = tech + ('$htech' * 1.4) where colon >= 20000 && colon <40000 && research_fac > 0");
+	$dbh->do("update ${db_name}_planets set tech = tech + ('$htech' * 1.8) where colon >= 40000 && colon <70000 && research_fac > 0");
+	$dbh->do("update ${db_name}_planets set tech = tech + ('$htech' * 2.2) where colon >= 70000 && colon <120000 && research_fac > 0");
+	$dbh->do("update ${db_name}_planets set tech = tech + ('$htech' * 2.6) where colon >= 120000 && colon <220000 && research_fac > 0");
+	$dbh->do("update ${db_name}_planets set tech = tech + ('$htech' * 3) where colon >= 220000 && colon <400000 && research_fac > 0");
+	$dbh->do("update ${db_name}_planets set tech = tech + ('$htech' * 3.4) where colon >= 400000 && colon <750000 && research_fac > 0");
+	$dbh->do("update ${db_name}_planets set tech = tech + ('$htech' * 3.8) where colon >= 750000 && colon <1300000 && research_fac > 0");
+	$dbh->do("update ${db_name}_planets set tech = tech + ('$htech' * 4.2) where colon >= 1300000 && colon <1500000 && research_fac > 0");
+	$dbh->do("update ${db_name}_planets set tech = tech + ('$htech' * 4.6) where colon >= 1500000 && colon <1750000 && research_fac > 0");
+	$dbh->do("update ${db_name}_planets set tech = tech + ('$htech' * 5) where colon >= 1750000 && research_fac > 0");
+
+	print "Research completed for Facilities\n";
+}else{
+	print "Research Disabled by Admin\n";
+}#end if_else stat
+
+
+
+#prepares random player event. The event itself runs from player_events.php.
+if ($flag_rpe != 0){
+   $rpe = rand();
+   if ($rpe > 0.10){#reset var as needed
+	$db = $dbh->prepare("select count(login_id) as num_players from ${db_name}_users");
+	$db->execute();
+	$count = $db->fetchrow_hashref();
+	$num_players = $count->{num_players};
+
+	$player_event = int(rand(5)) + 1;
+	$player_target = int(rand($num_players)) + 1;
+	$dbh->do("update ${db_name}_users set event = '$player_event' where login_id = '$player_target' && event = 0");
+	#print "Event number '$player_event' set for Player with login_id: '$player_target'";
+   }
+}
+
+
+#Senator re-calculation.
+
+$db = $dbh->prepare("select value from ${db_name}_db_vars where name = 'enable_politics'");
+$db->execute();
+$enable_politics = $db->fetchrow_hashref();
+
+if($enable_politics == 1) {
+	#Military Senator >>> positon_id = 3
+	$db = $dbh->prepare("select login_name,login_id from ${db_name}_users where fighters_killed > '5000' && politics = 0 && login_id > 3 order by fighters_killed desc");
+	$db->execute();
+	$mil_min = $db->fetchrow_hashref();
+	if ($mil_min) {
+		$db = $dbh->prepare("select login_id from ${db_name}_politics where position_id = 3");
+		$db->execute();
+		$pol_mil = $db->fetchrow_hashref();
+		if ($pol_mil->{login_id} != $mil_min->{login_id}) {
+			$dbh->do("update ${db_name}_users set politics = 3 where login_id = '$mil_min->{login_id}'");
+			$dbh->do("update ${db_name}_politics set login_name = '$mil_min->{login_name}', timestamp = ".time().", login_id = '$mil_min->{login_id}' where position_id = '3'");
+			$dbh->do("insert into ${db_name}_news (timestamp, headline, login_id) values (".time().",'A new Senator has been declared. <b class=b1>$mil_min->{login_name}</b> is now a <b class=b1>Senator</b>','2')");
+			$dbh->do("insert into ${db_name}_messages (timestamp,sender_name,sender_id, login_id, text) values(".time().",'$mil_min->{login_name}','$mil_min->{login_id}','$mil_min->{login_id}','You are the new <b class=b1>Military Senator</b>.')");
+			if ($pol_min) {
+				$dbh->do("insert into ${db_name}_messages (timestamp,sender_name,sender_id, login_id, text) values(".time().",'$pol_min->{login_name}','$pol_min->{login_id}','$pol_min->{login_id}','You are no longer the <b class=b1>Military Senator</b>.')");
+				$dbh->do("update ${db_name}_users set politics = 0 where login_id = '$pol_min->{login_id}'");
+			}
+		}
+	}
+
+	#Defense Senator >>> positon_id = 4
+	$db = $dbh->prepare("select p.login_name,p.login_id from ${db_name}_planets p, ${db_name}_users u where (u.politics = 0 || u.politics = 4) && (u.login_id = p.login_id && p.fighters > '5000' && p.planet_type >= '0' && p.login_id > '3') order by p.fighters desc");
+	$db->execute();
+	$mil_min = $db->fetchrow_hashref();
+	if ($mil_min) {
+		$db = $dbh->prepare("select login_id from ${db_name}_politics where position_id = 4");
+		$db->execute();
+		$pol_mil = $db->fetchrow_hashref();
+		if ($pol_mil->{login_id} != $mil_min->{login_id}) {
+			$dbh->do("update ${db_name}_users set politics = 4 where login_id = '$mil_min->{login_id}'");
+			$dbh->do("update ${db_name}_politics set login_name = '$mil_min->{login_name}', timestamp = ".time().", login_id = '$mil_min->{login_id}' where position_id = '4'");
+			$dbh->do("insert into ${db_name}_news (timestamp, headline, login_id) values (".time().",'A new Senator has been declared. <b class=b1>$mil_min->{login_name}</b> is now a <b class=b1>Senator</b>','2')");
+			$dbh->do("insert into ${db_name}_messages (timestamp,sender_name,sender_id, login_id, text) values(".time().",'$mil_min->{login_name}','$mil_min->{login_id}','$mil_min->{login_id}','You are the new <b class=b1>Defense Senator</b>.')");
+			if ($pol_min) {
+				$dbh->do("insert into ${db_name}_messages (timestamp,sender_name,sender_id, login_id, text) values(".time().",'$pol_min->{login_name}','$pol_min->{login_id}','$pol_min->{login_id}','You are no longer the <b class=b1>Defense Senator</b>.')");
+				$dbh->do("update ${db_name}_users set politics = 0 where login_id = '$pol_min->{login_id}'");
+			}
+		}
+	}
+
+	#Industry Senator >>> positon_id = 2
+	$db = $dbh->prepare("select p.login_name,p.login_id from ${db_name}_planets p, ${db_name}_users u where (u.politics = 0 || u.politics = 2) && (u.login_id = p.login_id && p.colon > '50000' && p.planet_type >= '0' && p.login_id > '3') order by p.colon desc");
+	$db->execute();
+	$mil_min = $db->fetchrow_hashref();
+	if ($mil_min) {
+		$db = $dbh->prepare("select login_id from ${db_name}_politics where position_id = 2");
+		$db->execute();
+		$pol_mil = $db->fetchrow_hashref();
+		if ($pol_mil->{login_id} != $mil_min->{login_id}) {
+			$dbh->do("update ${db_name}_users set politics = 2 where login_id = '$mil_min->{login_id}'");
+			$dbh->do("update ${db_name}_politics set login_name = '$mil_min->{login_name}', timestamp = ".time().", login_id = '$mil_min->{login_id}' where position_id = '2'");
+			$dbh->do("insert into ${db_name}_news (timestamp, headline, login_id) values (".time().",'A new Senator has been declared. <b class=b1>$mil_min->{login_name}</b> is now a <b class=b1>Senator</b>','2')");
+			$dbh->do("insert into ${db_name}_messages (timestamp,sender_name,sender_id, login_id, text) values(".time().",'$mil_min->{login_name}','$mil_min->{login_id}','$mil_min->{login_id}','You are the new <b class=b1>Industry Senator</b>.')");
+			if ($pol_min) {
+				$dbh->do("insert into ${db_name}_messages (timestamp,sender_name,sender_id, login_id, text) values(".time().",'$pol_min->{login_name}','$pol_min->{login_id}','$pol_min->{login_id}','You are no longer the <b class=b1>Industry Senator</b>.')");
+				$dbh->do("update ${db_name}_users set politics = 0 where login_id = '$pol_min->{login_id}'");
+			}
+		}
+	}
+
+	#Trade Senator >>> positon_id = 5
+	$db = $dbh->prepare("select count(s.ship_id) as tempx5x, s.login_name as login_name, s.login_id as login_id from ${db_name}_ships s, ${db_name}_users u where (u.politics = 0 || u.politics = 5) && (u.login_id = s.login_id && s.config REGEXP 'fr' && s.login_id > 3) GROUP BY s.login_id order by tempx5x desc");
+	$db->execute();
+	$mil_min = $db->fetchrow_hashref();
+	if ($mil_min->{tempx5x} > 20) {
+		$db = $dbh->prepare("select login_id from ${db_name}_politics where position_id = 5");
+		$db->execute();
+		$pol_mil = $db->fetchrow_hashref();
+		if ($pol_mil->{login_id} != $mil_min->{login_id}) {
+			$dbh->do("update ${db_name}_users set politics = 5 where login_id = '$mil_min->{login_id}'");
+			$dbh->do("update ${db_name}_politics set login_name = '$mil_min->{login_name}', timestamp = ".time().", login_id = '$mil_min->{login_id}' where position_id = '5'");
+			$dbh->do("insert into ${db_name}_news (timestamp, headline, login_id) values (".time().",'A new Senator has been declared. <b class=b1>$mil_min->{login_name}</b> is now a <b class=b1>Senator</b>','2')");
+			$dbh->do("insert into ${db_name}_messages (timestamp,sender_name,sender_id, login_id, text) values(".time().",'$mil_min->{login_name}','$mil_min->{login_id}','$mil_min->{login_id}','You are the new <b class=b1>Trade Senator</b>.')");
+			if ($pol_min) {
+				$dbh->do("insert into ${db_name}_messages (timestamp,sender_name,sender_id, login_id, text) values(".time().",'$pol_min->{login_name}','$pol_min->{login_id}','$pol_min->{login_id}','You are no longer the <b class=b1>Trade Senator</b>.')");
+				$dbh->do("update ${db_name}_users set politics = 0 where login_id = '$pol_min->{login_id}'");
+			}
+		}
+	}
+
+	#War Senator >>> positon_id = 6
+	$db = $dbh->prepare("select count(s.ship_id) as tempx5x, s.login_name as login_name, s.login_id as login_id from ${db_name}_ships s, ${db_name}_users u where (u.politics = 0 || u.politics = 6) && (u.login_id = s.login_id && s.config REGEXP 'bs' && s.login_id > 3) GROUP BY s.login_id order by tempx5x desc");
+	$db->execute();
+	$mil_min = $db->fetchrow_hashref();
+	if ($mil_min->{tempx5x} > 50) {
+		$db = $dbh->prepare("select login_id from ${db_name}_politics where position_id = 6");
+		$db->execute();
+		$pol_mil = $db->fetchrow_hashref();
+		if ($pol_mil->{login_id} != $mil_min->{login_id}) {
+			$dbh->do("update ${db_name}_users set politics = 6 where login_id = '$mil_min->{login_id}'");
+			$dbh->do("update ${db_name}_politics set login_name = '$mil_min->{login_name}', timestamp = ".time().", login_id = '$mil_min->{login_id}' where position_id = '6'");
+			$dbh->do("insert into ${db_name}_news (timestamp, headline, login_id) values (".time().",'A new Senator has been declared. <b class=b1>$mil_min->{login_name}</b> is now a <b class=b1>Senator</b>','2')");
+			$dbh->do("insert into ${db_name}_messages (timestamp,sender_name,sender_id, login_id, text) values(".time().",'$mil_min->{login_name}','$mil_min->{login_id}','$mil_min->{login_id}','You are the new <b class=b1>War Senator</b>.')");
+			if ($pol_min) {
+				$dbh->do("insert into ${db_name}_messages (timestamp,sender_name,sender_id, login_id, text) values(".time().",'$pol_min->{login_name}','$pol_min->{login_id}','$pol_min->{login_id}','You are no longer the <b class=b1>War Senator</b>.')");
+				$dbh->do("update ${db_name}_users set politics = 0 where login_id = '$pol_min->{login_id}'");
+			}
+		}
+	}
+
+	#Espionage Senator >>> positon_id = 7
+	$db = $dbh->prepare("select count(s.ship_id) as tempx5x, s.login_name as login_name, s.login_id as login_id from ${db_name}_ships s, ${db_name}_users u where (u.politics = 0 || u.politics = 7) && (u.login_id = s.login_id && (s.config REGEXP 'ls' || s.config REGEXP 'hs') && s.login_id > 3) GROUP BY s.login_id order by tempx5x desc");
+	$db->execute();
+	$mil_min = $db->fetchrow_hashref();
+	if ($mil_min->{tempx5x} > 30) {
+		$db = $dbh->prepare("select login_id from ${db_name}_politics where position_id = 6");
+		$db->execute();
+		$pol_mil = $db->fetchrow_hashref();
+		if ($pol_mil->{login_id} != $mil_min->{login_id}) {
+			$dbh->do("update ${db_name}_users set politics = 6 where login_id = '$mil_min->{login_id}'");
+			$dbh->do("update ${db_name}_politics set login_name = '$mil_min->{login_name}', timestamp = ".time().", login_id = '$mil_min->{login_id}' where position_id = '6'");
+			$dbh->do("insert into ${db_name}_news (timestamp, headline, login_id) values (".time().",'A new Senator has been declared. <b class=b1>$mil_min->{login_name}</b> is now a <b class=b1>Senator</b>','2')");
+			$dbh->do("insert into ${db_name}_messages (timestamp,sender_name,sender_id, login_id, text) values(".time().",'$mil_min->{login_name}','$mil_min->{login_id}','$mil_min->{login_id}','You are the new <b class=b1>War Senator</b>.')");
+			if ($pol_min) {
+				$dbh->do("insert into ${db_name}_messages (timestamp,sender_name,sender_id, login_id, text) values(".time().",'$pol_min->{login_name}','$pol_min->{login_id}','$pol_min->{login_id}','You are no longer the <b class=b1>War Senator</b>.')");
+				$dbh->do("update ${db_name}_users set politics = 0 where login_id = '$pol_min->{login_id}'");
+			}
+		}
+	}
+
+
+}
+
+#finish counting time taken to run this maint.
+$total_time = time() - $start_time;
+
+#print that maint was run, and how long it took.
+$dbh->do("insert into ${db_name}_news (timestamp, headline, login_id) values (".time().",'Hourly Maintenance Run for this game in <b>$total_time</b> seconds','1')");
+
+
+
+	if($db) {
+	$db->finish;
+    }
+    if($db2) {
+	$db2->finish;
+    }
+    $dbh->disconnect() if $dbh;
+    undef $dbh;
+}
+
+
+
+#=======================================
+# Functions
+#=======================================
+
+#function to assist in easy finding of variables;
+sub find_var {
+	my $query = shift;
+	$db = $dbh->prepare($query);
+	$db->execute();
+	$db_var = $db->fetchrow_hashref();
+	return $db_var->{value};
+}#end sub

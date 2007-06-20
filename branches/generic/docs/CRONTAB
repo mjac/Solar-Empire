@@ -1,0 +1,2 @@
+0 * * * * php PATH/owner/run_hourly.php
+0 0 * * * php PATH/owner/run_daily.php

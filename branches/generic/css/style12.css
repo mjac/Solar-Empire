@@ -1,0 +1,24 @@
+/* Created By TheMadWeaz */
+/* The Silver Age */
+body {font-family: verdana;font-size: 8pt;background-color:#000000;color:#b8b8b8;
+scrollbar-3d-light-color: Black;
+scrollbar-arrow-color: #b8b8b8;
+scrollbar-dark-shadow-color: Gray;
+scrollbar-shadow-color: #A9A9A9;
+scrollbar-highlight-color: Black;
+scrollbar-base-color: #F5F5DC;
+scrollbar-face-color: #4F4F4F;
+}
+
+.nav {font-family: veranda;color: #000000}
+
+th {font-size: 10pt;font-weight: bold}
+td {font-size: 10pt;}
+form {font-size: 10pt}
+b {color: #77888a}
+b.b1 {color: #a4a4a4;font-weight: normal}
+b.b2 {color: #afafaf}
+b.cloak{color:#b3bac1}
+A:link {text-decoration: none;font-weight: bold;color:#9b9493}
+A:visited {text-decoration: none;font-weight: bold;color:#9b9493}
+A:hover {text-decoration: underline;font-weight: bold;color:#6c6c6c}

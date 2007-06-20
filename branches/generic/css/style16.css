@@ -1,0 +1,78 @@
+body { 
+font-family: Arial, Helvetica, sans-serif; 
+font-size: 8pt; 
+background-color: black; 
+color:gold; 
+scrollbar-3d-light-color: gold; 
+scrollbar-arrow-color: red; 
+scrollbar-dark-shadow-color: gold; 
+scrollbar-shadow-color: gold; 
+scrollbar-highlight-color: black; 
+scrollbar-base-color: gold; 
+scrollbar-face-color: black; 
+margin: 1px; 
+} 
+b {color: white;} 
+b.b1 {color: orangered;} 
+b.b2 {color: silver;} 
+b.b3 {color: gold;} 
+b.cloak{color: scarlet;} 
+A:link {text-decoration: none;font-weight: bold;color:blue;} 
+A:visited {text-decoration: none;font-weight: bold;color:blue;} 
+A:hover {text-decoration: underline;font-weight: bold;color:blue;} 
+form {font-size: 8pt;} 
+
+input { 
+color: gold; 
+background: black; 
+font-family: Arial; 
+font-size: 8pt; 
+border: solid 1px; 
+border-color: gold; 
+} 
+
+select { 
+color: gold; 
+background: black; 
+font-family: Arial; 
+font-size: 8pt; 
+border: solid 1px; 
+border-color: gold; 
+} 
+
+textarea { 
+color: gold; 
+background: black; 
+font-family: Arial; 
+font-size: 10pt; 
+border: solid 1px; 
+border-color: gold;} 
+td {font-size: 8pt;} 
+
+th { 
+color: gold; 
+background: black; 
+font-family: Arial, Helvetica, sans-serif; 
+font-size: 8pt; 
+font-weight: bold; 
+border-bottom: solid 1px; 
+border-color: gold; 
+text-align: centre; 
+} 
+.nav {font-family: Arial, Helvetica, sans-serif; color: gold} 
+.all {border: solid 1px gold} 
+.color_header {color: gold; border-bottom: solid 1px gold} 
+.ship_name {text-align: center; color: gold; border-bottom: solid 1px gold} 
+.cargo_head {font-weight: normal; border-top: solid 1px gold} 
+.status {border-bottom: solid 1px gold; text-align: center} 
+.emot_td {border-bottom: solid 1px gold} 
+.border_left {border-left: solid 1px gold} 
+.no_bottom {border: solid 1px gold; border-bottom: solid 1px gold} 
+.notopleft {border-bottom: solid 1px gold; border-right: solid 1px gold} 
+.notopright {border-bottom: solid 1px gold; border-left: solid 1px gold} 
+.no_top {border-bottom: solid 1px gold; border-right: solid 1px gold; border-left: solid 1px gold} 
+.top5plyrs {border-left: solid 1px gold; color: red} 
+.top_b {border-top: solid 1px gold} 
+.top5 {border-left: solid 1px gold;border-top: solid 1px gold} 
+.tr_bg {background: black} 
+.tr_bg_alt {background: black}

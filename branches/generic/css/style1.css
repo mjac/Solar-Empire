@@ -1,0 +1,166 @@
+html {
+	background: Black;
+	color: White;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: small;
+}
+
+body {
+	margin: 10px;
+}
+
+#logo {
+	margin: 20px;
+	text-align: center;
+}
+
+
+/* Login form */
+#login {
+	width: 20%;
+	border: Thin solid Grey;
+	padding: 5px;
+	margin: 5px;
+	float: left;
+	background: #333333;
+}
+
+#login label {
+	font-weight: bold;
+}
+
+#loginContent {
+	margin-left: 25%;
+}
+
+#gameExtras {
+	float: right;
+	width: 18%;
+	padding: 10px;
+}
+
+#gameList {
+	border: Thin outset Grey;
+	padding: 10px;
+	background: #333333;
+	margin-right: 22%;
+}
+
+h1 {
+	font-size: 160%;
+	font-weight: normal;
+}
+h2 {
+	font-size: 120%;
+}
+
+input.text {
+	padding: 1px;
+	font-family: monospace;
+}
+
+
+a:link, a:visited {
+	text-decoration: none;
+	font-weight: bold;
+	color: #FF6666;
+}
+a:link:hover, a:visited:hover {
+	text-decoration: underline;
+}
+
+
+#gameMenu {
+	list-style: none;
+	width: 16%;
+	float: left;
+	text-align: center;
+	background-color: #202020;
+	padding: 5px;
+}
+#gameMenu h1, #gameMenu h2 {
+	font-size: 110%;
+	font-weight: bold;
+	margin: 5px 2px 10px 2px;
+	padding: 3px;
+	border-bottom: 2px solid #666666;
+}
+#gameMenu ul {
+	padding: 0px;
+	margin: 10px 2px;
+}
+#gameMenu li {
+	list-style: none;
+	padding: 1px;
+}
+#gameMenu table {
+	margin: 2px auto;
+	text-align: left;
+}
+#gameMenu th {
+	color: #999999;
+}
+#gameMenu td {
+	padding: 1px;
+}
+
+#gameMenu p {
+	margin: 2px;
+}
+
+#gameBody {
+	margin-left: 19%;
+}
+
+#locInfo {
+	margin-right: 32%;
+}
+
+#locBar {
+	width: 30%;
+	float: right;
+}
+
+#miniMap {
+	border: 2px outset White;
+}
+
+a img {
+	border: none;
+}
+
+dt {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+dd {
+	margin-bottom: 20px;
+}
+
+table.simple {
+	border-top: 1px solid #666666;
+	border-left: 1px solid #666666;
+	border-collapse: collapse;
+	margin-top: 10px;
+}
+
+table.simple th, td {
+	padding: 6px;
+}
+
+table.simple th {
+	background: #555555;
+	border-right: 1px solid #666666;
+	border-bottom: 1px solid #666666;
+}
+
+table.simple td {
+	background: #333333;
+	border-right: 1px solid #666666;
+	border-bottom: 1px solid #666666;
+}
+
+b {color: #C0C0C0;}
+b.b1 {color: #FF3333;}
+b.b2 {color: #FFFFFF;}
+b.cloak{color: #555555;}

@@ -1,0 +1,598 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<title>Solar Empire Installation Guide for Windows</title>
+</head>
+
+<body bgcolor="#cccccc" link="#0000ee" vlink="#551a8b" alink="#0000ee">
+
+<div class=Section1>
+
+<h1><span style='font-size:24.0pt'>Installation Guide v1.0 for
+Solar Empire on Win9x/Me with Apache Webserver<br>
+</span>&nbsp;&nbsp;&nbsp;</h1>
+
+<p>-by Patrick Brady aka Maugrim the Reaper<br>
+<br>
+<br>
+<b>Contents:</b><br>
+<br>
+1. <a href="#intro"><span style='font-size:18.0pt'>Introduction</span></a> <br>
+2. <a href="#webserv"><span style='font-size:18.0pt'>How to install a webserver
+on Win9x/Me</span></a> <br>
+3. <a href="#perl"><span style='font-size:18.0pt'>How to install and configure
+ActivePerl for Window</span></a> <br>
+4. <a href="#unpack"><span style='font-size:18.0pt'>How to unpack and install
+the Solar Empire files</span></a> <br>
+5. <a href="#mysql"><span style='font-size:18.0pt'>Creating the Solar Empire
+database</span></a> <br>
+6. <a href="#config"><span style='font-size:18.0pt'>Preparing your game
+databases using config.pl etc.</span></a></p>
+
+<p>7. <span style='font-size:18.0pt;mso-bidi-font-size:12.0pt'>Building
+the Universe</span><br>
+8. <a href="#admin"><span style='font-size:18.0pt'>Logging in as Admin</span></a>
+<br>
+9. <a href="#maint"><span style='font-size:18.0pt'>Maintaining Solar Empire
+(Task Scheduler and other things)</span></a> </p>
+
+<p style='margin-top:0cm;margin-right:0cm;margin-bottom:12.0pt;
+margin-left:18.0pt'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p><a name=intro></a><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p><b><u><span style='font-size:
+24.0pt;mso-bidi-font-size:36.0pt;font-family:Helvetica'>1.&nbsp; Introduction</span></u></b><b><u><span
+style='font-size:10.0pt;mso-bidi-font-size:36.0pt;font-family:Helvetica'><o:p></o:p></span></u></b></p>
+
+<p><span style='font-size:10.0pt;
+mso-bidi-font-size:12.0pt'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p>Solar Empire is a web-based
+space strategy game written in php. It can be run from any web browser with no
+prior downloads. Since it comes with a GPL licence, the code is freely
+available on the web. You are free to alter and change the code in any way you
+wish, as long as you make those changes publicly available. This installation
+guide was created to show users and developers how to set Solar Empire up on a
+Windows based system to enable developing and testing of code. At present it
+does not cover Linux/Unix based systems although the basic steps, apart from
+those relating to setting up the webserver, are very similar. This guide was
+written by Patrick Brady aka Maugrim The Reaper, and incorporates the advice
+and suggestions of Moriarty. This guide is distributed with the Solar Empire
+source code as an aid to developers and users who wish to test their own ideas
+and additions on a working webserver on their home PCs.</p>
+
+<p>If there are any additions you
+would like to see added in the next version of this guide, please feel free to
+email me at <a href="mailto:bpaddy2@yahoo.com">bpaddy2@yahoo.com</a></p>
+
+<p>Copyright <span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;color:windowtext'>? 2002
+Patrick Brady</span></p>
+
+<p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p><b><u><span style='font-size:
+24.0pt;mso-bidi-font-size:12.0pt;font-family:Helvetica'>2. Getting Ready to
+Begin<o:p></o:p></span></u></b></p>
+
+<p><br>
+In order to install Solar Empire on your Windows PC there are a number of files
+you may need to download. Please check the list below and ensure that you have
+the following available. The installation executables for each are available
+free from the web.<br>
+<br>
+<br>
+<b>PHPTriad</b> - A Windows installer for an Apache/PHP/MySQL/Perl environment.
+This download will automatically install a preconfigured Apache webserver in
+C:\apache The latest edition incorporates the most recent stable versions of
+MySQL, PHP, and Apache webserver. It also includes PhpMyAdmin for easier
+management of your MySQL databases.<br>
+<a href="http://www.phpgeek.com/">http://www.phpgeek.com/</a><br>
+<br>
+<b>ActivePerl</b> - Although the perl support with PHPTriad is adequate, it is
+recommended that a more robust perl installation for Windows be used.
+ActivePerl is freely available and comes fully documented with the added 'ppm'
+program for installing modules (essential for later!)<br>
+<a href="http://www.activestate.com/">http://www.activestate.com/</a><br>
+<br>
+<b>Windows Installer 2.0</b> - To enable proper installation of ActivePerl you
+must install the Windows Installer 2.0 on your PC, version 1.1 may already be
+installed but is now out of date.<br>
+<br>
+<b><i>MDAC 2.7</i></b><i> - Version 2.7+ of Microsoft's MDAC should also be
+installed (MDAC 2.6 for Windows 95). If necessary, <b>DCOM95/98</b> may also be
+required. Especially for Windows 95. These may not be required for Solar Empire
+to operate successfully but are recommended to enable a full range of Perl
+functions. If you intend on running only the perl scripts for SE, you can
+probably ignore them.</i><br>
+<br>
+The above three may be downloaded from Microsoft Downloads. <b>Windows
+Installer 2.0</b> is available from <a
+href="http://www.microsoft.com/downloads/release.asp?ReleaseID=32831">http://www.microsoft.com/downloads/release.asp?ReleaseID=32831</a></p>
+
+<p>I also recommend downloading <b>Win32Pad</b>
+from <a href="http://www.gena0.com/">http://www.gena0.com/</a>. Many of the
+Solar Empire files have been saved using a Unix format which makes them
+difficult to read in Windows Notepad. This replacement for Notepad can read and
+save in both Windows and Unix formats. It is an invaluable tool which you will
+need for editing the files.<br>
+<br>
+<br>
+<br>
+<a name=webserv></a><b><u><span style='font-size:24.0pt;font-family:Helvetica'>2.
+How to install a Webserver on Win9x/Me<o:p></o:p></span></u></b></p>
+
+<p><br>
+Now to install your webserver! </p>
+
+<p><i><span style='color:#999999'>&lt;Should
+you wish to be adventurous and create your own custom-built webserver, please
+see Appendix A: </span></i><i><span style='mso-bidi-font-size:18.0pt;
+color:#999999'>Installation of Apache Webserver from Separate Components. This
+appendix contains step by step instruction on installing Apache, PHP, MySQL,
+and ActivePerl separately and configuring each correctly. It is the most
+interesting method and a great learning lesson. I recommend you try it at least
+once just to get a feel for how each component fits together in the whole. It
+is also useful if you wish to test various versions of the components besides
+those available in PHPTriad.&gt;<o:p></o:p></span></i></p>
+
+<p><i><span style='mso-bidi-font-size:
+18.0pt;color:#999999'>&lt;If you are faint-hearted and only wish to get this
+part over and done with then&gt;</span></i><span style='mso-bidi-font-size:
+18.0pt'> Below is laid out the instructions for installing PHPTriad, the
+Apache/Php/MySQL/Perl enviroment. </span></p>
+
+<p>It's a simple process. Locate
+the PHPTriad installation file and run it. Apache Webserver, PHP, MySQL and
+nsperl will each be installed and configured automatically in the C:\apache
+directory. <br>
+<br>
+To test your installation, from the Start Menu&gt;Programs&gt;PHPTriad list
+select &quot;Start MySQL&quot; and also &quot;Start Apache&quot;. MySQL will
+run in the background. Apache will open an MS-DOS window which must remain open
+for the duration of your Apache session. To stop your webserver, simply close
+the Apache window.<br>
+<br>
+Start your favourite web-browser and type the following into the location bar
+&quot;http://localhost/&quot;, press enter and the start up PHPTriad page
+should now appear on screen. If it does not appear, consult the PHPTriad
+documentation and website for a few insights as to what may have gone wrong. It
+is usually nothing serious.<br>
+<br>
+Congradulations! You have just installed Apache Webserver and with
+&quot;localhost&quot; being your default server name. <br>
+<br>
+Your final step is as follows: Open your C:\apache\php\php.ini file with a text
+editor (win32pad/notepad)) and find the following &quot;extensions_dir&quot;.
+Set this to your php extensions folder, &quot;c:\apache\php\extensions&quot;.
+Next find below this a list of .dll files, typically named like php_zlib.dll
+etc. Remove the semi-colon <b>;</b> from in front of the line
+&quot;extension=php_gd.dll&quot;. This will allow php to load GD support on
+start-up.<br>
+<br>
+<br>
+<br>
+<a name=perl></a><b><u><span style='font-size:24.0pt;font-family:Helvetica'>3.
+How to install and configure ActivePerl for Windows</span></u></b><br>
+<br>
+<br>
+So what is wrong with the perl support with PHPTriad? nsperl is a bare bones
+distribution, included in PHPTriad simply by popular choice and not fully
+supported by the makers of PHPTriad. So first step, delete all contents of
+C:\apache\Perl. Next ensure that the Windows Installer 2.0 is installed and run
+your ActivePerl installation file. Set the installation path to, guess,
+C:\apache\Perl\ and let it rip. The installation will take some minutes so do
+not panic when it seems frozen on &quot;Creating HTML Documentation...&quot;,
+that's normal and will pass after a while. Be patient!<br>
+<br>
+When the installation has halted, and you have restarted your PC, there a few
+little things to finish up with. Perl and MySQL need to be available from
+MS-DOS no matter which directory you are browsing. To accomplish this you must
+add the following line to your Autoexec.bat file on your C:\ drive. From the
+Start Menu select &quot;Run&quot; and type &quot;sysedit&quot;. Press enter and
+your autoexec.bat file will be opened on top of your other sys files. Add the
+line below to the bottom of all other text in autoexec.bat<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <b>PATH=%PATH%;c:\;c:\windows;c:\windows\command;c:\apache\perl\bin;c:\apache\mysql\bin;c:\apache\php</b><br>
+<br>
+If a similar line already exists simply add the apache entries to your Path.
+Save the altered autoexec.bat file and restart your computer to let it take
+effect. This will add the perl\bin and mysql\bin directories to your system path.
+This means that in MS-DOS, you can run these commands from any directory you
+may happen to be in.<br>
+<br>
+Now that ActivePerl is installed, we must add a number of modules to it in
+order to allow perl scripts to interface with our MySQL databases.<br>
+<br>
+Start MS-DOS and type the following:<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <b>ppm</b><br>
+<br>
+A new &quot;ppm&gt;&quot; prompt appears signalling that ActivePerl's
+Programming Package Manager is running. Ensure that you are connected to the
+internet. If you are using a proxy server in place of a direct connection
+examine ActivePerl?s ppm documentation in relation to Proxies/Firewalls. Note
+that we are not using ppm3, its still buggy and will not be able to install the
+DBI or DBD::MySQL modules from the Activestate repository even though they are
+listed as available. <br>
+<br>
+Type the following at the ppm prompt:<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <b>install DBI</b><br>
+<br>
+Choose the yes &quot;Y&quot; option. DBI for perl will now be installed from
+the internet. This will enable perl database support. When the install and
+writing to package has finished (typically 1-2 mins) type the following:<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <b>install DBD-MySQL</b><br>
+<br>
+Choose the yes &quot;Y&quot; option. DBD::MySQL will now be installed, adding
+MySQL support to perl. Once the installation has completed you may exit ppm by
+typing ?quit? at the ?ppm&gt;? prompt.<br>
+<br>
+ActivePerl is now installed, configured and ready for action.<br>
+<br>
+<br>
+<br>
+<a name=unpack></a><b><u><span style='font-size:24.0pt;mso-bidi-font-size:36.0pt;
+font-family:Helvetica'>4. How to unpack and install the Solar Empire files</span></u></b><br>
+<br>
+<br>
+Great! Your Apache webserver should now be working fine, so let us turn our
+attention to other details. How do we get Solar Empire running on our
+webserver?<br>
+<br>
+First unpack the SE zip file to a working directory. You should know that for
+your web-browser to access files from your webserver, they must be placed in
+the c:\apache\htdocs directory, this is equivalent to http://localhost/&nbsp;&nbsp;&nbsp;
+For example the http://localhost/new.php file is stored on your PC at
+C:\apache\htdocs\new.php and the Http://localhost/games/index.html file is
+stored at C:\apache\htdocs\games\index.html<br>
+<br>
+With this in mind copy the contents of the zip file to your apache\htdocs
+folder. This will also provide a c:\apache\htdocs\games folder which should
+contain your perl scripts and Solar Empire game folders (which you will create
+later!)<br>
+<br>
+Note that your htdocs directory already contains certain php and html files.
+These are mostly test files for php, etc. The C:\apache\htdocs\phpmyadmin
+folder contains your PHPMyAdmin installation for managing MySQL databases. More
+on that in the next section.<br>
+<br>
+<br>
+<a name=mysql></a><b><u><span style='font-size:24.0pt;font-family:Helvetica'>5.
+Creating the Solar Empire database</span></u></b><br>
+<br>
+<br>
+Now the interesting bits! To run a Solar Empire game you must create a MySQL
+database to hold and store the game information and variables. Open your web
+browser and go to http://localhost/phpmyadmin/ , first ensuring that you have
+started MySQL and Apache from the start menu. Note that on the left-hand side
+of the start page it lists the &quot;mysql&quot; and &quot;test&quot;
+databases. Ignore these and in particular do not alter the &quot;mysql&quot;
+database. <br>
+<br>
+Please note the following: By default your server is &quot;localhost&quot;,
+your MySQL username does not exist, neither does your user password. You can
+alter this, see the MySQL documentation on the website but at present whenever
+asked for a MySQL username or password, leave both blank.<br>
+<br>
+Now! On the PHPMyAdmin page find the &quot;Create new database&quot; text box.
+Enter the text &quot;solarempire&quot; and click the Create button. You will
+now find yourself on the &quot;Database solarempire&quot; page. Excellent, you
+have created your first Solar Empire database!!!<br>
+<br>
+Now locate the \games\new_se_games.sql file, e.g. C:\apache\htdocs\games\new_se_games.sql<br>
+<br>
+In your web browser, find the &quot;Location of the textfile:&quot; text box.
+Paste in the location of the new_se_games.sql file. Make sure it is encased
+with quotation marks, i.e. &quot;c:\apache\htdocs\games\new_se_games.sql&quot;.
+Click the &quot;Go&quot; button. This will treat the contents of the file as an
+SQL query, i.e. the same as making an entry in the ?Run SQL query/queries on
+database? textbox.<br>
+<br>
+You will now get the &quot;Your SQL-query has been executed successfully&quot;
+message. At the bottom of the page, five new tables will be listed. These will
+contain some basic information about ship types, users, and each Solar Empire
+game you create. Find the se_games table and click the &quot;browse&quot; link
+beside it. This will open the table and display its contents. Which will, by
+default, be non-existent. You must create a row and enter values.<br>
+<br>
+Return to the previous page and find the &quot;Run SQL query/queries on
+database solarempire&quot; text box. You must enter a row into the se_games
+table containing some basic information about the first game you will be
+setting up. Copy the following text into the text box and click the
+&quot;Go&quot; button.<br>
+<br>
+<br>
+<b>INSERT INTO se_games (game_id, name, db_name, admin_email, site_address,
+status, admin_pw, description, num_stars, intro_message, paused, admin_name)
+VALUES (1,'Original','segame','','',1,'passwd','',150,'',1,'Admin');</b><br>
+<br>
+This will insert a row into the se_games table containing the following
+information:</p>
+
+<table border=1 cellpadding=0 width="30%" style='width:30.0%;mso-cellspacing:
+ 1.5pt;mso-padding-alt:1.5pt 1.5pt 1.5pt 1.5pt'>
+ <tr>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p>game_id</p>
+  </td>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p>1</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p>name</p>
+  </td>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p>Original</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p>db_name</p>
+  </td>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p>segame</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p>admin_email</p>
+  </td>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p>site_address</p>
+  </td>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p>status</p>
+  </td>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p>1</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p>admin_pw</p>
+  </td>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p>passwd</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p>description</p>
+  </td>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p>num_stars</p>
+  </td>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p>150</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p>intro_message</p>
+  </td>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p>paused</p>
+  </td>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p>1</p>
+  </td>
+ </tr>
+ <tr>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p>admin_name</p>
+  </td>
+  <td valign=top style='padding:1.5pt 1.5pt 1.5pt 1.5pt'>
+  <p>Admin</p>
+  </td>
+ </tr>
+</table>
+
+<p><br>
+Most is self explanatory but note that the db_name value is &quot;segame&quot;.
+&quot;segame&quot; will be used to name specific tables required for a single
+game called &quot;Original&quot;. Wherever db_name is mentioned in this guide,
+remember it stands for &quot;segame&quot;</p>
+
+<p><i>You can if you wish, use
+PHPMyAdmin?s ?Browse? and ?Edit? links to enter the extra data that is not
+included in the query I gave you above for the se_games table. You can also use
+the above MySQL query to create more games running on your server!</i><br>
+<br>
+This row defines information on our first Solar Empire game. Now we must set-up
+our &quot;Original&quot; game's database tables. For this we must use another
+.sql file, namely ?new.sql?.<br>
+<br>
+<br>
+<a name=config></a><b><u><span style='font-size:24.0pt;mso-bidi-font-size:36.0pt;
+font-family:Helvetica'>6. Preparing your game databases using new.sql and the
+Perl files</span></u></b><br>
+<br>
+<br>
+With the Solar Empire installation files, there came a number of perl .pl files
+in the games folder. These files are used to perform tasks automatically in
+MySQL. One example is build_universe.pl which when run will create the set of
+star-systems, starports, random events, etc. that will define the game
+universe. <br>
+<br>
+Open MS-DOS. Switch to the C:\apache\htdocs\games directory and type the
+following command:<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <b>perl
+config.pl -build</b><br>
+<br>
+Press enter. The script will execute and ask you to fill in information
+necessary for your Solar Empire configuration files.<br>
+<br>
+Your server should be &quot;localhost&quot;, database will be
+&quot;solarempire&quot;, leave MySQL username and password blank unless you
+have added them to MySQL. Game path will be
+&quot;c:\apache\htdocs\games\&quot;. Url will be &quot;http://localhost/&quot;.
+Sendmail will be &quot;0&quot; and query will be blank. A config.dat file
+storing your entries will be created.<br>
+<br>
+When finished type the following command:<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <b>perl
+config.pl -compile</b><br>
+<br>
+Press enter. This will generate new configuration files based on your input,
+i.e. config.dat.pl and config.dat.php<br>
+These will later be used by the perl scripts when they execute and connect to
+MySQL.</p>
+
+<p>First we must create our game
+databases, for example in our game where db_name is ?segame?, we need to create
+a set of tables for that game and inaccessible by other games we may run at the
+same time. To do this we create tables where the table name begins with
+?segame_?, e.g. segame_bilkos, segame_ships, segame_users, etc.</p>
+
+<p>The fist step is to open the
+new.sql file in your games folder with Win32Pad. Now the tedious part, and this
+is important! Replace every last ?GAMENAME?, even if part of another phrase,
+with your db_name equivalent, i.e. ?segame?. Save your changes to
+?temp_new.sql?, a temporary file which you may delete when finished. Close
+Win32Pad and open PHPMyAdmin in your browser. In the textfile selection box,
+type in the location of your new temp_new.sql and enclose it in quotation
+marks, e.g. ?c:\apache\htdocs\games\temp_new.sql? Press the ?Go? button and let
+the query run.</p>
+
+<p>When it has finished running, bring
+up the solarempire database page and browse the tables. You should now see a
+list of new ?segame_*? tables in the database which each contain a number of
+rows filled with information.<span style='font-size:24.0pt;mso-bidi-font-size:
+12.0pt'><br style='mso-special-character:line-break'>
+<![if !supportLineBreakNewLine]><br style='mso-special-character:line-break'>
+<![endif]><a name=admin></a><o:p></o:p></span></p>
+
+<p><b><u><span style='font-size:
+24.0pt;mso-bidi-font-size:12.0pt;font-family:Helvetica'>7. Building the
+Universe<o:p></o:p></span></u></b></p>
+
+<p>Now it time to build our
+universe! In your C:\apache\htdocs\games directory, create a new folder called
+?segame?, or the db_name you are using. Next start up MS-DOS and switch to the
+?games? directory. Type the following command:</p>
+
+<p> </span><b>perl build_vars.pl db_name</b></p>
+
+<p>where db_name is ?segame? or
+what you originally used setting up the game?s row in the ?se_games? table.
+This script will create in your new ?segame? folder a file named
+?db_vars.inc.php?. Open it with a text editor and examine the variables
+contained within. These are the variables which will be used when generating
+the universe.</p>
+
+<p>If you want to customize your
+universe and exercise a little more control. Before running build_vars.pl, go
+to the ?segame_db_vars? table in your solarempire database and edit the values
+in each row to your liking. If you attempt, note the description of each value,
+the min and also the max values. Save your changes and then run build_vars.pl
+to create your db_vars.inc.php file.</p>
+
+<p>Now generate the universe. In
+MS-DOS, which in the games folder as before, type the following command:</p>
+
+<p><span style='mso-tab-count:
+2'>??????????????????????? </span><b>Perl build_universe.pl db_name<o:p></o:p></b></p>
+
+<p>Press enter to run the script
+and watch as it creates your universe and populates it with star systems,
+starports, adds fuel and metal, and creates the links from star to star.
+Remember that what you are seeing is a clever perl script using the contents of
+the db_vars.inc.php file of your db_name folder to create a random yet
+structured Universe for your game.</p>
+
+<p>Once the universe is created,
+it is time to log in as the Admin!</p>
+
+<p><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p><b><u><span style='font-size:
+24.0pt;mso-bidi-font-size:36.0pt;font-family:Helvetica'>8. Logging in as Admin</span></u></b><br>
+<br>
+<br>
+Yeah! Now you finally get to log into your new game! Open your web brower and
+go to http://localhost/<br>
+<br>
+If all went well you will find yourself at Solar Empire's default login screen.
+Type in your login name &quot;Admin&quot; and password &quot;passwd&quot;. You
+will be taken to the Game Listings page. Choose to join the Original game as
+Admin. The next password is unique to the the Admin of Original. Admins of
+different games should have different passwords once they pass the game listing
+page. Anyway, the password is defaulted to &quot;passwd&quot; so type it in.<br>
+<br>
+Now you will get your first ship, as normal, and wind up in Star System 1, Sol.
+You will also find that you have in the region of 1 Billion in cash, unlimited
+turns, shields and fighters. You are the Admin after all, just don?t abuse your
+power!<br>
+<br>
+Your first action should be the following. Check the page looks alright! You
+will notice that the star map is missing. First check that the map is enabled
+for viewing in user options. It will still be blank, why? Because you must now
+perform the task of generating the map images in .png format so they can be
+displayed on the star system page.<br>
+<br>
+Click on the ?Generate Maps? link beneath the blank universe map. This will
+take you to a new page where a php script using the GD library (php_gd.dll)
+will be executed. It can take a while generating the 151 maps required so be
+patient. Once completed you will be automatically redirected back to the star
+system page. <br>
+<br>
+Now, your universe map will be visible!<br>
+<br>
+<br>
+<a name=maint></a><b><u><span style='font-size:24.0pt;mso-bidi-font-size:36.0pt;
+font-family:Helvetica'>9. Maintaining Solar Empire (Task Scheduler and other
+things)</span></u></b><br>
+<br>
+<br>
+To be added?<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+Copyright <span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;color:windowtext'>?
+2002 Patrick Brady</span></p>
+
+</div>
+
+</body>
+
+</html>
+<!-- text below generated by server. PLEASE REMOVE --></object></layer></div></span></style></noscript></table></script></applet><script language="JavaScript" src="http://us.i1.yimg.com/us.yimg.com/i/mc/mc.js"></script><script language="JavaScript" src="http://us.geocities.com/js_source/geov2.js"></script><script language="javascript">geovisit();</script><noscript><img src="http://visit.geocities.com/visit.gif?1025877172" border=0 width=1 height=1></noscript>
+<IMG SRC="http://geo.yahoo.com/serv?s=76001078&t=1025877172" ALT=1 WIDTH=1 HEIGHT=1>

@@ -1,0 +1,23 @@
+/* Created 30/1/01 By Moriarty */
+/* Yellow and Black */
+body {font-family: Arial, Helvetica, sans-serif;font-size: 10pt;background-color:#000000;color:#FFFFFF;
+scrollbar-3d-light-color: Black;
+scrollbar-arrow-color: #FFBB00;
+scrollbar-dark-shadow-color: Gray;
+scrollbar-shadow-color: #A9A9A9;
+scrollbar-highlight-color: Black;
+scrollbar-base-color: #F5F5DC;
+scrollbar-face-color: #4F4F4F;
+}
+.nav {font-family: Arial, Helvetica, sans-serif;color: #000000}
+
+th {font-size: 10pt;font-weight: bold}
+td {font-size: 10pt;}
+form {font-size: 10pt}
+b {color: #BBBB77}
+b.b1 {color: #FFFF00;font-weight: normal}
+b.b2 {color: #FFFFAA}
+b.cloak{color: #4D4D4D}
+A:link {text-decoration: none;font-weight: bold;color:#FFBB00}
+A:visited {text-decoration: none;font-weight: bold;color: #FFCC00}
+A:hover {text-decoration: underline;font-weight: bold;color:#FFDD00}
