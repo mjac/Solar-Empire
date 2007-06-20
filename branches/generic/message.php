@@ -18,7 +18,7 @@ if ($target == -2 && (!isset($clan_id) || $clan_id <= 0)) {
 } elseif($target == -99 && $user['login_id'] != ADMIN_ID && (OWNER_ID != 0 && $user['login_id'] != OWNER_ID)) {
 	print_page("Admin Forum","You are not an Admin.");
 } elseif(empty($text)) {
-	if($target > 0){
+	if ($target > 0) {
 		db("select login_name,login_id,clan_sym,clan_sym_color from ${db_name}_users where login_id = $target");
 		$rec = dbr();
 		$rec = print_name($rec);
@@ -46,7 +46,7 @@ if ($target == -2 && (!isset($clan_id) || $clan_id <= 0)) {
 		$ostr .= "<textarea name='text' cols=50 rows=20 wrap=soft>".stripslashes($var_default)."</textarea>";
 		$ostr .= "<input type=hidden name=rs value=".htmlentities($rs).">";
 		$ostr .= '<p><input type=submit value=Submit></form>';
-		print_page($title,$ostr);
+		print_page('Send message', $ostr);
 	}
 
 	if($reply_to && $target > 0){#reply to with original text

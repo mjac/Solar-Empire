@@ -265,18 +265,28 @@ Data update/insertion Functions
 function insert_history($l_id,$i_text)
 {
 	global $db_name;
-	if(empty($db_name)){
+
+	if (empty($db_name)) {
 		$db_name = "None";
 	}
-	dbn("insert into user_history VALUES ('$l_id','".time()."','$db_name','".mysql_escape_string($i_text)."','$_SERVER[REMOTE_ADDR]','$_SERVER[HTTP_USER_AGENT]')");
+
+	dbn('INSERT INTO user_history VALUES (' . (int)$l_id . ', ' . time() .
+	 ', \'' . mysql_real_escape_string($db_name) . '\', \'' .
+	 mysql_real_escape_string($i_text) . '\', \'' .
+	 mysql_real_escape_string($_SERVER['REMOTE_ADDR']) . '\', \'' .
+	 mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']) . '\')');
 }
 
 //post an entry into the news
 function post_news($headline)
 {
-	global $login_id,$db_name;
+	global $login_id, $db_name;
+
 	db_connect();
-	dbn("insert into ${db_name}_news (timestamp, headline, login_id) values (".time().",'".mysql_escape_string($headline)."','$login_id')");
+
+	dbn('INSERT INTO ' . $db_name . 
+	 '_news (timestamp, headline, login_id) VALUES (' . time() . ', \'' .
+	 mysql_real_escape_string($headline) . '\', ' . (int)$login_id . ')');
 }
 
 //function that will send a header correct e-mail, or return failure if it doesn't work

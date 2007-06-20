@@ -152,98 +152,11 @@ if(isset($changepass)) {
 }
 
 
-// change colour scheme
-if(isset($scheme)) {
-
-$checked[$user_options['color_scheme']] = " checked";
-
-$error_str .= "Select a colour scheme you like the sound of:";
-$error_str .= "<FORM method=POST action=options.php>";
-$error_str .= "<input type=radio name=style value=1".$checked[1]."> <b class=b1><font color='red'>Classic</font></b>";
-$error_str .= " - Default<br>";
-
-$error_str .= "<input type=radio name=style value=2".$checked[2]."> <b class=b1><font color='#0091ff'>Blue & Black</font></b> - afphreak<br>";
-
-$error_str .= "<input type=radio name=style value=5".$checked[5]."> <b><font color='#007900'>Green & Black</font></b> - Pinkus<br>";
-
-$error_str .= "<input type=radio name=style value=4".$checked[4]."> <b><font color='#99FFAA'>Light Green & Black</font></b> - Moriarty<br>";
-
-$error_str .= "<input type=radio name=style value=6".$checked[6]."> <b><font color='#FFFF00'>Yellow & Black</font></b> - Moriarty<br>";
-
-$error_str .= "<input type=radio name=style value=3".$checked[3]."> <b><font color='#808080'>Grey</font></b>/<b><font color='#004080'>Blue</font></b>/<b><font color='#00FF00'>Lime</b></font> - Pinkus<br>";
-
-$error_str .= "<input type=radio name=style value=7".$checked[7]."> <b><font color='#808080'>Ru</font></b><b><font color='#1f677e'>st</font></b><b><font color='#a58421'>ic</font></b> - TheMadWeaz<br>";
-
-$error_str .= "<input type=radio name=style value=8".$checked[8]."> <b><font color='#808080'>Al</font></b><font color='#008e8e'><b>ie</b></font><b><font color='#9cbf75'>n</b></font> - TheMadWeaz<br>";
-
-$error_str .= "<input type=radio name=style value=9".$checked[9]."> <b><font color='#ffffff'>Ice</font></b> <b><font color='#c0c5fe'>Age</b></font> - TheMadWeaz<br>";
-
-$error_str .= "<input type=radio name=style value=10".$checked[10]."> <b><font color='#DDDDF5'>Ch</font></b><b><font color='#C5C5CC'>ro</font></b><b><font color='#CCCCCC'>me</b></font> - KilerCris<br>";
-
-$error_str .= "<input type=radio name=style value=11".$checked[11]."> <b><font color='#9c9d8a'>The</b></font> <b><font color='#a8a800'>Golden</b></font> <b><font color='#fbcf04'>Age</b></font> - TheMadWeaz<br>";
-
-$error_str .= "<input type=radio name=style value=12".$checked[12]."> <b><font color='#77888a'>The</b></font> <b><font color='#b8b8b8'>Silver</b></font> <b><font color='#9b9493'>Age</b></font> - TheMadWeaz<br>";
-
-$error_str .= "<input type=radio name=style value=13".$checked[13]."> <b><font color='#b70000'>Mo</b></font><b><font color='#ff8000'>lt</b></font><b><font color='#f7b324'>en</b></font> - TheMadWeaz<br>";
-
-$error_str .= "<input type=radio name=style value=15".$checked[15]."> Artic Ice - Thalias<br>";
-
-$error_str .= "<input type=radio name=style value=16".$checked[16]."> Galactic Gold - TimmyP<br>";
-
-$error_str .= "<p><INPUT type=submit value=Submit>";
-$error_str .= "</form>";
-print_page("Select Scheme",$error_str);
-
-#demo of style sheet
-} elseif (isset($style)) {
-
-	$temp = "style".$style.".css";
-
-	echo"<html>\n";
-	echo"<head>\n";
-	echo"<title>[ Solar Empire - ".SERVER_NAME." : Test Scheme ]</title>\n";
-	echo "<link rel=stylesheet href=$temp>\n";
-	echo "</head>\n";
-	echo "<body text=#FFFFFF>\n";
-	print_status();
-
-	$error_str .="Here is an example of what things may look like.";
-
-	$error_str .= "<p>Normal text.\n";
-	$error_str .= "<br><b>Bold text.</b>\n";
-	$error_str .= "<br><b class=b1>Bold class 1</b>\n";
-	$error_str .= "<br><b class=b2>Bold class 2</b>\n";
-	$error_str .= "<br><b class=b3>Bold class 3</b>\n";
-	$error_str .= "<br><a href=>Normal Link</a>\n";
-	$error_str .= "<br><a href=location.php>Visited Links</a>\n";
-	$error_str .= "<br><b class=cloak>Cloaked vessels</b>\n";
-
-	$error_str .= "<p>Do you want to:\n";
-	$error_str .= "<br><a href=options.php?keep=$style>Keep it.</a>\n";
-	$error_str .= "<br><a href=options.php?scheme=1>Select a different Scheme.</a>\n";
-
-	echo $error_str;
-	echo "</td></tr></table>\n";
-	echo "</body>\n</html>\n";
-	exit();
-
-#keep new style sheet.
-} elseif (isset($keep)) {
-	$user_options['color_scheme'] = $keep;
-	dbn("update ${db_name}_user_options set color_scheme = '$keep' where login_id = '$user[login_id]'");
-	$error_str .="Colour Scheme changed to Number <b>$keep</b>.";
-	$error_str .="<br>You can change it again at any time using the same procedure.";
-	$rs .= "<br><a href=options.php>Back To Options</a>";
-	print_page("Colour Scheme Changed",$error_str);
-}
-
-
 
 
 #print main page
 $error_str .= "<p>On this page you will find a range of options that will enable you to customise Solar Empire.";
 $error_str .= "<p><a href=options.php?changepass=change>Change your Password</a>";
-$error_str .= "<br><a href=options.php?scheme=1>Change your Colour Scheme</a>";
 $error_str .= "<br><a href=options.php?player_op=1>Change your player information</a> (signature)";
 
 
