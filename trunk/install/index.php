@@ -37,9 +37,6 @@ class swInstall
 		$this->tpl = new Savant2();
 		$this->tpl->addPath('template', PATH_INSTALL . '/tpl');
 
-		if (!include(PATH_INC . '/db.inc.php')) {
-			exit('Database include missing.');
-		}
 		if (!(class_exists('swDatabase') ||
 		     @include(PATH_INC . '/db.inc.php'))) {
 			exit('Database include missing.');
