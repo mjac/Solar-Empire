@@ -38,7 +38,7 @@ class swInstall
 		$this->tpl->addPath('template', PATH_INSTALL . '/tpl');
 
 		if (!(class_exists('swDatabase') ||
-		     @include(PATH_INC . '/db.inc.php'))) {
+		     @include(PATH_INC . '/swDatabase.class.php'))) {
 			exit('Database include missing.');
 		}
 		$this->db = new swDatabase;
@@ -54,7 +54,9 @@ class swInstall
 		if ($this->licenceCheck()) {
 			if ($this->dbCheck()) {
 				if ($this->configCheck()) {
-					if (!$this->tableCheck()) {
+					if ($this->tableCheck()) {
+						$stage = 'complete';
+					} else {
 						$stage = 'tables';
 					}
 				} else {
@@ -330,6 +332,16 @@ class swInstall
 	/** Perform database table and structure installation */
 	function tableCheck()
 	{
+		if (isset($_REQUEST['tableReset'])) {
+		    if (isset($_SESSION['tableComplete'])) {
+		        unset($_SESSION['tableComplete']);
+		    }
+		}
+
+        if (isset($_SESSION['tableComplete']) && $_SESSION['tableComplete']) {
+			return true;
+        }
+
 		// Check for input before processing anything
 		if (!isset($_REQUEST['adminPassword'])) {
 			return false;

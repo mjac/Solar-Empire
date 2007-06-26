@@ -1,12 +1,7 @@
 <?php
 
 require('inc/config.inc.php');
-
-if (!class_exists('swDatabase')) {
-	require(PATH_INC . '/db.inc.php');
-}
-$db = new swDatabase;
-$db->start();
+require(PATH_INC . '/db.inc.php');
 
 if (!class_exists('session')) {
 	require(PATH_INC . '/session.class.php');
@@ -41,7 +36,7 @@ if (isset($_REQUEST['handle']) && isset($_REQUEST['password'])) {
 		 time(), $session->ipToUlong($session->ipAddress()), $accId);
 		if (!$db->hasError($updateQuery)) {
 			$session->create($accId);
-    		header('Location: gamelisting.php');
+    		header('Location:  ' . URL_BASE . '/gamelisting.php');
 			return;
 		}
 		// Record login

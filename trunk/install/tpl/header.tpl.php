@@ -15,7 +15,7 @@ $stages = array(
 	'licence' => URL_SELF . '?licence=reject',
 	'database' => URL_SELF . '?db[reset]=true',
 	'config' => URL_SELF . '?configWrite=true',
-	'tables' => URL_SELF,
+	'tables' => URL_SELF . '?tableReset=true',
 	'complete' => ''
 );
 
