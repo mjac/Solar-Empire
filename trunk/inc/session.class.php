@@ -45,7 +45,7 @@ class session
 	
 		$accQuery = $this->db->query('SELECT COUNT(*) FROM [server]account WHERE acc_id = %[1]',
 		 $_SESSION['account']);
-		if ($db->numRows($accQuery) < 1) { // user does not exist
+		if ($this->db->numRows($accQuery) < 1) { // user does not exist
 			return false;
 		}
 		$account = $this->db->fetchRow($accQuery);
