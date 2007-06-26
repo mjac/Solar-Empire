@@ -26,17 +26,18 @@ if (isset($_REQUEST['handle']) && isset($_REQUEST['password'])) {
 		require(PATH_LIB . '/sha256/sha256.class.php');
 	}
 
-	$uQuery = $db->query('SELECT acc_id FROM [server]account WHERE acc_handle = %[1] AND acc_password = 0x' . 
-	 sprintf('%X', sha256::hash($_REQUEST['password'])), $_REQUEST['handle']);
+	$uQuery = $db->query('SELECT acc_id FROM [server]account WHERE acc_handle = %[1] AND acc_password = 0x' . sha256::hash($_REQUEST['password']),
+	 $_REQUEST['handle']);
 	if ($db->hasError($uQuery)) {
 		$authProblem[] = 'existQuery';
 	} elseif ($db->numRows($uQuery) < 1) {
 		$authProblem[] = 'accountMissing';
 		// Log invalid attempt
 	} else {
-		$accId = (double)$db->fetchField($uQuery);
+		$accRow = $db->fetchRow($uQuery, ROW_NUMERIC);
+		$accId = (double)$accRow[0];
 
-		$updateQuery = $db->query('UPDATE [server]account SET acc_accessed = %[1], acc_accesses = acc_accesses + 1, acc_ip = %[4] WHERE acc_id = %[5]', 
+		$updateQuery = $db->query('UPDATE [server]account SET acc_accessed = %[1], acc_accesses = acc_accesses + 1, acc_ip = %[2] WHERE acc_id = %[3]',
 		 time(), $session->ipToUlong($session->ipAddress()), $accId);
 		if (!$db->hasError($updateQuery)) {
 			$session->create($accId);
