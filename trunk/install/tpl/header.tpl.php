@@ -14,7 +14,7 @@ $this->eprint(URL_INSTALL . '/clear.css');
 $stages = array(
 	'licence' => URL_SELF . '?licence=reject',
 	'database' => URL_SELF . '?db[reset]=true',
-	'config' => URL_SELF . '?configWrite=true',
+	'config' => URL_SELF . '?configReset=true',
 	'tables' => URL_SELF . '?tableReset=true',
 	'complete' => ''
 );

@@ -2,13 +2,13 @@
 
 /**
  * Installer for System Wars
- * @author Michael J.A. Clark <mjac@mjac.co.uk> 
- */ 
+ * @author Michael J.A. Clark <mjac@mjac.co.uk>
+ */
 class swInstall
 {
 	/** Stores the template class */
 	var $tpl;
-	
+
 	/** Stores the database class */
 	var $db;
 
@@ -27,10 +27,10 @@ class swInstall
 		if (!include('config.inc.php')) {
 			exit('Configuration template must exist.');
 		}
-		
+
 		define('PATH_INSTALL', PATH_BASE . '/install');
 		define('URL_INSTALL', URL_BASE);
-		
+
 		if (!(class_exists('Savant2') || include(PATH_SAVANT))) {
 			exit('Savant2 template system missing.');
 		}
@@ -49,8 +49,6 @@ class swInstall
 	/** Process install */
 	function process()
 	{
-		$stage = 'complete';
-
 		if ($this->licenceCheck()) {
 			if ($this->dbCheck()) {
 				if ($this->configCheck()) {
@@ -92,7 +90,7 @@ class swInstall
 		if ($fpReadme) {
 			$readme = fread($fpReadme, filesize(PATH_DOC . '/readme.txt'));
 			fclose($fpReadme);
-		
+
 			if ($readme) {
 				$this->tpl->assign('readme', $readme);
 				return true;
@@ -111,6 +109,7 @@ class swInstall
 					$_SESSION['licenceAccept'] = true;
 					return true;
 				case 'reject':
+					$this->tableReset();
 					$this->configReset();
 					$this->dbReset();
 					$this->licenceReset();
@@ -125,7 +124,7 @@ class swInstall
 		$licenceOkay = false;
 		if (is_readable(PATH_DOC . '/licence.txt')) {
 			$fpLicence = fopen(PATH_DOC . '/licence.txt', 'rb');
-	
+
 			if ($fpLicence) {
 				$this->tpl->assign('licence', fread($fpLicence,
 				 filesize(PATH_DOC . '/licence.txt')));
@@ -157,6 +156,7 @@ class swInstall
 	{
 		if (isset($_REQUEST['db'])) {
 			if (isset($_REQUEST['db']['reset'])) {
+				$this->tableReset();
 				$this->configReset();
 				$this->dbReset();
 			}
@@ -188,7 +188,7 @@ class swInstall
 	function dbConnect($dbDsn)
 	{
 		$dbConnected = $this->db->connect($dbDsn);
-	
+
 		if ($this->db->hasError($dbConnected)) {
 			$this->tpl->assign('dbConnectErr', $this->db->error($dbConnected));
 			return false;
@@ -213,10 +213,10 @@ class swInstall
 					break;
 				}
 
-				$dbDsn = 'mysql://' . 
+				$dbDsn = 'mysql://' .
 				 rawurlencode($_REQUEST['db']['username']) . ':' .
-				 rawurlencode($_REQUEST['db']['password']) . '@' . 
-				 rawurlencode($_REQUEST['db']['hostname']) . 
+				 rawurlencode($_REQUEST['db']['password']) . '@' .
+				 rawurlencode($_REQUEST['db']['hostname']) .
 				 (isset($_REQUEST['db']['port']) ? (':' .
 				 (int)$_REQUEST['db']['port']) : '') . '/' .
 				 rawurlencode($_REQUEST['db']['database']);
@@ -252,10 +252,10 @@ class swInstall
 		foreach ($this->dbRequires[$dbType] as $reqName) {
 			if (!isset($_REQUEST['db'][$reqName])) {
 				$reqMissing[] = $reqName;
-			}		
+			}
 		}
-		
-		if (!empty($reqMissing)) {	
+
+		if (!empty($reqMissing)) {
 			$this->problems[] = 'dbDetails';
 			$tpl->assign('dbRequires', $reqMissing);
 			return false;
@@ -290,6 +290,11 @@ class swInstall
 	/** Write configuration */
 	function configCheck()
 	{
+		if (isset($_REQUEST['configReset'])) {
+		    $this->tableReset();
+		    $this->configReset();
+		}
+
 		if (isset($_REQUEST['configWrite'])) {
 			$openConfig = fopen('config.inc.php', 'rb');
 			$writeConfig = fopen(PATH_INC . '/config.inc.php', 'wb');
@@ -333,9 +338,7 @@ class swInstall
 	function tableCheck()
 	{
 		if (isset($_REQUEST['tableReset'])) {
-		    if (isset($_SESSION['tableComplete'])) {
-		        unset($_SESSION['tableComplete']);
-		    }
+		    $this->tableReset();
 		}
 
         if (isset($_SESSION['tableComplete']) && $_SESSION['tableComplete']) {
@@ -343,11 +346,19 @@ class swInstall
         }
 
 		// Check for input before processing anything
-		if (!isset($_REQUEST['adminPassword'])) {
-			return false;
+		if (isset($_REQUEST['adminPassword']) && $this->tableStructure() &&
+		     $this->tableData()) {
+			$_SESSION['tableComplete'] = true;
+			return true;
 		}
 
-		return $this->tableStructure() && $this->tableData();
+		return false;
+	}
+
+	/** Resets database table status */
+	function tableReset()
+	{
+		unset($_SESSION['tableComplete']);
 	}
 
 	/** Install database table structure */
@@ -360,10 +371,10 @@ class swInstall
 			$this->problems[] = 'tableSchemaOpen';
 			return false;
 		}
-	
+
 		$schemaTables = 0;
 		$schemaTablesDone = 0;
-	
+
 		$currentQuery = '';
 		while (!feof($schema)) {
 			$currentQuery .= fgets($schema);
@@ -372,7 +383,7 @@ class swInstall
 			     $trimmedQuery[strlen($trimmedQuery) - 1] === ';') {
 				$createTable = $this->db->query($currentQuery);
 				$currentQuery = '';
-	
+
 				++$schemaTables;
 				if (!$this->db->hasError($createTable)) {
 					++$schemaTablesDone;
@@ -403,7 +414,7 @@ class swInstall
 				++$starNames;
 				$starName = $this->db->query('INSERT INTO [server]starname VALUES (%[1])',
 				 trim(fgets($starNameFp)));
-				if (!($this->db->hasError($starName) || 
+				if (!($this->db->hasError($starName) ||
 				     $this->db->affectedRows($starName) < 1)) {
 					++$starNamesDone;
 				}
@@ -418,18 +429,18 @@ class swInstall
 		if (include(PATH_INSTALL . '/data.inc.php')) {
 			// Insert all the tips
 			$delTip = $this->db->query('DELETE FROM [server]tip');
-	
+
 			$tipNo = 0;
 			$tipNoDone = 0;
 			foreach ($dat['tips'] as $tipContent) {
 				$tipQuery = $this->db->query('INSERT INTO [server]tip (tip_id, tip_content) VALUES (%[1], %[2])',
 				 ++$tipNo, $tipContent);
-				if (!($this->db->hasError($tipQuery) || 
+				if (!($this->db->hasError($tipQuery) ||
 				     $this->db->affectedRows($tipQuery) < 1)) {
 					++$tipNoDone;
 				}
 			}
-	
+
 			if (!($tipNo && $tipNo === $tipNoDone)) {
 				$this->problems[] = 'tableTips';
 			}
@@ -446,7 +457,7 @@ class swInstall
 		// Should use some kind of user class instead of raw insert
 		$delAccount = $this->db->query('DELETE FROM [server]account');
 		$newAdmin = $this->db->query('INSERT INTO [server]account (acc_id, acc_handle, acc_password, acc_created, acc_accessed, acc_accesses, acc_requests, acc_ip) VALUES (1, \'Admin\', 0x' .
-		 sha256::hash($_REQUEST['adminPassword']) . 
+		 sha256::hash($_REQUEST['adminPassword']) .
 		 ', %[1], %[1], 1, 1, %[2])', time(),
 		 (double)sprintf('%u', ip2long($_SERVER['REMOTE_ADDR'])));
 		if ($this->db->hasError($newAdmin)) {
