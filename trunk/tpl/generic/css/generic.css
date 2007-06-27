@@ -54,10 +54,10 @@ body {
 }
 #login ul {
 	margin: 0;
-	padding: 0.5em;
+	padding: 0;
 }
 #login li {
-	margin: 0.25em 0;
+	margin: 0.125em 0;
 	padding: 0;
 	text-align: left;
     list-style: none;
