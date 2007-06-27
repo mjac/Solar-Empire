@@ -3,7 +3,9 @@
 require('inc/config.inc.php');
 require(PATH_INC . '/stateguest.inc.php');
 
-// User logging into server -> to go into login.php
+$authProblem = array();
+
+// User logging into server
 if ($input->exists('handle', 'password')) {
 	if (!class_exists('sha256')) {
 		require(PATH_LIB . '/sha256/sha256.class.php');
@@ -30,9 +32,12 @@ if ($input->exists('handle', 'password')) {
 		// Record login
 	}
 
-	if (!empty($authProblem)) {
-		$tpl->assign('authProblem', $authProblem);
-	}
+}
+
+require(PATH_INC . '/template.inc.php');
+
+if (!empty($authProblem)) {
+	$tpl->assign('authProblem', $authProblem);
 }
 
 $tpl->display('index.tpl.php');
