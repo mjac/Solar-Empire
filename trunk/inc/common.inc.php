@@ -1,86 +1,8 @@
 <?php
 
-mt_srand((double)microtime() * 0x7FFFFFFF);
-
 if (!defined('PATH_BASE')) {
 	require('inc/config.inc.php');
 }
-
-// REMOVE QUOTES
-if (get_magic_quotes_gpc() == 1) {
-	recursive_stripslashes($_GET);
-	recursive_stripslashes($_POST);
-	recursive_stripslashes($_COOKIE);
-	recursive_stripslashes($_REQUEST);
-}
-
-// INPUT VALIDATION
-
-// Allows alphanumeric and the some other characters but no spaces
-function isUsername($input)
-{
-	return preg_match('/^[[:alnum:][:punct:]]{4,32}$/i',$input) &&
-	 !is_numeric($input);
-}
-
-// Allows alphanumeric and the some other characters and spaces
-function isSpacedName($input)
-{
-	return preg_match('/^[[:alnum:][:punct:] ]{4,32}$/i', $input) &&
-	 !is_numeric($input);
-}
-
-// Allows alphanumeric and the some other characters but no spaces
-function isSimplePhrase($input)
-{
-	return preg_match('/^[[:alnum:][:punct:]]+$/i', $input);
-}
-
-// Allows alphanumeric and the some other characters as well as spaces
-function correctName($input)
-{
-	$input = preg_replace('/[^[[:alnum:][:punct:]] ]/i', '', trim($input));
-	return empty($input) ? 'Nameless' : $input;
-}
-
-function isEmailAddr($address)
-{
-	$qText = '[^\\x0d\\x22\\x5c\\x80-\\xff]';
-	$dText = '[^\\x0d\\x5b-\\x5d\\x80-\\xff]';
-
-	$atom = '[^\\x00-\\x20\\x22\\x28\\x29\\x2c\\x2e\\x3a-\\x3c\\x3e' .
-	 '\\x40\\x5b-\\x5d\\x7f-\\xff]+';
-	$domainRef =& $atom;
-
-	$quotedPair = '\\x5c[\\x00-\\x7f]';
-	$domainLiteral = "\\x5b($dText|$quotedPair)*\\x5d";
-
-	$quotedStr = "\\x22($qText|$quotedPair)*\\x22";
-	$word = "($atom|$quotedStr)";
-
-	$subDomain = "($domainRef|$domainLiteral)";
-	$domain = "$subDomain(\\x2e$subDomain)*";
-
-	$localPart = "$word(\\x2e$word)*";
-
-	$addrSpec = "$localPart\\x40$domain";
-
-	return preg_match('/^' . $addrSpec . '$/', $address) ? true : false;
-}
-
-
-//function to remove all slashes (useful for magic quotes);
-function recursive_stripslashes(&$var)
-{
-	foreach ($var as $key => $value) {
-		if (is_array($value)) {
-			recursive_stripslashes($var[$key]);
-		} else {
-			$var[$key] = stripslashes($value);
-		}
-	}
-}
-
 
 $msgColours = array(
 	'blue'   => '0000FF',

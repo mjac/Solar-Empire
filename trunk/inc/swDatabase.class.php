@@ -5,8 +5,10 @@ if (!class_exists('sda')) {
 	require(PATH_SDA);
 }
 
+/** System Wars database wrapper */
 class swDatabase extends sda
 {
+	/** Customise sda */
 	function swDatabase()
 	{
 		$this->varFormat = '[%]'; // [game] for instance
@@ -16,18 +18,23 @@ class swDatabase extends sda
 		$this->addVar('server', DB_PREFIX);
 	}
 
+	/** Find a new ID for tables/databases that do not support auto_increment */
 	function newId($table, $field)
 	{
-		$idInfo = $this->query("SELECT MIN($field), MAX($field) FROM $table");
-		$range = $this->fetchRow($idInfo, ROW_NUMERIC);
+		$idInfo = $this->query("SELECT MAX($field) FROM $table");
+		if ($this->hasError($idInfo)) {
+		    return false;
+		}
 
-		if ($range[0] === NULL) {
+		list($idMax) = $this->fetchRow($idInfo, ROW_NUMERIC);
+		if ($idMax === NULL || $idMax < 1) {
 		    return 1;
 		}
 
-		return $range[0] <= 1 ? ($range[1] + 1) : ($range[0] - 1);
+		return $idMax + 1;
 	}
 
+	/** Connect to the database or exit */
 	function start()
 	{
 		$connect = $this->connect(DB_DSN);
@@ -37,6 +44,7 @@ class swDatabase extends sda
 		}
 	}
 
+	/** Disconnect from the database */
 	function stop()
 	{
 		$this->close();

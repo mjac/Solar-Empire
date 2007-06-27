@@ -34,4 +34,7 @@ define('URL_FULL', isset($_SERVER['HTTP_HOST']) ?
  ('http://' . $_SERVER['HTTP_HOST'] . URL_BASE) : URL_BASE);
 define('URL_TPL', URL_BASE . '/tpl');
 
+// SEED
+mt_srand((double)microtime() * (double)0x7FFFFFFF);
+
 ?>
