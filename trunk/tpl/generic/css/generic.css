@@ -52,6 +52,16 @@ body {
 #login label {
 	font-weight: bold;
 }
+#login ul {
+	margin: 0;
+	padding: 0.5em;
+}
+#login li {
+	margin: 0.25em 0;
+	padding: 0;
+	text-align: left;
+    list-style: none;
+}
 
 #loginContent {
 	margin-left: 18em;

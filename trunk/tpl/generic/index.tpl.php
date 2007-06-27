@@ -7,7 +7,7 @@ $this->title = 'Competitive, web based, space combat game';
 include($this->loadTemplate('inc/header_splash.tpl.php'));
 
 ?><form id="login" action="<?php
-$this->eprint($this->url['self']);
+$this->eprint($this->url['base'] . '/login.php');
 ?>" method="post">
 	<h2><a href="<?php
 $this->eprint($this->url['base'] . '/register.php');
