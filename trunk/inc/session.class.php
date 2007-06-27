@@ -4,17 +4,23 @@ defined('PATH_INC') || exit;
 class session
 {
 	var $db;
+	var $input;
 
-	function session(&$db)
-	{	
+	var $data = array();
+
+	function session(&$db, &$input)
+	{
 		$this->db =& $db;
+		$this->input =& $input;
+
 		session_start();
+		$this->data =& $_SESSION;
 	}
 
 	function create($accountId)
 	{
-		$_SESSION['expires'] = time() + SESSION_TIME_LIMIT;
-		$_SESSION['account'] = $accountId;
+		$this->data['expires'] = time() + SESSION_TIME_LIMIT;
+		$this->data['account'] = $accountId;
 
 		$this->updateAccount();
 	}
@@ -23,7 +29,7 @@ class session
 	{
 		$_SESSION = array();
 	
-		if (isset($_COOKIE[session_name()])) {
+		if ($this->input->exists(session_name())) {
 			setcookie(session_name(), '', time() - 86400, '/');
 		}
 	
@@ -34,17 +40,17 @@ class session
 	{
 		global $account, $gameInfo;
 	
-		if (!(isset($_SESSION['account']) && isset($_SESSION['expires']))) {
+		if (!(isset($this->data['account']) && isset($this->data['expires']))) {
 			return false;
 		}
 
-		if ($_SESSION['expires'] <= time()) { // session is expired
+		if ($this->data['expires'] <= time()) { // session is expired
 			$this->destroy();
 			return false;
 		}
 	
 		$accQuery = $this->db->query('SELECT COUNT(*) FROM [server]account WHERE acc_id = %[1]',
-		 $_SESSION['account']);
+		 $this->data['account']);
 		if ($this->db->numRows($accQuery) < 1) { // user does not exist
 			return false;
 		}
@@ -52,10 +58,10 @@ class session
 
 		$this->updateAccount();
 
-		define('IS_OWNER', $_SESSION['account'] == OWNER_ID);
+		define('IS_OWNER', $this->data['account'] == OWNER_ID);
 
 		// Extend the PHP session
-		$_SESSION['expires'] = time() + SESSION_TIME_LIMIT;
+		$this->data['expires'] = time() + SESSION_TIME_LIMIT;
 
 		return true;
 	}
@@ -63,7 +69,7 @@ class session
 	function updateAccount()
 	{
 		$this->db->query('UPDATE [server]account SET acc_requests = acc_requests + 1, acc_accessed = FROM_UNIXTIME(%[1]), acc_ip = %[2] WHERE acc_id = %[3]',
-		 time(), $this->ipToUlong($this->ipAddress()), $_SESSION['account']);
+		 time(), $this->ipToUlong($this->ipAddress()), $this->data['account']);
 	}
 
 	function ipAddress()
@@ -80,21 +86,6 @@ class session
 	{
 		return long2ip((int)$ipUlong);
 	}
-/*
-	function inGame()
-	{
-		if (!$gameInfo = selectGame($account['in_game'])) {
-			$this->db->query('UPDATE [global]account SET in_game = NULL WHERE login_id = %[1]', 
-			 $login_id);
-			$account['in_game'] = NULL;
-		    return false;
-		}
-
-		define('IS_ADMIN', $account['login_id'] == $gameInfo['admin']);
-
-		$account['session_exp'] = $next_exp;
-	}
-*/
 };
 
 ?>

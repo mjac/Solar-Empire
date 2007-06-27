@@ -2,27 +2,27 @@
 
 require('inc/config.inc.php');
 require(PATH_INC . '/db.inc.php');
-
-if (!class_exists('session')) {
-	require(PATH_INC . '/session.class.php');
-}
+require(PATH_INC . '/input.class.php');
+require(PATH_INC . '/session.class.php');
 require(PATH_INC . '/template.inc.php');
 
+$input = new input;
+$session = new session($db, $input);
+
 // Send to game listing if already logged in
-$session = new session($db);
 if ($session->authenticated()) {
 	header('Location: ' . URL_FULL . '/gamelisting.php');
 	return;
 }
 
 // User logging into server -> to go into login.php
-if (isset($_REQUEST['handle']) && isset($_REQUEST['password'])) {
+if ($input->exists('handle', 'password')) {
 	if (!class_exists('sha256')) {
 		require(PATH_LIB . '/sha256/sha256.class.php');
 	}
 
-	$uQuery = $db->query('SELECT acc_id FROM [server]account WHERE acc_handle = %[1] AND acc_password = 0x' . sha256::hash($_REQUEST['password']),
-	 $_REQUEST['handle']);
+	$uQuery = $db->query('SELECT acc_id FROM [server]account WHERE acc_handle = %[1] AND acc_password = 0x' . sha256::hash($input->std['password']),
+	 $input->std['handle']);
 	if ($db->hasError($uQuery)) {
 		$authProblem[] = 'existQuery';
 	} elseif ($db->numRows($uQuery) < 1) {

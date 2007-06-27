@@ -62,9 +62,9 @@ deleted.</p>
 	</dl>
 </form>
 
-<textarea class="longText"><?php
-$this->eprint($this->rules);
-?></textarea>
+<div class="longText"><?php
+echo $this->rules;
+?></div>
 
 <h2>Return to <a href="index.php">sign-in screen</a></h2>
 <?php
