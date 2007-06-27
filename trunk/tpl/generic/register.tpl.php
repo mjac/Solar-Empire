@@ -63,7 +63,7 @@ deleted.</p>
 </form>
 
 <div class="longText"><?php
-echo $this->rules;
+echo $this->serverRules;
 ?></div>
 
 <h2>Return to <a href="index.php">sign-in screen</a></h2>
