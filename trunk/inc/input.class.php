@@ -37,7 +37,7 @@ class input
 			if (is_array($value)) {
 				input::arrayStripslashes($var[$key]);
 			} else {
-				$var[$key] = input::arrayStripslashes($value);
+				$var[$key] = stripslashes($value);
 			}
 		}
 	}
