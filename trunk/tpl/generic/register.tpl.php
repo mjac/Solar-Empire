@@ -49,9 +49,6 @@ deleted.</p>
 		<dt><label for="handle">Handle</label></dt>
 		<dd><input type="text" name="handle" class="text" /></dd>
 
-		<dt><label for="name">Real-name</label></dt>
-		<dd><input type="text" name="name" class="text" /></dd>
-
 		<dt><label for="email">Email address</label></dt>
 		<dd>Write it twice for verification; a random account password will be 
 		sent to this address.</dd>

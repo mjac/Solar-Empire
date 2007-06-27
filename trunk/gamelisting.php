@@ -1,15 +1,8 @@
 <?php
 
-require_once('inc/common.inc.php');
-require_once('inc/db.inc.php');
-require_once('inc/template.inc.php');
-
-
-// User must be logged in to get past this point
-if (!checkAuth()) {
-	require_once('logout.php');
-	exit;
-}
+require('inc/config.inc.php');
+require(PATH_INC . '/statemember.inc.php');
+require(PATH_INC . '/template.inc.php');
 
 // Logout of the game
 if ($account['in_game'] !== NULL) {

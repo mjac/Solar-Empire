@@ -1,10 +1,8 @@
 <?php
 
 require('inc/config.inc.php');
+require(PATH_INC . '/stateguest.inc.php');
 require(PATH_INC . '/template.inc.php');
-require(PATH_INC . '/input.class.php');
-
-$input = new input;
 
 // Not attempting to register yet
 if (!$input->exists('handle', 'email', 'email2')) {

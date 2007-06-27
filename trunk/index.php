@@ -1,19 +1,8 @@
 <?php
 
 require('inc/config.inc.php');
-require(PATH_INC . '/db.inc.php');
-require(PATH_INC . '/input.class.php');
-require(PATH_INC . '/session.class.php');
+require(PATH_INC . '/stateguest.inc.php');
 require(PATH_INC . '/template.inc.php');
-
-$input = new input;
-$session = new session($db, $input);
-
-// Send to game listing if already logged in
-if ($session->authenticated()) {
-	header('Location: ' . URL_FULL . '/gamelisting.php');
-	return;
-}
 
 // User logging into server -> to go into login.php
 if ($input->exists('handle', 'password')) {
