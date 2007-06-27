@@ -5,79 +5,72 @@ require(PATH_INC . '/template.inc.php');
 require(PATH_INC . '/input.class.php');
 
 $input = new input;
-$input->parse();
 
-if (!(isset($_REQUEST['handle']) && isset($_REQUEST['name']) &&
-	 isset($_REQUEST['email']) && isset($_REQUEST['email2']))) {
+// Not attempting to register yet
+if (!$input->exists('handle', 'email', 'email2')) {
 	$tpl->assign('serverRules', file_get_contents('inc/rules.tpl.html'));
 	$tpl->display('register.tpl.php');
-	exit;
+	return;
 }
 
+// Validate strings
 $regProblem = array();
-if (!preg_match('/[a-z0-9]{4,16}/i', $_REQUEST['handle'])) {
-	$regProblem[] = 'handle';
+if (!preg_match('/[a-z0-9]{4,16}/i', $input->std['handle'])) {
+	$regProblem[] = 'invalidHandle';
 }
 
-if ($_REQUEST['email'] !== $_REQUEST['email2']) {
-	$regProblem[] = 'emailConfirm';
+if (!(strlen($input->std['email']) <= 255 &&
+     input::isEmail($input->std['email']))) {
+	$regProblem[] = 'invalidEmail';
 }
 
-if (!(strlen($_REQUEST['email']) < 65 && isEmailAddr($_REQUEST['email']))) {
-	$regProblem[] = 'Please enter a valid e-mail address';
+if ($input->std['email'] !== $input->std['email2']) {
+	$regProblem[] = 'confirmEmail';
 }
 
-$password = '';
-
+// Database checks on data
 if (empty($regProblem)) {
 	require(PATH_INC . '/db.inc.php');
 
 	// Duplicate handle?
-	$nameDup = $db->query('SELECT COUNT(*) FROM [server]account WHERE acc_handle = %[1]', $_REQUEST['handle']);
+	$nameDup = $db->query('SELECT COUNT(*) FROM [server]account WHERE acc_handle = %[1]', $input->std['handle']);
 	if ($db->hasError($nameDup)) {
-	    $regProblem[] = 'handleQuery';
+	    $regProblem[] = 'queryHandle';
 	} elseif (current($db->fetchRow($nameDup)) > 0) {
-		$regProblem[] = 'handleDuplicate';
+		$regProblem[] = 'duplicateHandle';
 	}
 
 	// Duplicate e-mail address?
-	$emailDup = $db->query('SELECT COUNT(*) FROM [server]account WHERE acc_email = %[1]', $_REQUEST['email']);
+	$emailDup = $db->query('SELECT COUNT(*) FROM [server]account WHERE acc_email = %[1]', $input->std['email']);
 	if ($db->hasError($emailDup)) {
-	    $regProblem[] = 'emailQuery';
+	    $regProblem[] = 'queryEmail';
 	} elseif (current($db->fetchRow($emailDup)) > 0) {
-		$regProblem[] = 'emailDuplicate';
+		$regProblem[] = 'duplicateEmail';
 	}
 
+	// Finding the new account ID
 	if (($newId = $db->newId('[server]account', 'acc_id')) === false) {
-		$regProblem[] = 'newId';
+		$regProblem[] = 'queryId';
 	}
 }
 
-if (!empty($regProblem)) {
-	$tpl->assign('serverRules', file_get_contents('inc/rules.tpl.html'));
-	$tpl->assign('regProblem', $regProblem);
-	$tpl->display('register.tpl.php');
-	exit;
-}
+// Send mail
+if (empty($regProblem)) {
+	if (!class_exists('sha256')) {
+		require(PATH_LIB . '/sha256/sha256.class.php');
+	}
+	$password = input::randomStr(6); // Six alphanumeric chars
 
-if (!class_exists('sha256')) {
-	require(PATH_LIB . '/sha256/sha256.class.php');
-}
+	$location = URL_FULL;
 
-$db->query('INSERT INTO [server]account (acc_id, acc_handle, acc_password, acc_created, acc_email) VALUES (%[1], %[2], 0x' .
- sha256::hash($password) . ', %[3], %[4])', $newId, $_REQUEST['handle'],
- time(), $_REQUEST['email']);
-
-$location = URL_FULL;
-
-$message = <<<END
+	$message = <<<END
 SYSTEM WARS REGISTRATION
 $location
 
 You created a new account, here are the details.
 
 Account name
-	$_REQUEST[handle]
+	$input->std[handle]
 Random password (change this to something memorable)
 	$password
 
@@ -86,10 +79,32 @@ Welcome to the community; you can begin your adventures straight away.
 Remember to sign in to your account to prevent it being deleted after a few hours.
 END;
 
-mail($_REQUEST['email'], "New account at $location", $message,
- "From: System Wars Mailer <game@$_SERVER[HTTP_HOST]>");
+	$mailCompleted = @mail($input->std['email'], 'System Wars account created', $message,
+	 "From: System Wars Server <noreply@$_SERVER[HTTP_HOST]>\r\nReply-To: System Wars Server <noreply@$_SERVER[HTTP_HOST]>");
+	if (!$mailCompleted) {
+	    $regProblem[] = 'accountMail';
+	}
+}
 
-$tpl->display('registered.tpl.php');
-exit;
+// Insert into database
+if (empty($regProblem)) {
+	$newAccount = $db->query('INSERT INTO [server]account (acc_id, acc_handle, acc_password, acc_created, acc_email) VALUES (%[1], %[2], 0x' .
+	 sha256::hash($password) . ', %[3], %[4])', $newId, $input->std['handle'],
+	 time(), $input->std['email']);
+	if ($db->hasError($newAccount)) {
+	    $regProblem[] = 'accountCreate';
+	}
+}
+
+// Everything went fine OR...
+if (empty($regProblem)) {
+	$tpl->display('registered.tpl.php');
+	return;
+}
+
+// ... show problems
+$tpl->assign('serverRules', file_get_contents('inc/rules.tpl.html'));
+$tpl->assign('regProblem', $regProblem);
+$tpl->display('register.tpl.php');
 
 ?>
