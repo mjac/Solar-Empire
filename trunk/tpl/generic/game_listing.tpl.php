@@ -87,10 +87,10 @@ echo $this->serverNews;
 <h2>Options</h2>
 <ul>
 	<li><a href="<?php $this->eprint($this->url['base'] . '/logout.php');
-?>">Logout Completely</a></li>
+?>">Logout from server</a></li>
 	<li><a href="<?php $this->eprint($this->url['base'] . '/credits.php');
 ?>">Credits</a></li><?php
-if ($this->canCreateGame) {
+if (isset($this->canCreateGame) && $this->canCreateGame) {
 ?>
 	<li><form action="<?php $this->eprint($this->url['self']); 
 ?>" method="get">
@@ -102,11 +102,12 @@ if ($this->canCreateGame) {
 ?>
 </ul>
 
-<h2>Places to go</h2>
+<h2>External places</h2>
 <ul>
+	<li><a href="http://www.syswars.com/">System Wars Home</a></li>
+	<li><a href="http://forum.syswars.com/">Global System Wars Forum</a></li>
 	<li><a href="http://www.solarempire.com/">Solar Empire Home</a></li>
-	<li><a href="http://forum.syswars.com/">Solar Empire Forum</a></li>
-	<li><a href="http://sourceforge.net/projects/solar-empire/">Sourceforge Project</a></li>
+	<li><a href="http://sourceforge.net/projects/solar-empire/">SourceForge Project</a></li>
 </ul>
 <?php
 
