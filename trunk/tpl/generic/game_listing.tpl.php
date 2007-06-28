@@ -77,7 +77,7 @@ if (isset($this->tip)) {
 }
 
 if (isset($this->serverNews)) {
-<h2>Recent news</h2>
+?><h2>Recent news</h2>
 <div class="longText"><?php
 echo $this->serverNews;
 ?></div>
