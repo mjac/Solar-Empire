@@ -36,17 +36,11 @@ CREATE TABLE [server]game (
   game_id varchar(16) NOT NULL default '',
   game_name varchar(32) NOT NULL default '',
   game_admin int unsigned NOT NULL default 1,
-  game_status ENUM('hidden', 'paused', 'running') NOT NULL default 'paused',
+  game_status ENUM('hidden', 'paused', 'active', 'complete') NOT NULL default 'paused',
+  game_shortdesc tinytext NOT NULL,
   game_desc text NOT NULL,
-  game_introduction text NOT NULL,
+  game_intro text NOT NULL,
   game_start datetime NOT NULL default 0,
-  game_finish datetime NOT NULL default 0,
-  game_proc_cleanup datetime NOT NULL default 0,
-  game_proc_turn datetime NOT NULL default 0,
-  game_proc_system datetime NOT NULL default 0,
-  game_proc_ship datetime NOT NULL default 0,
-  game_proc_planet datetime NOT NULL default 0,
-  game_proc_government datetime NOT NULL default 0,
   PRIMARY KEY (game_id)
 ) TYPE=MyISAM;
 

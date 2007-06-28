@@ -13,7 +13,7 @@ function formatGameList(&$tpl, $gList)
 		 '?game_selected=' . $game['db_name']) . "\">" . 
 		 $tpl->escape($game['name']) . "</a> (" . 
 		 $tpl->escape($game['status']) . ') - ' . 
-		 popupHelp('game_info.php?db_name=' . $game['db_name'], 600, 450, 
+		 popupHelp('gameinfo.php?db_name=' . $game['db_name'], 600, 450,
 		 'Info', $tpl) . "</li>\n";
 	}
 	$list .= "\t</ul>\n";
@@ -22,24 +22,30 @@ function formatGameList(&$tpl, $gList)
 }
 
 $this->pageName = 'Game listing';
-$this->title = 'Listing of all the games running on this server';
+$this->title = 'Listing of games running on this server';
 
 include($this->loadTemplate('inc/header_splash.tpl.php'));
 
 $joined = array();
 $unjoined = array();
-foreach ($this->gameList as $game) {
-	if ($game['in']) {
-		$joined[] = $game;
-	} else {
-		$unjoined[] = $game;
+
+if (isset($this->gameList)) {
+	foreach ($this->gameList as $game) {
+		if ($game['in']) {
+			$joined[] = $game;
+		} else {
+			$unjoined[] = $game;
+		}
 	}
 }
 
 ?>
 
-<h1>Game Listing for <?php $this->eprint($this->accountName); ?></h1>
-<p>To enter or join a game, click its name below:</p>
+<h1>Game Listing<?php
+if (isset($this->accountName)) {
+	$this->eprint('for ' . $this->accountName);
+}
+?></h1>
 
 <div id="gameList">
 <?php
@@ -63,17 +69,27 @@ if (empty($joined) && empty($unjoined)) {
 
 ?>
 </div>
-
-<h2>Random tip</h2>
+<?php
+if (isset($this->tip)) {
+?><h2>Random tip</h2>
 <p><?php echo $this->tip; ?></p>
+<?php
+}
 
+if (isset($this->serverNews)) {
 <h2>Recent news</h2>
-<div><?php echo $this->serverNews; ?></div>
-
+<div class="longText"><?php
+echo $this->serverNews;
+?></div>
+<?php
+}
+?>
 <h2>Options</h2>
 <ul>
-	<li><a href="logout.php">Logout Completely</a></li>
-	<li><a href="credits.php">Credits</a></li><?php
+	<li><a href="<?php $this->eprint($this->url['base'] . '/logout.php');
+?>">Logout Completely</a></li>
+	<li><a href="<?php $this->eprint($this->url['base'] . '/credits.php');
+?>">Credits</a></li><?php
 if ($this->canCreateGame) {
 ?>
 	<li><form action="<?php $this->eprint($this->url['self']); 

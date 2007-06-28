@@ -4,12 +4,9 @@ require('inc/config.inc.php');
 require(PATH_INC . '/statemember.inc.php');
 require(PATH_INC . '/template.inc.php');
 
-// Logout of the game
-if ($account['in_game'] !== NULL) {
-	header('Location: logout.php?logout_single_game=1');
-	exit;
-}
+$gameInfo = $db->query('SELECT');
 
+/*// Logout of the game
 
 // User has selected a game.
 if (isset($_REQUEST['game_selected'])) {
@@ -224,9 +221,9 @@ while ($game = $db->fetchRow($games, ROW_ASSOC)) {
 }
 
 $tpl->assign('gameList', $gameList);
-$tpl->assign('canCreateGame', IS_OWNER);
+$tpl->assign('canCreateGame', IS_OWNER);*/
 
-$tpl->assign('serverNews', file_get_contents('inc/server_news.inc.html'));
+$tpl->assign('serverNews', file_get_contents('inc/servernews.tpl.html'));
 
 $tpl->display('game_listing.tpl.php');
 

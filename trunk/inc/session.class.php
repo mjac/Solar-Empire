@@ -1,13 +1,19 @@
 <?php
 defined('PATH_INC') || exit;
 
+/** General session class for authentication */
 class session
 {
+	/** Database class */
 	var $db;
+
+	/** Input class */
 	var $input;
 
+	/** Session variables */
 	var $data = array();
 
+	/** Start the session and associate vsriables */
 	function session(&$db, &$input)
 	{
 		$this->db =& $db;
