@@ -114,7 +114,7 @@ CREATE TABLE [game]msgclan (
   msg_sent datetime NOT NULL default 0,
   msg_content text NOT NULL default '',
   PRIMARY KEY (game_id, msg_id),
-  KEY acc_id (game_id, acc_id),
+  KEY clan_id (game_id, clan_id),
   KEY msg_sent (game_id, msg_sent)
 ) TYPE=MyISAM;
 
@@ -126,7 +126,6 @@ CREATE TABLE [game]msgforum (
   msg_sent datetime NOT NULL default 0,
   msg_content text NOT NULL default '',
   PRIMARY KEY (game_id, msg_id),
-  KEY acc_id (game_id, acc_id),
   KEY msg_sent (game_id, msg_sent)
 ) TYPE=MyISAM;
 
