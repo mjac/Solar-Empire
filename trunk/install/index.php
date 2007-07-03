@@ -13,7 +13,7 @@ class swInstall
 	var $db;
 
 	/** Installer problems */
-	var $problems = array();
+	var $problem = array();
 
 	/** Variables each database type requires */
 	var $dbRequires = array(
@@ -68,8 +68,8 @@ class swInstall
 			$stage = 'licence';
 		}
 
-		if (!empty($this->problems)) {
-			$this->tpl->assign('instProbs', $this->problems);
+		if (!empty($this->problem)) {
+			$this->tpl->assign('instProbs', $this->problem);
 		}
 
 		$this->tpl->assign('stage', $stage);
@@ -135,7 +135,7 @@ class swInstall
 
 		// Could not open and assign the licence
 		if (!$licenceOkay) {
-			$this->problems[] = 'licenceOpen';
+			$this->problem[] = 'licenceOpen';
 		}
 
 		return false;
@@ -168,8 +168,12 @@ class swInstall
 		// Could be set by $this->dbTypeCheck, true only if success though
 		if (isset($_SESSION['dbDSN']) &&
 		     !$this->db->hasError($this->db->connect($_SESSION['dbDSN']))) {
-			$this->db->addVar('server', isset($_SESSION['dbPrefix']) ?
-			 $_SESSION['dbPrefix'] : '');
+			$serverPrefix = isset($_SESSION['dbPrefixServer']) ?
+			 $_SESSION['dbPrefixServer'] : '';
+			$this->db->addVar('server', $serverPrefix);
+			$this->db->addVar('game', $serverPrefix .
+			 (isset($_SESSION['dbPrefixGame']) ?
+			 $_SESSION['dbPrefixGame'] : ''));
 			return true;
 		}
 
@@ -180,7 +184,8 @@ class swInstall
 	function dbReset()
 	{
 		unset($_SESSION['dbDSN']);
-		unset($_SESSION['dbPrefix']);
+		unset($_SESSION['dbPrefixServer']);
+		unset($_SESSION['dbPrefixGame']);
 		unset($_REQUEST['db']);
 	}
 
@@ -227,12 +232,12 @@ class swInstall
 				break;
 
 			default:
-				$this->problems[] = 'dbType';
+				$this->problem[] = 'dbType';
 				return false;
 		}
 
 		if (empty($dbDsn)) {
-			$this->problems[] = 'dbConnect';
+			$this->problem[] = 'dbConnect';
 			return false;
 		}
 
@@ -244,7 +249,7 @@ class swInstall
 	function dbRequireCheck($dbType)
 	{
 		if (!isset($this->dbRequires[$dbType])) {
-			$this->problems[] = 'dbType';
+			$this->problem[] = 'dbType';
 			return false;
 		}
 
@@ -256,7 +261,7 @@ class swInstall
 		}
 
 		if (!empty($reqMissing)) {
-			$this->problems[] = 'dbDetails';
+			$this->problem[] = 'dbDetails';
 			$tpl->assign('dbRequires', $reqMissing);
 			return false;
 		}
@@ -267,21 +272,41 @@ class swInstall
 	/** Assign some kind of database table prefix */
 	function dbPrefix()
 	{
-		if (isset($_REQUEST['db']) && isset($_REQUEST['db']['prefix'])) {
-			if (preg_match('/[a-z0-9_]/i', $_REQUEST['db']['prefix'])) {
-				$_SESSION['dbPrefix'] = $_REQUEST['db']['prefix'];
-				return true;
-			}
-			$this->problems[] = 'dbPrefix';
-		}
-
-		// Blank if invalid or missing
-		if (!isset($_SESSION['dbPrefix'])) {
-			$_SESSION['dbPrefix'] = '';
+		if (!isset($_REQUEST['db'])) {
 			return false;
 		}
 
-		return true;
+		if (isset($_REQUEST['db']['prefixServer'])) {
+			if (preg_match('/[a-z0-9_]*/i', $_REQUEST['db']['prefixServer'])) {
+				$_SESSION['dbPrefixServer'] = $_REQUEST['db']['prefixServer'];
+			} else {
+				$this->problem[] = 'dbPrefixServer';
+			}
+		}
+
+		if (isset($_REQUEST['db']['prefixGame'])) {
+			if (preg_match('/[a-z0-9_]+/i', $_REQUEST['db']['prefixGame'])) {
+				$_SESSION['dbPrefixGame'] = $_REQUEST['db']['prefixGame'];
+			} else {
+				$this->problem[] = 'dbPrefixGame';
+			}
+		}
+
+		// Blank if invalid or missing
+		if (!isset($_SESSION['dbPrefixServer'])) {
+			$_SESSION['dbPrefixServer'] = '';
+		}
+		if (!isset($_SESSION['dbPrefixGame'])) {
+			$_SESSION['dbPrefixGame'] = 'game_';
+		}
+
+		return empty($this->problem);
+	}
+
+	/** Validate the database prefix */
+	function dbPrefixValid($prefixStr)
+	{
+	    return  $prefixStr);
 	}
 
 
@@ -300,10 +325,10 @@ class swInstall
 			$writeConfig = fopen(PATH_INC . '/config.inc.php', 'wb');
 
 			if (!$openConfig) {
-				$this->problems[] = 'configOpen';
+				$this->problem[] = 'configOpen';
 			}
 			if (!$writeConfig) {
-				$this->problems[] = 'configWrite';
+				$this->problem[] = 'configWrite';
 			}
 			if (!($openConfig && $writeConfig)) {
 				return false;
@@ -312,8 +337,10 @@ class swInstall
 			$configSrc = fread($openConfig, filesize('config.inc.php'));
 			fclose($openConfig);
 
-			fwrite($writeConfig, str_replace(array(DB_DSN, DB_PREFIX),
-			 array($_SESSION['dbDSN'], $_SESSION['dbPrefix']), $configSrc));
+			fwrite($writeConfig, str_replace(array(DB_DSN, DB_PREFIX_SERVER,
+			 DB_PREFIX_GAME), array($_SESSION['dbDSN'],
+			 $_SESSION['dbPrefixServer']), $_SESSION['dbPrefixGame']),
+			 $configSrc));
 			fclose($writeConfig);
 
 			$_SESSION['configWritten'] = true;
@@ -368,7 +395,7 @@ class swInstall
 		$schema = fopen(PATH_INSTALL . '/sql/server.' .
 		 strtolower($this->db->type) . '.sql', 'rb');
 		if (!$schema) {
-			$this->problems[] = 'tableSchemaOpen';
+			$this->problem[] = 'tableSchemaOpen';
 			return false;
 		}
 
@@ -392,7 +419,7 @@ class swInstall
 		}
 
 		if (!($schemaTables && $schemaTables === $schemaTablesDone)) {
-			$this->problems[] = 'tableSchemaInsert';
+			$this->problem[] = 'tableSchemaInsert';
 			return false;
 		}
 
@@ -422,7 +449,7 @@ class swInstall
 		}
 
 		if (!($starNames && $starNames === $starNamesDone)) {
-			$this->problems[] = 'tableStarNames';
+			$this->problem[] = 'tableStarNames';
 		}
 
 		// Data
@@ -441,7 +468,7 @@ class swInstall
 			}
 
 			if (!($tipNo && $tipNo === $tipNoDone)) {
-				$this->problems[] = 'tableTip';
+				$this->problem[] = 'tableTip';
 			}
 
 			// Insert all the tips
@@ -458,10 +485,10 @@ class swInstall
 			}
 
 			if (!($optionNo && $optionNo === $optionNoDone)) {
-				$this->problems[] = 'tableGameOption';
+				$this->problem[] = 'tableGameOption';
 			}
 		} else {
-			$this->problems[] = 'tableData';
+			$this->problem[] = 'tableData';
 		}
 
 
@@ -477,10 +504,10 @@ class swInstall
 		 ', %[1], %[1], 1, 1, %[2])', time(),
 		 (double)sprintf('%u', ip2long($_SERVER['REMOTE_ADDR'])));
 		if ($this->db->hasError($newAdmin)) {
-			$this->problems[] = 'tableAdmin';
+			$this->problem[] = 'tableAdmin';
 		}
 
-		return empty($this->problems);
+		return empty($this->problem);
 	}
 }
 

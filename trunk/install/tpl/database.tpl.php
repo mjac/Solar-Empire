@@ -9,7 +9,8 @@ $insDbProbs = array(
 	'dbConnect' => 'Could not connect to the database using the details you provided' .
 	 (isset($this->dbConnectErr) ? ('; the error reported was <em>' . 
 	 $this->escape($this->dbConnectErr) . '</em>') : ''),
-	'dbPrefix' => 'That database prefix is invalid, use only alphanumeric characters and underscores'
+	'dbPrefixServer' => 'That database server prefix is invalid, use only alphanumeric characters and underscores',
+	'dbPrefixGame' => 'That database game prefix is invalid, use only alphanumeric characters and underscores'
 );
 
 include($this->loadTemplate('header.tpl.php'));
@@ -52,8 +53,11 @@ if (isset($this->instProbs) && !empty($this->instProbs)) {
 		<dt><label for="dbPassword">Password</label></dt>
 		<dd><input type="password" name="db[password]" id="dbPassword" class="text" /></dd>
 	
-		<dt><label for="dbPrefix">Table prefix</label></dt>
-		<dd><input type="text" name="db[prefix]" id="dbPrefix" class="text" value="sw_" /></dd>
+		<dt><label for="dbPrefixServer">Server table prefix</label></dt>
+		<dd><input type="text" name="db[prefixServer]" id="dbPrefixServer" class="text" value="sw_" /></dd>
+
+		<dt><label for="dbPrefixGame">Game table prefix</label></dt>
+		<dd><input type="text" name="db[prefixGame]" id="dbPrefixGame" class="text" value="game_" /></dd>
 
 		<dt><input type="submit" value="Connect to database" class="button" /></dt>
 	</dl>
