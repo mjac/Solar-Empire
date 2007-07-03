@@ -12,7 +12,6 @@ define('USER_VALIDATION_LENGTH', 86400);
 
 // DSN String - type://user:pass@host/database
 define('DB_DSN', 'DB_DSN=HERE');
-define('DB_PREFIX', 'DB_PREFIX=HERE');
 define('DB_PREFIX_SERVER', 'DB_PREFIX_SERVER=HERE');
 define('DB_PREFIX_GAME', 'DB_PREFIX_GAME=HERE');
 

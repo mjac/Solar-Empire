@@ -15,7 +15,8 @@ class swDatabase extends sda
 		$this->rowType = ROW_ASSOC;
 		$this->debug(true);
 
-		$this->addVar('server', DB_PREFIX);
+		$this->addVar('server', DB_PREFIX_SERVER);
+		$this->addVar('game', DB_PREFIX_SERVER . DB_PREFIX_GAME);
 	}
 
 	/** Find a new ID for tables/databases that do not support auto_increment */

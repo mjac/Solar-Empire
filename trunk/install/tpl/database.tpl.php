@@ -10,7 +10,7 @@ $insDbProbs = array(
 	 (isset($this->dbConnectErr) ? ('; the error reported was <em>' . 
 	 $this->escape($this->dbConnectErr) . '</em>') : ''),
 	'dbPrefixServer' => 'That database server prefix is invalid, use only alphanumeric characters and underscores',
-	'dbPrefixGame' => 'That database game prefix is invalid, use only alphanumeric characters and underscores'
+	'dbPrefixGame' => 'That database game prefix is invalid, use only alphanumeric characters and underscores: a value must be present to prevent collisions with the server tables'
 );
 
 include($this->loadTemplate('header.tpl.php'));
