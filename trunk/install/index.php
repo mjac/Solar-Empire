@@ -333,8 +333,8 @@ class swInstall
 
 			fwrite($writeConfig, str_replace(array(DB_DSN, DB_PREFIX_SERVER,
 			 DB_PREFIX_GAME), array($_SESSION['dbDSN'],
-			 $_SESSION['dbPrefixServer']), $_SESSION['dbPrefixGame']),
-			 $configSrc));
+			 $_SESSION['dbPrefixServer'], $_SESSION['dbPrefixGame'],
+			 $configSrc)));
 			fclose($writeConfig);
 
 			$_SESSION['configWritten'] = true;
