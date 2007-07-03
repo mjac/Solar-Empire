@@ -105,7 +105,7 @@ if (isset($this->canCreateGame) && $this->canCreateGame) {
 <h2>External places</h2>
 <ul>
 	<li><a href="http://www.syswars.com/">System Wars Home</a></li>
-	<li><a href="http://forum.syswars.com/">Global System Wars Forum</a></li>
+	<li><a href="http://forum.syswars.com/">System Wars Forum</a></li>
 	<li><a href="http://www.solarempire.com/">Solar Empire Home</a></li>
 	<li><a href="http://sourceforge.net/projects/solar-empire/">SourceForge Project</a></li>
 </ul>

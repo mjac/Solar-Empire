@@ -426,10 +426,9 @@ class swInstall
 		}
 
 		// Data
-		if (include(PATH_INSTALL . '/data.inc.php')) {
+		if (@include(PATH_INSTALL . '/data.inc.php')) {
 			// Insert all the tips
 			$delTip = $this->db->query('DELETE FROM [server]tip');
-
 			$tipNo = 0;
 			$tipNoDone = 0;
 			foreach ($dat['tips'] as $tipContent) {
@@ -442,7 +441,24 @@ class swInstall
 			}
 
 			if (!($tipNo && $tipNo === $tipNoDone)) {
-				$this->problems[] = 'tableTips';
+				$this->problems[] = 'tableTip';
+			}
+
+			// Insert all the tips
+			$delOption = $this->db->query('DELETE FROM [game]optionlist');
+			$optionNo = 0;
+			$optionNoDone = 0;
+			foreach ($dat['gameoptionlist'] as $optArray) {
+				$optQuery = $this->db->query('INSERT INTO [server]optionlist (optn_id, optn_min, optn_max, optn_default, optn_name, optn_desc) VALUES (%[1], %[2], %[3], %[4], %[5], %[6])',
+				 ++$optionNo, $optArray[2], $optArray[3], $optArray[1], $optArray[0], $optArray[4]);
+				if (!($this->db->hasError($optQuery) ||
+				     $this->db->affectedRows($optQuery) < 1)) {
+					++$optionNoDone;
+				}
+			}
+
+			if (!($optionNo && $optionNo === $optionNoDone)) {
+				$this->problems[] = 'tableGameOption';
 			}
 		} else {
 			$this->problems[] = 'tableData';

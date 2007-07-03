@@ -6,7 +6,8 @@ $insTableProbs = array(
 	'tableSchemaInsert' => 'Schema was not created successfully',
 	'tableData' => 'General data could not be found for insertation',
 	'tableStarNames' => 'Star names could not be inserted successfully',
-	'tableTips' => 'Table tips were not inserted successfully',
+	'tableTip' => 'Table tips were not inserted successfully',
+	'tableGameOption' => 'Table game options were not inserted successfully',
 	'tableAdmin' => 'Administrator account was not created'
 );
 
