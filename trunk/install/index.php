@@ -303,12 +303,6 @@ class swInstall
 		return empty($this->problem);
 	}
 
-	/** Validate the database prefix */
-	function dbPrefixValid($prefixStr)
-	{
-	    return  $prefixStr);
-	}
-
 
 	// CONFIGURATION
 
@@ -354,7 +348,7 @@ class swInstall
 	{
 		unset($_SESSION['configWritten']);
 		if (file_exists(PATH_INC . '/config.inc.php')) {
-			unlink(PATH_INC . '/config.inc.php');
+			@unlink(PATH_INC . '/config.inc.php');
 		}
 	}
 
