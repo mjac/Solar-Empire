@@ -153,6 +153,13 @@ CREATE TABLE [game]news (
   KEY news_sent (game_id, news_sent)
 ) TYPE=MyISAM;
 
+CREATE TABLE [game]option (
+  game_id tinyint unsigned NOT NULL default 1,
+  optn_id tinyint unsigned NOT NULL default 1,
+  optn_value int NOT NULL default 0,
+  PRIMARY KEY (game_id, optn_id)
+) TYPE=MyISAM;
+
 CREATE TABLE [game]optionlist (
   optn_id tinyint unsigned NOT NULL default 1,
   optn_name varchar(32) NOT NULL default '',
@@ -161,13 +168,6 @@ CREATE TABLE [game]optionlist (
   optn_max int NOT NULL default 1,
   optn_desc text NOT NULL default '',
   PRIMARY KEY (optn_id)
-) TYPE=MyISAM;
-
-CREATE TABLE [game]option (
-  game_id tinyint unsigned NOT NULL default 1,
-  optn_id tinyint unsigned NOT NULL default 1,
-  optn_value int NOT NULL default 0,
-  PRIMARY KEY (game_id, optn_id)
 ) TYPE=MyISAM;
 
 CREATE TABLE [game]planet (
@@ -180,7 +180,7 @@ CREATE TABLE [game]planet (
   plnt_colonist int unsigned NOT NULL default 1000,
   plnt_taxrate tinyint unsigned NOT NULL default 5,
   plnt_report tinyint unsigned NOT NULL default 1,
-  PRIMARY KEY (game_id, planet_id),
+  PRIMARY KEY (game_id, plnt_id),
   KEY star_id (game_id, star_id),
   KEY acc_id (game_id, acc_id)
 ) TYPE=MyISAM;
@@ -287,6 +287,6 @@ CREATE TABLE [game]starlink (
   game_id tinyint unsigned NOT NULL default 1,
   star_id smallint unsigned NOT NULL,
   slink_type ENUM('link', 'wormhole') NOT NULL default 'link',
-  slink_to smallint unsigned NOT NULL
+  slink_to smallint unsigned NOT NULL,
   PRIMARY KEY (game_id, star_id)
 ) TYPE=MyISAM;
