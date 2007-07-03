@@ -470,7 +470,7 @@ class swInstall
 			$optionNo = 0;
 			$optionNoDone = 0;
 			foreach ($dat['gameoptionlist'] as $optArray) {
-				$optQuery = $this->db->query('INSERT INTO [server]optionlist (optn_id, optn_min, optn_max, optn_default, optn_name, optn_desc) VALUES (%[1], %[2], %[3], %[4], %[5], %[6])',
+				$optQuery = $this->db->query('INSERT INTO [game]optionlist (optn_id, optn_min, optn_max, optn_default, optn_name, optn_desc) VALUES (%[1], %[2], %[3], %[4], %[5], %[6])',
 				 ++$optionNo, $optArray[2], $optArray[3], $optArray[1], $optArray[0], $optArray[4]);
 				if (!($this->db->hasError($optQuery) ||
 				     $this->db->affectedRows($optQuery) < 1)) {
