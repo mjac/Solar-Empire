@@ -4,7 +4,7 @@ class_exists('Savant2') || exit;
 $this->pageName = 'Banned';
 $this->title = 'You have been banned from playing this game';
 
-include($this->loadTemplate('inc/header_splash.tpl.php'));
+include($this->loadTemplate('inc/headersplash.tpl.php'));
 
 ?><h1>You are banned from this game</h1>
 
@@ -20,6 +20,6 @@ susceptible to the usual woes of the game.</p>
 </blockquote>
 <?php
 
-include($this->loadTemplate('inc/footer_splash.tpl.php'));
+include($this->loadTemplate('inc/footersplash.tpl.php'));
 
 ?>

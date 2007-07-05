@@ -1,75 +1,34 @@
 <?php
 class_exists('Savant2') || exit;
 
-if (!function_exists('popupHelp')) {
-	require($this->loadTemplate('inc/popupHelp.inc.php'));
-}
-
-function formatGameList(&$tpl, $gList)
-{
-	$list = "\t<ul>\n";
-	foreach ($gList as $game) {
-		$list .= "\t\t<li><a href=\"" . $tpl->escape($tpl->url['self'] . 
-		 '?game_selected=' . $game['db_name']) . "\">" . 
-		 $tpl->escape($game['name']) . "</a> (" . 
-		 $tpl->escape($game['status']) . ') - ' . 
-		 popupHelp('gameinfo.php?db_name=' . $game['db_name'], 600, 450,
-		 'Info', $tpl) . "</li>\n";
-	}
-	$list .= "\t</ul>\n";
-
-	return $list;
-}
-
 $this->pageName = 'Game listing';
 $this->title = 'Listing of games running on this server';
 
-include($this->loadTemplate('inc/header_splash.tpl.php'));
-
-$joined = array();
-$unjoined = array();
-
-if (isset($this->gameList)) {
-	foreach ($this->gameList as $game) {
-		if ($game['in']) {
-			$joined[] = $game;
-		} else {
-			$unjoined[] = $game;
-		}
-	}
-}
+include($this->loadTemplate('inc/headersplash.tpl.php'));
 
 ?>
 
-<h1>Game Listing<?php
+<h1>Game listing<?php
 if (isset($this->accountName)) {
 	$this->eprint('for ' . $this->accountName);
 }
 ?></h1>
-
-<div id="gameList">
 <?php
-
-if (!empty($joined)) {
-?>	<h2>Joined games</h2>
+if (!empty($this->gameList)) {
+?><dl id="gameList">
 <?php
-	echo formatGameList($this, $joined);
-}
-
-if (!empty($unjoined)) {
-?>	<h2>Unjoined games</h2>
+	foreach ($this->gameList as $gameArr) {
+?>	<dt><a href="<?php
+		$this->eprint($this->url['self'] . ($gameArr['joined'] ?
+		 '/gameenter.php' : '/gamejoin.php') . '?gameid=' . $gameArr['id']);
+?>"><?php $this->eprint($gameArr['name']); ?></a></dt>
+	<dd><?php $this->eprint($gameArr['summary']); ?></dd>
 <?php
-	echo formatGameList($this, $unjoined);
-}
-
-if (empty($joined) && empty($unjoined)) {
-?>	<p>There are no games running.</p>
+	}
+?></dl>
 <?php
 }
 
-?>
-</div>
-<?php
 if (isset($this->tip)) {
 ?><h2>Random tip</h2>
 <p><?php echo $this->tip; ?></p>
@@ -89,17 +48,7 @@ echo $this->serverNews;
 	<li><a href="<?php $this->eprint($this->url['base'] . '/logout.php');
 ?>">Logout from server</a></li>
 	<li><a href="<?php $this->eprint($this->url['base'] . '/credits.php');
-?>">Credits</a></li><?php
-if (isset($this->canCreateGame) && $this->canCreateGame) {
-?>
-	<li><form action="<?php $this->eprint($this->url['self']); 
-?>" method="get">
-		<p><input type="text" name="newGame" class="text" />
-		<input type="submit" class="button" value="Add game" /></p>
-	</form></li>
-<?php
-}
-?>
+?>">Credits</a></li>
 </ul>
 
 <h2>External places</h2>
@@ -111,6 +60,6 @@ if (isset($this->canCreateGame) && $this->canCreateGame) {
 </ul>
 <?php
 
-include($this->loadTemplate('inc/footer_splash.tpl.php'));
+include($this->loadTemplate('inc/footersplash.tpl.php'));
 
 ?>

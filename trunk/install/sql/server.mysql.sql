@@ -67,7 +67,7 @@ CREATE TABLE [game]list (
   game_name varchar(32) NOT NULL default '',
   game_admin int unsigned NOT NULL default 1,
   game_status ENUM('hidden', 'paused', 'active', 'complete') NOT NULL default 'paused',
-  game_shortdesc tinytext NOT NULL,
+  game_summary tinytext NOT NULL,
   game_desc text NOT NULL,
   game_intro text NOT NULL,
   game_start datetime NOT NULL default 0,

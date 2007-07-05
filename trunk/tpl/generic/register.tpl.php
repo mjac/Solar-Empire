@@ -4,7 +4,7 @@ class_exists('Savant2') || exit;
 $this->pageName = 'Register';
 $this->title = 'Create an account and start playing';
 
-include($this->loadTemplate('inc/header_splash.tpl.php'));
+include($this->loadTemplate('inc/headersplash.tpl.php'));
 
 ?><h1>Register an account</h1>
 
@@ -66,6 +66,6 @@ echo $this->serverRules;
 <h2>Return to <a href="index.php">sign-in screen</a></h2>
 <?php
 
-include($this->loadTemplate('inc/footer_splash.tpl.php'));
+include($this->loadTemplate('inc/footersplash.tpl.php'));
 
 ?>

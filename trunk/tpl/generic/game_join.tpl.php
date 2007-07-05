@@ -4,7 +4,7 @@ class_exists('Savant2') || exit;
 $this->pageName = 'Join game';
 $this->title = 'Enter both your player and ship names to begin';
 
-include($this->loadTemplate('inc/header_splash.tpl.php'));
+include($this->loadTemplate('inc/headersplash.tpl.php'));
 
 ?><h1>Join <?php $this->eprint($this->gameName); ?></h1>
 
@@ -28,6 +28,6 @@ $this->eprint($this->gameSelected); ?>" /></dt>
 ?><h2>Return to <a href="game_listing.php">game listing</a></h2>
 <?php
 
-include($this->loadTemplate('inc/footer_splash.tpl.php'));
+include($this->loadTemplate('inc/footersplash.tpl.php'));
 
 ?>

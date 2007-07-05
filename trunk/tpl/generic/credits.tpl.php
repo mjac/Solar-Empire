@@ -4,7 +4,7 @@ class_exists('Savant2') || exit;
 $this->pageName = 'Credits';
 $this->title = 'A list of contributors to System Wars';
 
-include($this->loadTemplate('inc/header_splash.tpl.php'));
+include($this->loadTemplate('inc/headersplash.tpl.php'));
 
 ?><h1>Contributors to System Wars</h1>
 
@@ -47,6 +47,6 @@ have finished reading.</p>
 </dl>
 <?php
 
-include($this->loadTemplate('inc/footer_splash.tpl.php'));
+include($this->loadTemplate('inc/footersplash.tpl.php'));
 
 ?>

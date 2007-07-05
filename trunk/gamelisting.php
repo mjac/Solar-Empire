@@ -4,12 +4,24 @@ require('inc/config.inc.php');
 require(PATH_INC . '/statemember.inc.php');
 require(PATH_INC . '/template.inc.php');
 
-$gameInfo = $db->query('SELECT');
 
-/*// Logout of the game
+$gameList = array();
 
-// User has selected a game.
-if (isset($_REQUEST['game_selected'])) {
+$gameInfoQuery = $db->query('SELECT l.game_id, l.game_name, l.game_summary, p.acc_id IS NULL FROM ([game]list AS l LEFT JOIN [game]player AS p ON l.acc_id = p.acc_id)');
+if (!$db->hasError($gameInfoQuery)) {
+	while ($gameRow = $db->fetchRow($gameInfoQuery, ROW_NUMERIC)) {
+		$gameList[] = array(
+		    'id' => (int)$gameRow[0],
+		    'name' => $gameRow[1],
+		    'summary' => $gameRow[2],
+		    'joined' => (bool)$gameRow[3]
+		);
+	}
+}
+
+$tpl->assign('gameList', $gameList);
+
+/*if (isset($_REQUEST['game_selected'])) {
 	$gQuery = $db->query('SELECT db_name, admin, name, started, intro_message FROM se_games WHERE db_name = \'%[1]\' AND (status != \'paused\' OR admin = %[2])',
 	 $_REQUEST['game_selected'], $account['login_id']);
 
@@ -202,26 +214,7 @@ if (IS_OWNER && isset($_REQUEST['newGame']) && ctype_alnum($_REQUEST['newGame'])
 $tipQuery = $db->query('SELECT tip_content FROM daily_tips ORDER BY RAND()');
 $tip = $db->fetchRow($tipQuery, ROW_NUMERIC);
 $tpl->assign('tip', $tip[0]);
-$tpl->assign('accountName', $account['login_name']);
-
-$gameList = array();
-
-// Cycle through the games that are not hidden
-$games = $db->query('SELECT name, db_name, status FROM se_games WHERE status != \'hidden\' OR admin = %[1] ORDER BY name ASC', 
- $account['login_id']);
-
-while ($game = $db->fetchRow($games, ROW_ASSOC)) {
-	$inGame = $db->query('SELECT COUNT(*) FROM %[1]_users WHERE login_id = %[2]',
-	 $game['db_name'], $account['login_id']);
-	$result = $db->fetchRow($inGame, ROW_NUMERIC);
-
-	$game['in'] = $result[0] > 0;
-
-	$gameList[] = $game;
-}
-
-$tpl->assign('gameList', $gameList);
-$tpl->assign('canCreateGame', IS_OWNER);*/
+$tpl->assign('accountName', $account['login_name']);*/
 
 $tpl->assign('serverNews', file_get_contents('inc/servernews.tpl.html'));
 

@@ -4,7 +4,7 @@ class_exists('Savant2') || exit;
 $this->pageName = 'Welcome';
 $this->title = 'Competitive, web based, space combat game';
 
-include($this->loadTemplate('inc/header_splash.tpl.php'));
+include($this->loadTemplate('inc/headersplash.tpl.php'));
 
 ?><form id="login" action="<?php
 $this->eprint($this->url['base'] . '/login.php');
@@ -65,6 +65,6 @@ if (isset($this->authProblem) && !empty($this->authProblem)) {
 </div>
 <?php
 
-include($this->loadTemplate('inc/footer_splash.tpl.php'));
+include($this->loadTemplate('inc/footersplash.tpl.php'));
 
 ?>
