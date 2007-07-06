@@ -85,9 +85,10 @@ END;
 
 // Insert into database
 if (empty($regProblem)) {
-	$newAccount = $db->query('INSERT INTO [server]account (acc_id, acc_handle, acc_password, acc_created, acc_email) VALUES (%[1], %[2], 0x' .
-	 sha256::hash($password) . ', %[3], %[4])', $newId, $input->std['handle'],
-	 time(), $input->std['email']);
+	$newAccount = $db->query('INSERT INTO [server]account (acc_id, acc_handle, acc_password, acc_created, acc_email, acc_ip) VALUES (%[1], %[2], 0x' .
+	 sha256::hash($password) . ', %[3], %[4], %[5])', $newId,
+	 $input->std['handle'], time(), $input->std['email'],
+	 session::ipToUlong(session::ipAddress()));
 	if ($db->hasError($newAccount)) {
 	    $regProblem[] = 'accountCreate';
 	}
