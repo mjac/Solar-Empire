@@ -3,93 +3,19 @@ html {
 	color: #F0F0F0;
 	font-family: Verdana, sans-serif;
 	font-size: 80%;
-	margin: 0;
 }
 
 body {
-	margin: 1em;
-}
-
-#logo {
-	margin: 1em;
-	text-align: center;
-}
-
-#splash {
+	margin: 0 auto;
 	width: 60em;
-	margin: 1em auto;
 }
 
-/* Login form */
-#login {
-	width: 14em;
-	border: Thin outset #666666;
-	padding: 0.5em;
-	margin: 1em;
-	float: left;
-	background: #102033 url(dark_gradient.png) repeat-x;
-	text-align: center;
-}
-
-#login h2 {
-	margin: 0.5em;
-	border: 0px none;
-	padding: 0;
-}
-
-#login dl {
-	margin: 0.25em;
-}
-
-#login dd, #login dt {
-	margin: 0.125em;
-}
-
-#login dt {
-	margin-top: 0.5em;
-}
-
-#login label {
-	font-weight: bold;
-}
-#login ul {
-	margin: 0;
-	padding: 0;
-}
-#login li {
-	margin: 0.125em 0;
-	padding: 0;
-	text-align: left;
-    list-style: none;
-}
-
-#loginContent {
-	margin-left: 18em;
-	text-align: justify;
-}
-
-#gameList {
-	border: 2px outset #666;
-	padding: 2em;
-	background: #102033 url(dark_gradient.png) repeat-x;
+a img {
+	border: none;
 }
 
 h1, h2, h3, h4, h5, h6 {
 	font-family: sans-serif;
-}
-
-h1 {
-	font-size: 193%;
-	font-weight: normal;
-}
-h2 {
-	font-size: 131%;
-	border-bottom: 1px solid #CCCCCC;
-	padding: 0.125em 0;
-}
-
-h3 {
-	font-size: 115%;
 }
 
 
@@ -102,10 +28,102 @@ a:link:hover, a:visited:hover {
 	text-decoration: underline;
 }
 
+#logo {
+	margin: 1em;
+	text-align: center;
+}
 
-input.text {
+
+/* Sidebar */
+#splashSidebar {
+	width: 14em;
+	border-right: 1px solid #666666;
+	border-left: 1px solid #666666;
+	border-bottom: 1px solid #666666;
+	margin: 1em;
+	padding: 0;
+	float: left;
+	background: #102033 url(dark_gradient.png) repeat-x;
+	text-align: right;
+	list-style: none;
+}
+#splashSidebar li {
+	padding: 0.5em;
+	border-top: 1px solid #666666;
+}
+
+/* Login form */
+#loginSection form {
+	margin: 0;
+	padding: 0;
+}
+#loginSection h2 {
+	font-size: 120%;
+	margin: 0.25em 0em;
+}
+#loginSection dl {
+	margin: 0.25em;
+}
+#loginSection dd, #loginSection dt {
+	margin: 0.125em;
+}
+#loginSection dt {
+	margin-top: 0.5em;
+	font-weight: bold;
+}
+#loginSection h3 {
+	font-size: 110%;
+	margin: 0.5em 0em 0em 0em;
+}
+#loginSection ul {
+	margin: 0;
+	padding: 0;
+	font-size: 80%;
+}
+#loginSection li {
+	margin: 0.125em;
+    list-style: none;
+}
+
+#splashContent {
+	margin-left: 16em;
+	padding-left: 1em;
+	border-left: 1px solid #333333;
+	text-align: justify;
+}
+#splashContent h1 {
+	font-size: 193%;
+	font-weight: normal;
+}
+#splashContent h2 {
+	font-size: 131%;
+	border-bottom: 1px solid #CCCCCC;
+	padding: 0.125em 0;
+}
+#splashContent h3 {
+	font-size: 115%;
+}
+
+#splashContent dt {
+	font-weight: bold;
+	margin-top: 0.5em;
+	color: #E0E0E0;
+	padding: 0.125em 0em;
+}
+#splashContent dt.submit, #splashContent dd {
+	margin: 0.25em 0em;
+	padding: 0em 0em 0em 1.5em;
+}
+
+#gameList {
+	border: 2px outset #666;
+	padding: 2em;
+	background: #102033 url(dark_gradient.png) repeat-x;
+}
+
+
+input.text, select {
 	background: #364045 url(blue_input_text.png) repeat-x;
-	border: 1px inset #CCCCFF;
 }
 
 textarea {
@@ -118,6 +136,7 @@ input.text, textarea {
 	color: #FFF;
 	font-family: monospace;
 	font-size: 1.125em;
+	border: 1px inset #CCCCFF;
 }
 
 input.button {
@@ -137,34 +156,8 @@ input.button:active {
 	border: 1px inset white;
 }
 
-select {
-	background: #A7C5C7 url(blue_button_over.jpg) repeat-x;
-}
 
-.figure {
-	margin: 0.5em 2em;
-	padding: 1em;
-}
-
-a img {
-	border: none;
-}
-
-dt {
-	font-weight: bold;
-	margin: 10px 0;
-	color: #999999;
-}
-dd {
-	margin-bottom: 5px;
-}
-
-b {
-	color: #CCCCCC;
-}
-
-
-#gameMenu {
+/*#gameMenu {
 	list-style: none;
 	width: 17.5%;
 	text-align: center;
@@ -353,4 +346,4 @@ h2.ship {
 #news em {
 	text-decoration: underline;
 	font-style: normal;
-}
+}*/

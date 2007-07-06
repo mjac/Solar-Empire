@@ -6,8 +6,5 @@ include($this->loadTemplate('inc/header.tpl.php'));
 ?><div id="logo"><img src="<?php
 $this->eprint($this->url['base'] . '/img/systemwars.jpg');
 ?>" alt="Solar Empire: System Wars" /></div>
-<?php
-include($this->loadTemplate('inc/splashsidebar.tpl.php'));
-?>
 <div id="splashContent">
 

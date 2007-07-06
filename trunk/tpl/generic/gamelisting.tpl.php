@@ -4,11 +4,10 @@ class_exists('Savant2') || exit;
 $this->pageName = 'Game listing';
 $this->title = 'Listing of games running on this server';
 
-include($this->loadTemplate('inc/headersplash.tpl.php'));
+$showLogout = true;
+include($this->loadTemplate('inc/headermember.tpl.php'));
 
-?>
-
-<h1>Game listing<?php
+?><h1>Game listing<?php
 if (isset($this->accountName)) {
 	$this->eprint('for ' . $this->accountName);
 }
@@ -60,6 +59,6 @@ echo $this->serverNews;
 </ul>
 <?php
 
-include($this->loadTemplate('inc/footersplash.tpl.php'));
+include($this->loadTemplate('inc/footermember.tpl.php'));
 
 ?>

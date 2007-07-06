@@ -4,6 +4,7 @@ class_exists('Savant2') || exit;
 $this->pageName = 'Register';
 $this->title = 'Create an account and start playing straight away';
 
+$showLogin = $showRegister = true;
 include($this->loadTemplate('inc/headersplash.tpl.php'));
 
 ?><h1>Register an account</h1>
@@ -45,16 +46,16 @@ if (isset($this->regProblem) && !empty($this->regProblem)) {
 ?><p>By submitting this form, you agree to all the server-rules below.  Once you receive your password by e-mail, sign-in straight away to make your account permanent.</p>
 <form method="post" action="register.php">
 	<dl>
-		<dt><label for="handle">Handle</label></dt>
-		<dd><input type="text" name="handle" class="text" /></dd>
+		<dt><label for="regHandle">Handle</label></dt>
+		<dd><input type="text" name="handle" id="regHandle" class="text" /></dd>
 
-		<dt><label for="email">Email address</label></dt>
+		<dt><label for="regEmail">Email address</label></dt>
 		<dd>Write it twice for verification; a random account password will be 
 		sent to this address.</dd>
-		<dd><input type="text" name="email" class="text" /></dd>
+		<dd><input type="text" name="email" id="regEmail" class="text" /></dd>
 		<dd><input type="text" name="email2" class="text" /></dd>
 
-		<dt><input type="submit" value="Create my account" class="button" /></dt>
+		<dt class="submit"><input type="submit" value="Create my account" class="button" /></dt>
 	</dl>
 </form>
 
