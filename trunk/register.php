@@ -40,7 +40,7 @@ if (empty($regProblem)) {
 
 	// Duplicate e-mail address?
 	$emailDup = $db->query('SELECT COUNT(*) FROM [server]account WHERE acc_email = %[1]', $input->std['email']);
-	if ($db->hasError($emailDup)) {
+	if ($db->hasError($emailDup, ROW_NUMERIC)) {
 	    $regProblem[] = 'queryEmail';
 	} elseif (current($db->fetchRow($emailDup)) > 0) {
 		$regProblem[] = 'duplicateEmail';
@@ -65,16 +65,15 @@ if (empty($regProblem)) {
 SYSTEM WARS REGISTRATION
 $location
 
-You created a new account, here are the details.
+Welcome to the community: a new account has been created successfully through this e-mail address.
 
 Account name
 	$input->std[handle]
-Random password (change this to something memorable)
+Initial password
 	$password
 
-Welcome to the community; you can begin your adventures straight away.
-
-Remember to sign in to your account to prevent it being deleted after a few hours.
+Remember to make your account permanent by signing-in as soon as possible.
+It is worth changing your password to something memorable when you first enter the game.
 END;
 
 	$mailCompleted = @mail($input->std['email'], 'System Wars account created', $message,

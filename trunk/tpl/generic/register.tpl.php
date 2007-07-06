@@ -20,8 +20,9 @@ if (isset($this->regProblem) && !empty($this->regProblem)) {
 		'invalidHandle' => 'Your account name must be composed of 4&ndash;16 alpha-numeric (a&ndash;z 0&ndash;9) characters',
 		'invalidEmail' => 'That e-mail address is invalid',
 		'confirmEmail' => 'The e-mail addresses do not match',
-		'handleDuplicate' => 'The account name that you chose is already being used',
-		'emailDuplicate' => 'That e-mail address is already associated with an existing account',
+
+		'duplicateHandle' => 'The account name that you chose is already being used',
+		'duplicateEmail' => 'That e-mail address is already associated with an existing account',
 
 		'accountMail' => 'Unable to e-mail new account information before inserting it into the database',
 		'accountCreate' => 'Failed adding the new account to the database'
