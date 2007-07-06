@@ -25,7 +25,6 @@ while ($var = $db->fetchRow($vars, ROW_ASSOC)) {
 
 $tpl->assign('gameVars', $gameVars);
 
-$tpl->display('game_vars.tpl.php');
-exit;
+$tpl->display('gamevars.tpl.php');
 
 ?>

@@ -433,7 +433,7 @@ class swInstall
 		if ($starNameFp) {
 			while (!feof($starNameFp)) {
 				++$starNames;
-				$starName = $this->db->query('INSERT INTO [server]starname VALUES (%[1])',
+				$starName = $this->db->query('INSERT INTO [game]starname VALUES (%[1])',
 				 trim(fgets($starNameFp)));
 				if (!($this->db->hasError($starName) ||
 				     $this->db->affectedRows($starName) < 1)) {
@@ -490,13 +490,14 @@ class swInstall
 		if (!class_exists('sha256')) {
 			require(PATH_LIB . '/sha256/sha256.class.php');
 		}
+		require(PATH_INC . '/session.class.php'); // for IP data functions
 
 		// Should use some kind of user class instead of raw insert
 		$delAccount = $this->db->query('DELETE FROM [server]account');
 		$newAdmin = $this->db->query('INSERT INTO [server]account (acc_id, acc_handle, acc_password, acc_created, acc_accessed, acc_accesses, acc_requests, acc_ip) VALUES (1, \'Admin\', 0x' .
 		 sha256::hash($_REQUEST['adminPassword']) .
-		 ', %[1], %[1], 1, 1, %[2])', time(),
-		 (double)sprintf('%u', ip2long($_SERVER['REMOTE_ADDR'])));
+		 ', FROM_UNIXTIME(%[1]), FROM_UNIXTIME(%[1]), 1, 1, %[2])',
+		 time(), session::ipToUlong(session::ipAddress()));
 		if ($this->db->hasError($newAdmin)) {
 			$this->problem[] = 'tableAdmin';
 		}

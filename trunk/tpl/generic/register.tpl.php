@@ -2,13 +2,13 @@
 class_exists('Savant2') || exit;
 
 $this->pageName = 'Register';
-$this->title = 'Create an account and start playing';
+$this->title = 'Create an account and start playing straight away';
 
 include($this->loadTemplate('inc/headersplash.tpl.php'));
 
 ?><h1>Register an account</h1>
 
-<h2>Account details</h2>
+<h2>Enter account details</h2>
 <?php
 
 if (isset($this->regProblem) && !empty($this->regProblem)) {
@@ -26,7 +26,7 @@ if (isset($this->regProblem) && !empty($this->regProblem)) {
 		'accountMail' => 'Unable to e-mail new account information before inserting it into the database',
 		'accountCreate' => 'Failed adding the new account to the database'
 	);
-?><h3>Problems</h3>
+?><h3>Problems with submission</h3>
 <ul>
 <?php
 	foreach ($this->regProblem as $problem) {
@@ -41,9 +41,7 @@ if (isset($this->regProblem) && !empty($this->regProblem)) {
 <?php
 }
 
-?><p>By submitting this form, you agree to all the server-rules below.  Once
-you receive your password by e-mail, sign-in to prevent your account being
-deleted.</p>
+?><p>By submitting this form, you agree to all the server-rules below.  Once you receive your password by e-mail, sign-in straight away to make your account permanent.</p>
 <form method="post" action="register.php">
 	<dl>
 		<dt><label for="handle">Handle</label></dt>
@@ -55,15 +53,13 @@ deleted.</p>
 		<dd><input type="text" name="email" class="text" /></dd>
 		<dd><input type="text" name="email2" class="text" /></dd>
 
-		<dt><input type="submit" value="Submit" class="button" /></dt>
+		<dt><input type="submit" value="Create my account" class="button" /></dt>
 	</dl>
 </form>
 
 <div class="longText"><?php
 echo $this->serverRules;
 ?></div>
-
-<h2>Return to <a href="index.php">sign-in screen</a></h2>
 <?php
 
 include($this->loadTemplate('inc/footersplash.tpl.php'));

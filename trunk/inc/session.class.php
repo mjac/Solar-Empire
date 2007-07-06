@@ -23,6 +23,7 @@ class session
 		$this->data =& $_SESSION;
 	}
 
+	/** Create the session with a fixed time-out period */
 	function create($accountId)
 	{
 		$this->data['expires'] = time() + SESSION_TIME_LIMIT;
@@ -31,6 +32,7 @@ class session
 		$this->updateAccount();
 	}
 
+	/** Destroy the PHP session client/server side */
 	function destroy()
 	{
 		$_SESSION = array();
@@ -42,6 +44,7 @@ class session
 		session_destroy();
 	}
 
+	/** Ascertain whether an account is associated with the user */
 	function authenticated()
 	{
 		global $account, $gameInfo;
@@ -57,16 +60,15 @@ class session
 	
 		$accQuery = $this->db->query('SELECT COUNT(*) FROM [server]account WHERE acc_id = %[1]',
 		 $this->data['account']);
-		if ($this->db->numRows($accQuery) < 1) { // user does not exist
+		if ($this->db->hasError($accQuery) ||
+		     $this->db->numRows($accQuery) < 1) { // user does not exist
 			return false;
 		}
 		$account = $this->db->fetchRow($accQuery);
 
 		$this->updateAccount();
 
-		define('IS_OWNER', $this->data['account'] == OWNER_ID);
-
-		// Extend the PHP session
+		// Extend the session
 		$this->data['expires'] = time() + SESSION_TIME_LIMIT;
 
 		return true;
