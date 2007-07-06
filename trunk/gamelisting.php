@@ -1,7 +1,7 @@
 <?php
 
 require('inc/config.inc.php');
-require(PATH_INC . '/statemember.inc.php');
+require(PATH_INC . '/state/member.inc.php');
 require(PATH_INC . '/template.inc.php');
 
 
@@ -218,6 +218,6 @@ $tpl->assign('accountName', $account['login_name']);*/
 
 $tpl->assign('serverNews', file_get_contents('inc/servernews.tpl.html'));
 
-$tpl->display('game_listing.tpl.php');
+$tpl->display('gamelisting.tpl.php');
 
 ?>

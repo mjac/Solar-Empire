@@ -68,7 +68,7 @@ $this->eprint(date('l, j F Y H:i:s O', $this->finishes));
 if ($this->viewVars) {
 
 ?>You may view the specific variables for this game on the 
-<a href="game_vars.php?db_name=<?php
+<a href="gamevars.php?db_name=<?php
 	$this->eprint($this->gameSelected);
 ?>">game variable</a> page.  Studying these can give 
 you the competitive advantage.<?php

@@ -1,7 +1,7 @@
 <?php
 
 require('inc/config.inc.php');
-require(PATH_INC . '/stateguest.inc.php');
+require(PATH_INC . '/state/guest.inc.php');
 
 $authProblem = array();
 
