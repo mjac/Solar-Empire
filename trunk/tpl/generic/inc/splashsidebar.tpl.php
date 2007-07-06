@@ -5,15 +5,18 @@ class_exists('Savant2') || exit;
 $this->eprint($this->url['base'] . '/index.php');
 ?>">Introduction</a></li>
 <?php
-if (isset($showLogin) && $showLogin) {
+if (isset($showRegister) && $showRegister) {
 ?>	<li><a href="<?php
 $this->eprint($this->url['base'] . '/register.php');
-?>">Create an account</a></li>
+?>">Create account</a></li>
 <?php
 	}
 ?>	<li><a href="<?php
 $this->eprint($this->url['base'] . '/credits.php');
-?>">Credits</a></li>
+?>">Game credits</a></li>
+	<li><a href="<?php
+$this->eprint($this->url['base'] . '/servers.php');
+?>">Other servers</a></li>
 <?php
 if (isset($showLogin) && $showLogin) {
 ?>
