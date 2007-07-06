@@ -34,6 +34,42 @@ a:link:hover, a:visited:hover {
 }
 
 
+
+input.text, select {
+	background: #364045 url(blue_input_text.png) repeat-x;
+}
+textarea {
+	background: #121619;
+}
+input.text, textarea {
+	padding: 0.25em;
+	color: #FFF;
+	font-family: monospace;
+	font-size: 1.125em;
+}
+input.button {
+	cursor: pointer;
+	background: #56828D url(blue_button.jpg) repeat-x;
+	font-weight: bold;
+	text-decoration: none;
+	color: #000000;
+	padding: 0.25em;
+	border-left: 1px solid #CCCCFF;
+	border-top: 1px solid #CCCCFF;
+	border-right: 1px solid #666699;
+	border-bottom: 1px solid #666699;
+}
+input.button:active {
+	background: #A7C5C7 url(blue_button_over.jpg) repeat-x;
+}
+input.text, textarea, input.button:active {
+	border-left: 1px solid #666699;
+	border-top: 1px solid #666699;
+	border-right: 1px solid #CCCCFF;
+	border-bottom: 1px solid #CCCCFF;
+}
+
+
 /* Sidebar */
 #splashSidebar {
 	width: 14em;
@@ -84,6 +120,9 @@ a:link:hover, a:visited:hover {
 	margin: 0.125em;
     list-style: none;
 }
+#loginSection input.text {
+	width: 10em;
+}
 
 #splashContent {
 	margin-left: 16em;
@@ -119,41 +158,6 @@ a:link:hover, a:visited:hover {
 	border: 2px outset #666;
 	padding: 2em;
 	background: #102033 url(dark_gradient.png) repeat-x;
-}
-
-
-input.text, select {
-	background: #364045 url(blue_input_text.png) repeat-x;
-}
-
-textarea {
-	background: #121619;
-	border: 1px inset #666666;
-}
-
-input.text, textarea {
-	padding: 0.25em;
-	color: #FFF;
-	font-family: monospace;
-	font-size: 1.125em;
-	border: 1px inset #CCCCFF;
-}
-
-input.button {
-	cursor: pointer;
-	background: #56828D url(blue_button.jpg) repeat-x;
-	font-weight: bold;
-	text-decoration: none;
-	color: black;
-	padding: 0.25em;
-	border: 1px outset #CCCCFF;
-}
-input.button:hover {
-	border: 1px outset white;
-}
-input.button:active {
-	background: #A7C5C7 url(blue_button_over.jpg) repeat-x;
-	border: 1px inset white;
 }
 
 

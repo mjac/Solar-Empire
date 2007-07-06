@@ -25,10 +25,10 @@ if (isset($showLogin) && $showLogin) {
 $this->eprint($this->url['base'] . '/login.php');
 ?>" method="post"><dl>
 		<dt><label for="handle">Account name</label></dt>
-		<dd><input type="text" name="handle" id="handle" class="text" size="10" /></dd>
+		<dd><input type="text" name="handle" id="handle" class="text" /></dd>
 
 		<dt><label for="password">Password</label></dt>
-		<dd><input type="password" name="password" id="password" class="text" size="10" /></dd>
+		<dd><input type="password" name="password" id="password" class="text" /></dd>
 
 		<dt><input type="submit" value="Enter game" class="button" /></dt>
 	</dl><?php
