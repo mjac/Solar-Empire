@@ -3,7 +3,6 @@ DROP TABLE IF EXISTS [server]forum;
 DROP TABLE IF EXISTS [server]game;
 DROP TABLE IF EXISTS [server]history;
 DROP TABLE IF EXISTS [server]poption;
-DROP TABLE IF EXISTS [server]starname;
 DROP TABLE IF EXISTS [server]tip;
 
 CREATE TABLE [server]account (
@@ -49,30 +48,12 @@ CREATE TABLE [server]poption (
   PRIMARY KEY  (opt_name)
 ) TYPE=MyISAM;
 
-CREATE TABLE [server]starname (
-  star_name varchar(32) NOT NULL
-) TYPE=MyISAM;
-
 CREATE TABLE [server]tip (
   tip_id smallint unsigned NOT NULL,
   tip_content text NOT NULL default '',
   PRIMARY KEY (tip_id)
 ) TYPE=MyISAM;
 
-
-
-
-CREATE TABLE [game]list (
-  game_id tinyint unsigned NOT NULL default 1,
-  game_name varchar(32) NOT NULL default '',
-  game_admin int unsigned NOT NULL default 1,
-  game_status ENUM('hidden', 'paused', 'active', 'complete') NOT NULL default 'paused',
-  game_summary tinytext NOT NULL,
-  game_desc text NOT NULL,
-  game_intro text NOT NULL,
-  game_start datetime NOT NULL default 0,
-  PRIMARY KEY (game_id)
-) TYPE=MyISAM;
 
 CREATE TABLE [game]auction (
   game_id tinyint unsigned NOT NULL default 1,
@@ -103,6 +84,18 @@ CREATE TABLE [game]claninvite (
   clan_id smallint unsigned NOT NULL,
   acc_id int unsigned NOT NULL,
   cinv_sent datetime NOT NULL default 0
+) TYPE=MyISAM;
+
+CREATE TABLE [game]list (
+  game_id tinyint unsigned NOT NULL default 1,
+  game_name varchar(32) NOT NULL default '',
+  game_admin int unsigned NOT NULL default 1,
+  game_status ENUM('hidden', 'paused', 'active', 'complete') NOT NULL default 'paused',
+  game_summary tinytext NOT NULL,
+  game_desc text NOT NULL,
+  game_intro text NOT NULL,
+  game_start datetime NOT NULL default 0,
+  PRIMARY KEY (game_id)
 ) TYPE=MyISAM;
 
 CREATE TABLE [game]msgclan (
@@ -289,4 +282,8 @@ CREATE TABLE [game]starlink (
   slink_type ENUM('link', 'wormhole') NOT NULL default 'link',
   slink_to smallint unsigned NOT NULL,
   PRIMARY KEY (game_id, star_id)
+) TYPE=MyISAM;
+
+CREATE TABLE [game]starname (
+  star_name varchar(32) NOT NULL
 ) TYPE=MyISAM;

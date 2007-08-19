@@ -424,7 +424,7 @@ class swInstall
 	function tableData()
 	{
 		// Insert star names
-		$delStarName = $this->db->query('DELETE FROM [server]starname');
+		$delStarName = $this->db->query('DELETE FROM [game]starname');
 
 		$starNames = 0;
 		$starNamesDone = 0;
