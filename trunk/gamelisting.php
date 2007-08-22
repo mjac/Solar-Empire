@@ -4,10 +4,9 @@ require('inc/config.inc.php');
 require(PATH_INC . '/state/member.inc.php');
 require(PATH_INC . '/template.inc.php');
 
-
 $gameList = array();
 
-$gameInfoQuery = $db->query('SELECT l.game_id, l.game_name, l.game_summary, p.acc_id IS NULL FROM ([game]list AS l LEFT JOIN [game]player AS p ON l.acc_id = p.acc_id)');
+$gameInfoQuery = $db->query('SELECT l.game_id, l.game_name, l.game_summary, p.acc_id IS NULL FROM ([game]list AS l LEFT JOIN [game]player AS p ON l.game_id = p.game_id)');
 if (!$db->hasError($gameInfoQuery)) {
 	while ($gameRow = $db->fetchRow($gameInfoQuery, ROW_NUMERIC)) {
 		$gameList[] = array(
@@ -18,8 +17,14 @@ if (!$db->hasError($gameInfoQuery)) {
 		);
 	}
 }
-
 $tpl->assign('gameList', $gameList);
+
+$tipQuery = $db->query('SELECT tip_content FROM [server]tip ORDER BY RAND()');
+if (!($db->hasError($tipQuery) || $db->numRows($tipQuery) < 1)) {
+	$tpl->assign('tip', current($db->fetchRow($tipQuery)));
+}
+
+$tpl->assign('serverNews', file_get_contents('inc/servernews.tpl.html'));
 
 /*if (isset($_REQUEST['game_selected'])) {
 	$gQuery = $db->query('SELECT db_name, admin, name, started, intro_message FROM se_games WHERE db_name = \'%[1]\' AND (status != \'paused\' OR admin = %[2])',
@@ -208,15 +213,7 @@ if (IS_OWNER && isset($_REQUEST['newGame']) && ctype_alnum($_REQUEST['newGame'])
 
 	$db->query('INSERT INTO se_games (db_name, name, admin, `status`, description, intro_message, num_stars, started, finishes, processed_cleanup, processed_turns, processed_systems, processed_ships, processed_planets, processed_government) VALUES (\'%[1]\', \'Test Game!\', 1, \'paused\', \'\', \'\', 150, %[2], %[3], %[2], %[2], %[2], %[2], %[2], %[2])',
 	 $_REQUEST['newGame'], time(), time() + 1728000);
-}
-
-
-$tipQuery = $db->query('SELECT tip_content FROM daily_tips ORDER BY RAND()');
-$tip = $db->fetchRow($tipQuery, ROW_NUMERIC);
-$tpl->assign('tip', $tip[0]);
-$tpl->assign('accountName', $account['login_name']);*/
-
-$tpl->assign('serverNews', file_get_contents('inc/servernews.tpl.html'));
+}*/
 
 $tpl->display('gamelisting.tpl.php');
 

@@ -14,7 +14,8 @@ if (isset($this->accountName)) {
 ?></h1>
 <?php
 if (!empty($this->gameList)) {
-?><dl id="gameList">
+?><h2>Available games</h2>
+<dl id="gameList">
 <?php
 	foreach ($this->gameList as $gameArr) {
 ?>	<dt><a href="<?php
@@ -30,7 +31,9 @@ if (!empty($this->gameList)) {
 
 if (isset($this->tip)) {
 ?><h2>Random tip</h2>
-<p><?php echo $this->tip; ?></p>
+<blockquote>
+	<p><?php echo $this->tip; ?></p>
+</blockquote>
 <?php
 }
 
@@ -41,23 +44,6 @@ echo $this->serverNews;
 ?></div>
 <?php
 }
-?>
-<h2>Options</h2>
-<ul>
-	<li><a href="<?php $this->eprint($this->url['base'] . '/logout.php');
-?>">Logout from server</a></li>
-	<li><a href="<?php $this->eprint($this->url['base'] . '/credits.php');
-?>">Credits</a></li>
-</ul>
-
-<h2>External places</h2>
-<ul>
-	<li><a href="http://www.syswars.com/">System Wars Home</a></li>
-	<li><a href="http://forum.syswars.com/">System Wars Forum</a></li>
-	<li><a href="http://www.solarempire.com/">Solar Empire Home</a></li>
-	<li><a href="http://sourceforge.net/projects/solar-empire/">SourceForge Project</a></li>
-</ul>
-<?php
 
 include($this->loadTemplate('inc/footermember.tpl.php'));
 
