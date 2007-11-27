@@ -18,7 +18,7 @@
 class genUniverse
 {
 	/** Essential options for generating the universe */
-	var $options = array(
+	public $options = array(
 		'starAmount' => 300,
 		'width' => 800,
 		'height' => 800,
@@ -41,7 +41,7 @@ class genUniverse
 	);
 
 	/** Aesthetic options for image generation */
-	var $appearance = array(
+	public $appearance = array(
 		'mapPadding' => 50,
 		'label' => true,
 		'print' => array(
@@ -72,7 +72,7 @@ class genUniverse
 	 * 
 	 * Extended by $uni->mapTypes['newType'] = 'className';	 	 
 	 */
-	var $mapTypes = array(
+	public $mapTypes = array(
 		'random' => 'genMapsetRandom',
 		'core' => 'genMapsetCore',
 		'clusters' => 'genMapsetClusters',
@@ -80,10 +80,10 @@ class genUniverse
 	);
 
 	/** Storage for the generated stars */
-	var $stars;
+	public $stars;
 
 	/** Storage for the generated map */
-	var $starMap;
+	public $starMap;
 
 	/** 
 	 * Creates and fills $this->stars
@@ -91,7 +91,7 @@ class genUniverse
 	 * - Fills $this->stars with starAmount instances of genStar
 	 * - Sets the ID and link amount of each star	 
 	 */
-	function createStars()
+	public function createStars()
 	{
 		$this->stars = array();
 		for ($createId = 0; $createId < $this->options['starAmount']; 
@@ -104,7 +104,7 @@ class genUniverse
 	}
 
 	/** Generates star positions using the chosen map class */
-	function positions()
+	public function positions()
 	{
 		$class = $this->mapTypes[$this->options['mapType']];
 		$map = new $class($this->options);
@@ -118,7 +118,7 @@ class genUniverse
 	 * If the amount of stars is large than the number of names a number is 
 	 * appended to each name to make it unique.
 	 */
-	function names(&$names)
+	public function names(&$names)
 	{
 		$count = count($names);
 
@@ -126,7 +126,7 @@ class genUniverse
 		     ++$nameStar) {
 			$nameId = $nameStar % $count;
 			if ($nameId == 0) {
-				$this->shuffle($names);
+				genUniverse::shuffle($names);
 			}
 
 			$this->stars[$nameStar]->name = $names[$nameId] . 
@@ -143,7 +143,7 @@ class genUniverse
 	 *
 	 * \f$Q = s^2 = (x_2 - x_1)^2 + (y_2 - y_1)^2\f$
 	 */
-	function link()
+	public function link()
 	{
 		$maxQuad = $this->options['linkMaxDist'] * 
 		 $this->options['linkMaxDist'];
@@ -173,7 +173,7 @@ class genUniverse
 	}
 
 	/** Creates wormholes/edges between vertices that are any distance apart */
-	function wormholes()
+	public function wormholes()
 	{
 		if ($this->options['wormholeChance'] == 0) {
 			return;
@@ -209,7 +209,7 @@ class genUniverse
 	/**
 	 * Render map of the whole universe
 	 */
-	function renderMap()
+	public function renderMap()
 	{
 		$graphics = $this->usingGraphics();
 
@@ -323,19 +323,19 @@ class genUniverse
 	}
 
 	/** Destroy the image resource*/
-	function destroyMap()
+	public function destroyMap()
 	{
 		imagedestroy($this->starMap);
 	}
 
 	/** Save the star map to a file */
-	function saveMap($filename)
+	public function saveMap($filename)
 	{
 		imagepng($this->starMap, $filename);
 	}
 
 	/** Create printable map by swapping colours */
-	function savePrintMap($filename)
+	public function savePrintMap($filename)
 	{
 		$sCol =& $this->appearance['screen'];
 		$pCol =& $this->appearance['print'];
@@ -389,7 +389,7 @@ class genUniverse
 	 * @param $global Generated global map to base the local maps on
 	 * @param $directory Directory to write the local maps (N.png) to
 	 */
-	function saveLocalMaps($global, $directory)
+	public function saveLocalMaps($global, $directory)
 	{
 		if (!is_dir($directory)) {
 			return;
@@ -434,7 +434,7 @@ class genUniverse
 	}
 
 	/** Determines whether the universe will use graphics */
-	function usingGraphics()
+	public function usingGraphics()
 	{
 		return !(empty($this->appearance['graphics']['earth']) ||
 		 empty($this->appearance['graphics']['star'])) &&
@@ -443,13 +443,13 @@ class genUniverse
 	}
 
 	/** Shuffles a simple array */
-	function shuffle(&$items)
+	public static function shuffle(&$items)
 	{
-		for ($i = count($items) - 1; $i > 0; --$i) {
-			$j = mt_rand(0, $i);
-			$tmp = $items[$i];
-			$items[$i] = $items[$j];
-			$items[$j] = $tmp;
+		for ($index = count($items) - 1; $index > 0; --$index) {
+			$newIndex = mt_rand(0, $index);
+			$swapItem = $items[$index];
+			$items[$index] = $items[$newIndex];
+			$items[$newIndex] = $swapItem;
 		}
 	}
 };
@@ -459,16 +459,16 @@ class genUniverse
 /** Star class used for generation */
 class genStar
 {
-	var $name = '';
-	var $id = 0;
-	var $x = 0;
-	var $y = 0;
-	var $linkAmount = 0;
-	var $linksLeft = 0;
-	var $links = array();
-	var $wormhole;
+	public $name = '';
+	public $id = 0;
+	public $x = 0;
+	public $y = 0;
+	public $linkAmount = 0;
+	public $linksLeft = 0;
+	public $links = array();
+	public $wormhole;
 
-	function linkTo(&$to)
+	public function linkTo(&$to)
 	{
 		if ($this->linksLeft < 1 || $to->linksLeft < 1 || 
 		     $to->id == $this->id) {
@@ -484,7 +484,7 @@ class genStar
 		return true;
 	}
 	
-	function setLinkAmount($min, $max)
+	public function setLinkAmount($min, $max)
 	{
 		$this->linkAmount = mt_rand($min, $max);
 		$this->linksLeft = $this->linkAmount;
@@ -500,16 +500,16 @@ class genStar
 
 
 /** Base mapset class containing common utility functions */
-class genMapset
+abstract class genMapset
 {
-	var $options;
+	private $options;
 
-	function genMapset(&$options)
+	public function __construct(&$options)
 	{
 		$this->options = &$options;
 	}
 
-	function spaceCheck(&$thisStar, &$stars)
+	public function spaceCheck(&$thisStar, &$stars)
 	{
 		$maxQuad = $this->options['starMinDist'] * 
 		 $this->options['starMinDist'];
@@ -537,21 +537,19 @@ class genMapset
 		return false;
 	}
 
-	function generate(&$stars)
-	{
-	}
+	abstract public function generate(&$stars);
 };
 
 
 /** Random positions */
 class genMapsetRandom extends genMapset
 {
-	function genMapsetRandom(&$options)
+	public function __construct(&$options)
 	{
-		$this->genMapset($options);
+		parent::__construct($options)
 	}
 
-	function generate(&$stars)
+	public function generate(&$stars)
 	{
 		for ($starIndex = 0; $starIndex < $this->options['starAmount'];
 		     ++$starIndex) {
@@ -572,12 +570,12 @@ class genMapsetRandom extends genMapset
 /** Dense core of stars getting sparser proportional to distance from centre */
 class genMapsetCore extends genMapset
 {
-	function genMapsetCore(&$options)
+	public function __construct(&$options)
 	{
-		$this->genMapset($options);
+		parent::__construct($options)
 	}
 
-	function generate(&$stars)
+	public function generate(&$stars)
 	{
 		$centreX = $this->options['width'] / 2;
 		$centreY = $this->options['height'] / 2;
@@ -606,12 +604,12 @@ class genMapsetCore extends genMapset
 /** Clusters of stars */
 class genMapsetClusters extends genMapset
 {
-	function genMapsetClusters(&$options)
+	public function __construct(&$options)
 	{
-		$this->genMapset($options);
+		parent::__construct($options)
 	}
 
-	function generate(&$stars)
+	public function generate(&$stars)
 	{
 		$numberClusters = ceil(sqrt($this->options['starAmount'])) - 1.0;
 		$starsPerCluster = ceil($this->options['starAmount'] / $numberClusters);
@@ -655,12 +653,12 @@ class genMapsetClusters extends genMapset
 /** Stars are contained in an ellipse */
 class genMapsetEllipse extends genMapset
 {
-	function genMapsetEllipse(&$options)
+	public function __construct(&$options)
 	{
-		$this->genMapset($options);
+		parent::__construct($options)
 	}
 
-	function generate(&$stars)
+	public function generate(&$stars)
 	{
 		$middleX = round($this->options['width'] / 2);
 		$middleY = round($this->options['height'] / 2);

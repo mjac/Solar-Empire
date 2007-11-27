@@ -13,7 +13,7 @@ if (!class_exists('genUniverse')) {
 class swGenerator extends genUniverse
 {
 	/** Apply game options to universe generator */
-	function swGenerator()
+	public function __construct()
 	{
 		global $gameOpt;
 
@@ -52,7 +52,7 @@ class swGenerator extends genUniverse
 	}
 
 	/** Replace the most central star with Sol */
-	function centreSol()
+	public function centreSol()
 	{
 		$xCentre = floor($this->options['width'] / 2);
 		$yCentre = floor($this->options['height'] / 2);
@@ -86,14 +86,14 @@ class swGenerator extends genUniverse
 	}
 
 	/** Output map to browser (for preview) */
-	function displayMap()
+	public function displayMap()
 	{
 		header('Content-Type: image/png');
 		imagepng($this->starMap);
 	}
 
 	/** Save current arrays to the database */
-	function saveData()
+	public function saveData()
 	{
 		global $db;
 
@@ -124,7 +124,7 @@ class swGenerator extends genUniverse
 	}
 
 	/** Fill arrays from the database */
-	function loadData()
+	public function loadData()
 	{
 		global $db;
 
@@ -167,7 +167,7 @@ class swGenerator extends genUniverse
 	}
 
 	/** Load names from database and set them */
-	function setNames()
+	public function setNames()
 	{
 	    global $db;
 
@@ -187,10 +187,10 @@ class swGenerator extends genUniverse
  * 
  * Used for processing before being turned into swGenerator form.
  */
-class swStarLoad extends genStar
+final class swStarLoad extends genStar
 {
-	var $linksId = array();
-	var $wormholeId;
+	public $linksId = array();
+	public $wormholeId;
 };
 
 ?>
