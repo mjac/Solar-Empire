@@ -9,7 +9,7 @@ class config
 
 	public function initiate()
 	{
-		self::$url = config_url;
+		self::$url = configUrl;
 	}
 }
 
