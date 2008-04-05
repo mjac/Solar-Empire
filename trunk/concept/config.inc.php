@@ -1,12 +1,9 @@
 <?php
 
-class config
-{
-	public static $url;
-	public static $path;
-	public static $db;
-	public static $security;
 
+<<<<<<< .mine
+class config_url
+=======
 	public function initiate()
 	{
 		self::$url = configUrl;
@@ -15,29 +12,56 @@ class config
 
 
 class configUrl
+>>>>>>> .r402
 {
-
+	public $base = '';
+	public $style = '';
+	public $domain = '';
 }
 
-class configPath
+class config_path
 {
-
+	public $interface;
+	public $include;
+	public $style;
+	
+	public $Savant3;
+	
+	public __construct()
+	{
+		$this->interface = dirname(__FILE__);
+		$this->include = $this->interface . '/inc';
+		$this->style = $this->interface . '/style';
+		$this->template = $this->interface . '/tpl';
+	}
 }
 
-class configDb
+class config_db
 {
-
+	public $type = 'mysql';
+	public $database = 'localhost';
+	public $port = false;
+	public $username = 'syswars';
+	public $password = 'syswars';
 }
 
-class configLib
-{
-	public static $Savant3;
-	public static $SDA;
-}
 
-class configSecurity
+class config
 {
+	public static $url;
+	public static $path;
+	public static $db;
 
+	private __construct()
+	{
+	}
+	
+	public function initiate()
+	{
+		self::$url = new config_url;
+		self::$path = new config_path;
+		self::$db = new config_db;
+	}
 }
 
 config::initiate();
