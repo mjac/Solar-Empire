@@ -20,7 +20,7 @@ class config_path
 	
 	public $Savant3;
 	
-	public __construct()
+	public function __construct()
 	{
 		$this->interface = dirname(__FILE__);
 		$this->include = $this->interface . '/inc';
@@ -45,7 +45,7 @@ class config
 	public static $path;
 	public static $db;
 
-	private __construct()
+	private function __construct()
 	{
 	}
 	
