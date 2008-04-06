@@ -1,22 +1,15 @@
 <?php
 
-
-<<<<<<< .mine
 class config_url
-=======
-	public function initiate()
-	{
-		self::$url = configUrl;
-	}
-}
-
-
-class configUrl
->>>>>>> .r402
 {
 	public $base = '';
 	public $style = '';
 	public $domain = '';
+	
+	public function initiate()
+	{
+		self::$url = configUrl;
+	}
 }
 
 class config_path
