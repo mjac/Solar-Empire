@@ -1,20 +1,22 @@
 <?php
 
-require('account.class.php');
+if (!class_exists('account')) {
+	require('account.class.php');
+}
 
 class player extends account
 {
-	public __construct($player_id = false)
+	public function __construct(PDO $db, $playerId = false)
 	{
-	    parent::construct($player_id);
+	    parent::construct($db, $playerId);
 	}
 };
 
-class player_mutable extends player
+class playerMutable extends player
 {
-	public __construct($player_id = false)
+	public function __construct(PDO $db, $playerId = false)
 	{
-	    parent::construct($player_id);
+	    parent::construct($db, $playerId);
 	}
 };
 

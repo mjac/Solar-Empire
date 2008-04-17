@@ -20,42 +20,129 @@ account->permission->add(user, file, 'game/', false) // part of the ip ban scrip
 
 class account
 {
-	private $id;
+	protected $id;
+	protected $group;
 
-	public id()
+	protected $db;
+
+	private $detailsCached = false;
+	
+	public function __get($name)
 	{
-	    return $this->id;
+	    if ($name === 'id') {
+	        return $this->id;
+	    }
 	}
 
-	public __construct($account_id = false)
+	public function __construct(PDO $db, $accountId = false)
 	{
-	    if ($account_id !== false) {
+	    $this->db = $db;
+	
+	    if ($accountId !== false) {
 	        // user
-	        $account_id = 1;//valid;
+	        $accountId = 1;//valid;
 	    }
 
-	    $this->id = $account_id;
+	    $this->id = $accountId;
+	}
+	
+	public function load($cache = true)
+	{
+	    // load/cache all details
+	    if ($this->detailsCached && $cached) {
+			return;
+	    }
+
+
+		$detailQuery = $this->db->prepare("SELECT * FROM account WHERE account_id = ?");
+		
+		if (!($detailQuery->execute(array($this->id)) &&
+		    $detailResult = $detailQuery->fetch(PDO::FETCH_ASSOC))) {
+		    return;
+		}
+		
+        $this->detailsCached = true;
+    	$this->group = (int)$detailResult['group_id'];
 	}
 
-	private access_load()
+	/** */
+	private $permOrder = array('ip', 'user', 'group');
+	private function permissions()
 	{
-	    // load from db
+		$this->load();
+
+		// table for permissions reason permission LEFT JOIN permission_reason
+		
+		$permQuery = $this->db->prepare("SELECT o.object_type AS otype, p.target_type AS ptype, o.name AS name, p.allow AS allow FROM permission AS p INNER JOIN object AS o ON p.object_id = o.object_id WHERE (p.target_type = 'group' AND p.id_from <= :groupid AND p.id_to >= :groupid) OR (p.target_type = 'user' AND p.id_from <= :userid AND p.id_to >= :userid) OR (p.target_type = 'ip' AND p.id_from <= :ip AND p.id_to >= :ip)");
+		
+		if (!$permQuery->execute(array(
+			':ip' => (double)sprintf("%u", ip2long($_SERVER['REMOTE_ADDR'])),
+			':userid' => $this->id,
+			':groupid' => $this->group
+		))) {
+			return;
+		}
+
+		
+		$permArray = array();
+        while ($permRow = $permQuery->fetch(FETCH_ASSOC)) {
+			$typeKey = array_search($permRow['ptype'], $this->permOrder, true);
+			// Invalid permission type
+			if ($typeKey === false) {
+				continue;
+			}
+
+			$objType = $permRow['otype'];
+			$permName = $permRow['name'];
+			$permAllow = $permRow['allow'] == 1;
+			
+			// Combine allow and type into an integer
+			$typeKeyInt = $typeKey * 2 + ($permAllow ? 1 : 0);
+
+			if (!isset($permArray[$objType])) {
+				$permArray[$objType] = array();
+			}
+
+			// Ignore if already overridden
+			if (isset($permArray[$objType][$permName]) &&
+			    $typeKeyInt >= $permArray[$objType][$permName]) {
+			    continue;
+			}
+			
+			// Create permission
+			$permArray[$objType][$permName] = $typeKeyInt;
+        }
+        
+        // Replace permission integers with booleans
+        foreach ($permArray as $oType => $permInfo) {
+			foreach ($permInfo as $permName => $permType) {
+				$permArray[$oType][$permName] = ($typeKeyInt % 2) === 1;
+			}
+        }
 	}
 
-	public access($page_name, $cache = true)
+
+	private $permArray = false;
+	
+	public function can($permType, $name, $cache = true)
 	{
-	    // database query that looks up user group
+	    if (($cache && $this->permArray === false)) {
+	        $this->permArray = $this->permissions();
+	    }
+	    
+	    return isset($this->permArray[$permType][$name]) &&
+			$this->permArray[$permType][$name];
 	}
 };
 
-class account_mutable extends account
+class accountMutable extends account
 {
-	public __construct($account_id = false)
+	public function __construct(PDO $db, $accountId = false)
 	{
-	    parent::construct($account_id);
+	    parent::construct($db, $accountId);
 	}
 
-	public create()
+	public function create()
 	{
 
 	}
