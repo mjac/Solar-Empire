@@ -5,3 +5,13 @@ Global media is in the directory 'media'.
 Templates (Savant3) are located in 'tpl' while the styling for these templates are located in 'style'.
 
 The media, interface and template styling must be accessible. All other folders can be private.
+
+
+
+
+Battle
+
+Assume all ships are solid objects with a specific strength score.
+Damage is dependant on this strength
+Attacks damage certain sections of a ship
+	- destroying engines will stop the craft moving
