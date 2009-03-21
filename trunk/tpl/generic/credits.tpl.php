@@ -16,10 +16,12 @@ have finished reading.</p>
 
 <h2>System Wars</h2>
 <p>Developed by <a href="http://www.mjac.co.uk/">Michael J.A. Clark</a> 
-(<a href="http://www.mjac.co.uk/">Mjac</a>) from the public domain Generic 
+(<a href="http://mjac.co.uk/">Mjac</a>) from the public domain Generic 
 2.2.2 release.</p>
 <h3>Other contributors</h3>
 <dl>
+	<dt>Development</dt>
+	<dd><a href="http://www.thetenthplace.co.uk/">Andrew Wiseman</a></dd>
 	<dt>Ship images and free hosting</dt>
 	<dd><a href="http://www.imod.ca/">Joshua Eaton</a> (Lex Luthor)</dd>
 </dl>
