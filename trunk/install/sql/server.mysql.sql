@@ -1,9 +1,4 @@
 DROP TABLE IF EXISTS [server]account;
-DROP TABLE IF EXISTS [server]forum;
-DROP TABLE IF EXISTS [server]game;
-DROP TABLE IF EXISTS [server]history;
-DROP TABLE IF EXISTS [server]poption;
-DROP TABLE IF EXISTS [server]tip;
 
 CREATE TABLE [server]account (
   acc_id int unsigned NOT NULL auto_increment,
@@ -21,6 +16,9 @@ CREATE TABLE [server]account (
   UNIQUE KEY acc_handle (acc_handle)
 ) TYPE=MyISAM;
 
+
+DROP TABLE IF EXISTS [server]forum;
+
 CREATE TABLE [server]forum (
   game_id tinyint unsigned NULL default NULL,
   msg_id int unsigned NOT NULL default 0,
@@ -31,6 +29,9 @@ CREATE TABLE [server]forum (
   PRIMARY KEY (msg_id)
 ) TYPE=MyISAM;
 
+
+DROP TABLE IF EXISTS [server]history;
+
 CREATE TABLE [server]history (
   acc_id int unsigned NOT NULL,
   game_id tinyint unsigned NULL default NULL,
@@ -38,6 +39,9 @@ CREATE TABLE [server]history (
   hist_action text NOT NULL default '',
   hist_ip varchar(16) NOT NULL default ''
 ) TYPE=MyISAM;
+
+
+DROP TABLE IF EXISTS [server]poption;
 
 CREATE TABLE [server]poption (
   opt_name varchar(32) NOT NULL default '',
@@ -48,12 +52,17 @@ CREATE TABLE [server]poption (
   PRIMARY KEY  (opt_name)
 ) TYPE=MyISAM;
 
+
+DROP TABLE IF EXISTS [server]tip;
+
 CREATE TABLE [server]tip (
   tip_id smallint unsigned NOT NULL,
   tip_content text NOT NULL default '',
   PRIMARY KEY (tip_id)
 ) TYPE=MyISAM;
 
+
+DROP TABLE IF EXISTS [game]auction;
 
 CREATE TABLE [game]auction (
   game_id tinyint unsigned NOT NULL default 1,
@@ -68,6 +77,9 @@ CREATE TABLE [game]auction (
   PRIMARY KEY (game_id, lot_id)
 ) TYPE=MyISAM;
 
+
+DROP TABLE IF EXISTS [game]clan;
+
 CREATE TABLE [game]clan (
   game_id tinyint unsigned NOT NULL default 1,
   clan_id smallint unsigned NOT NULL,
@@ -79,12 +91,18 @@ CREATE TABLE [game]clan (
   PRIMARY KEY (game_id, clan_id)
 ) TYPE=MyISAM;
 
+
+DROP TABLE IF EXISTS [game]claninvite;
+
 CREATE TABLE [game]claninvite (
   game_id tinyint unsigned NOT NULL default 1,
   clan_id smallint unsigned NOT NULL,
   acc_id int unsigned NOT NULL,
   cinv_sent datetime NOT NULL default 0
 ) TYPE=MyISAM;
+
+
+DROP TABLE IF EXISTS [game]list;
 
 CREATE TABLE [game]list (
   game_id tinyint unsigned NOT NULL default 1,
@@ -97,6 +115,9 @@ CREATE TABLE [game]list (
   game_start datetime NOT NULL default 0,
   PRIMARY KEY (game_id)
 ) TYPE=MyISAM;
+
+
+DROP TABLE IF EXISTS [game]msgclan;
 
 CREATE TABLE [game]msgclan (
   game_id tinyint unsigned NOT NULL default 1,
@@ -111,6 +132,9 @@ CREATE TABLE [game]msgclan (
   KEY msg_sent (game_id, msg_sent)
 ) TYPE=MyISAM;
 
+
+DROP TABLE IF EXISTS [game]msgforum;
+
 CREATE TABLE [game]msgforum (
   game_id tinyint unsigned NOT NULL default 1,
   msg_id int unsigned NOT NULL,
@@ -121,6 +145,9 @@ CREATE TABLE [game]msgforum (
   PRIMARY KEY (game_id, msg_id),
   KEY msg_sent (game_id, msg_sent)
 ) TYPE=MyISAM;
+
+
+DROP TABLE IF EXISTS [game]msgplayer;
 
 CREATE TABLE [game]msgplayer (
   game_id tinyint unsigned NOT NULL default 1,
@@ -135,6 +162,9 @@ CREATE TABLE [game]msgplayer (
   KEY msg_sent (game_id, msg_sent)
 ) TYPE=MyISAM;
 
+
+DROP TABLE IF EXISTS [game]news;
+
 CREATE TABLE [game]news (
   game_id tinyint unsigned NOT NULL default 1,
   news_id int unsigned NOT NULL,
@@ -146,12 +176,18 @@ CREATE TABLE [game]news (
   KEY news_sent (game_id, news_sent)
 ) TYPE=MyISAM;
 
+
+DROP TABLE IF EXISTS [game]option;
+
 CREATE TABLE [game]option (
   game_id tinyint unsigned NOT NULL default 1,
   optn_id tinyint unsigned NOT NULL default 1,
   optn_value int NOT NULL default 0,
   PRIMARY KEY (game_id, optn_id)
 ) TYPE=MyISAM;
+
+
+DROP TABLE IF EXISTS [game]optionlist;
 
 CREATE TABLE [game]optionlist (
   optn_id tinyint unsigned NOT NULL default 1,
@@ -162,6 +198,9 @@ CREATE TABLE [game]optionlist (
   optn_desc text NOT NULL default '',
   PRIMARY KEY (optn_id)
 ) TYPE=MyISAM;
+
+
+DROP TABLE IF EXISTS [game]planet;
 
 CREATE TABLE [game]planet (
   game_id tinyint unsigned NOT NULL default 1,
@@ -178,13 +217,19 @@ CREATE TABLE [game]planet (
   KEY acc_id (game_id, acc_id)
 ) TYPE=MyISAM;
 
-CREATE TABLE [game]port (
+
+DROP TABLE IF EXISTS [game]planet;
+
+CREATE TABLE [game]planet (
   game_id tinyint unsigned NOT NULL default 1,
   star_id smallint unsigned NOT NULL default 0,
   port_id smallint unsigned NOT NULL,
   PRIMARY KEY (game_id, port_id),
   KEY star_id (game_id, star_id)
 ) TYPE=MyISAM;
+
+
+DROP TABLE IF EXISTS [game]player;
 
 CREATE TABLE [game]player (
   game_id tinyint unsigned NOT NULL default 1,
@@ -222,6 +267,9 @@ CREATE TABLE [game]player (
   PRIMARY KEY (game_id, acc_id)
 ) TYPE=MyISAM;
 
+
+DROP TABLE IF EXISTS [game]ship;
+
 CREATE TABLE [game]ship (
   game_id tinyint unsigned NOT NULL default 1,
   star_id smallint unsigned NOT NULL default 1,
@@ -249,6 +297,9 @@ CREATE TABLE [game]ship (
   KEY acc_id (game_id, acc_id)
 ) TYPE=MyISAM;
 
+
+DROP TABLE IF EXISTS [game]shiptype;
+
 CREATE TABLE [game]shiptype (
   stype_id smallint unsigned NOT NULL,
   stype_name varchar(32) NOT NULL default '',
@@ -267,6 +318,9 @@ CREATE TABLE [game]shiptype (
   PRIMARY KEY (stype_id)
 ) TYPE=MyISAM;
 
+
+DROP TABLE IF EXISTS [game]star;
+
 CREATE TABLE [game]star (
   game_id tinyint unsigned NOT NULL default 1,
   star_id smallint unsigned NOT NULL,
@@ -276,6 +330,9 @@ CREATE TABLE [game]star (
   PRIMARY KEY (game_id, star_id)
 ) TYPE=MyISAM;
 
+
+DROP TABLE IF EXISTS [game]starlink;
+
 CREATE TABLE [game]starlink (
   game_id tinyint unsigned NOT NULL default 1,
   star_id smallint unsigned NOT NULL,
@@ -283,6 +340,9 @@ CREATE TABLE [game]starlink (
   slink_to smallint unsigned NOT NULL,
   PRIMARY KEY (game_id, star_id)
 ) TYPE=MyISAM;
+
+
+DROP TABLE IF EXISTS [game]starname;
 
 CREATE TABLE [game]starname (
   star_name varchar(32) NOT NULL
