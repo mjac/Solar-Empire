@@ -15,7 +15,7 @@ $this->eprint($this->url['base'] . '/index.php');
 have finished reading.</p>
 
 <h2>System Wars</h2>
-<p>Developed by <a href="http://www.mjac.co.uk/">Michael J.A. Clark</a> 
+<p>Developed by <a href="http://mjac.co.uk/">Michael J.A. Clark</a> 
 (<a href="http://mjac.co.uk/">Mjac</a>) from the public domain Generic 
 2.2.2 release.</p>
 <h3>Other contributors</h3>
