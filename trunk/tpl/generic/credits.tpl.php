@@ -18,12 +18,14 @@ have finished reading.</p>
 <p>Developed by <a href="http://mjac.co.uk/">Michael J.A. Clark</a> 
 (<a href="http://mjac.co.uk/">Mjac</a>) from the public domain Generic 
 2.2.2 release.</p>
+
 <h3>Other contributors</h3>
 <dl>
 	<dt>Development</dt>
-	<dd><a href="http://www.thetenthplace.co.uk/">Andrew Wiseman</a></dd>
+	<dd><a href="http://thetenthplace.co.uk/">Andrew Wiseman</a></dd>
+
 	<dt>Ship images and free hosting</dt>
-	<dd><a href="http://www.imod.ca/">Joshua Eaton</a> (Lex Luthor)</dd>
+	<dd>Joshua Eaton (Lex Luthor)</dd>
 </dl>
 
 <h2>Generic 2.2.2</h2>
@@ -37,15 +39,14 @@ have finished reading.</p>
 
 	<dt>Open-source programming</dt>
 	<dd>Moriarty, KilerCris, TheRumour,
-	<a href="http://www.quantum-star.com/">Maugrim_The_Reaper</a></dd>
+	<a href="http://blog.astrumfutura.com/">Maugrim_The_Reaper</a></dd>
 
 	<dt>Renders</dt>
 	<dd>Admiral V'Pier (meshes from
-	<a href="http://www.3dtotal.com/">www.3dtotal.com</a>) and
-	<a href="http://www.imod.ca/">Joshua Eaton</a></dd>
+	<a href="http://www.3dtotal.com/">www.3dtotal.com</a>)</dd>
 
 	<dt>Opening story</dt>
-	<dd><a href="http://www.quantum-star.com/">Maugrim_The_Reaper</a></dd>
+	<dd><a href="http://blog.astrumfutura.com/">Maugrim_The_Reaper</a></dd>
 </dl>
 <?php
 
