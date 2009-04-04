@@ -9,7 +9,7 @@
 
 class sha256
 {
-	function hash($str)
+	static public function hash($str)
 	{
 		$hash = '';
 		$data = new sha256_data($str);
@@ -24,7 +24,7 @@ class sha256
 		return $hash;
 	}
 
-	function sum()
+	static public function sum()
 	{
 		$T = 0;
 		for ($x = 0, $y = func_num_args(); $x < $y; ++$x) {
@@ -42,7 +42,7 @@ class sha256
 		return $T;
 	}
 
-	function compute(&$data)
+	static public function compute(&$data)
 	{
 		static $vars = 'abcdefgh';
 		static $K    = NULL;
@@ -128,12 +128,12 @@ class sha256
 
 class sha256_data
 {
-	var $buf = array();
-	var $hash = NULL;
+	private $buf = array();
+	private $hash = NULL;
 
-	var $chunks = NULL;
+	private $chunks = NULL;
 
-	function sha256_data($str)
+	public function __construct($str)
 	{
 		$M = strlen($str);
 		$L1 = ($M >> 28) & 0x0000000F;

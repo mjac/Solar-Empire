@@ -1,11 +1,11 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 $insLicProbs = array(
 	'licenceOpen' => 'The licence could not be opened'
 );
 
-include($this->loadTemplate('header.tpl.php'));
+include($this->template('header.tpl.php'));
 
 ?><h2 id="insLicForm">Introduction, licence agreement</h2>
 <p>The licence agreement must be checked before progression to the next stage of installation.</p>
@@ -48,5 +48,5 @@ if (isset($this->licence)) {
 	<p><input type="submit" value="Continue to next stage" /></p>
 </form>
 <?php
-include($this->loadTemplate('footer.tpl.php'));
+include($this->template('footer.tpl.php'));
 ?>

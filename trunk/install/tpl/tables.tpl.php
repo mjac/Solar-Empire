@@ -1,5 +1,5 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 $insTableProbs = array(
 	'tableSchemaOpen' => 'Could not open database schema file',
@@ -11,7 +11,7 @@ $insTableProbs = array(
 	'tableAdmin' => 'Administrator account was not created'
 );
 
-include($this->loadTemplate('header.tpl.php'));
+include($this->template('header.tpl.php'));
 
 ?><h2 id="insTableForm">Table installation</h2>
 <?php
@@ -40,5 +40,5 @@ if (isset($this->instProbs) && !empty($this->instProbs)) {
 	</dl>
 </form>
 <?php
-include($this->loadTemplate('footer.tpl.php'));
+include($this->template('footer.tpl.php'));
 ?>

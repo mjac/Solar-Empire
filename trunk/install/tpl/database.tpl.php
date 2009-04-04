@@ -1,5 +1,5 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 $insDbProbs = array(
 	'dbType' => 'That database type is not supported',
@@ -13,7 +13,7 @@ $insDbProbs = array(
 	'dbPrefixGame' => 'That database game prefix is invalid, use only alphanumeric characters and underscores: a value must be present to prevent collisions with the server tables'
 );
 
-include($this->loadTemplate('header.tpl.php'));
+include($this->template('header.tpl.php'));
 
 ?><h2 id="insDbForm">Database configuration</h2>
 <?php
@@ -63,5 +63,5 @@ if (isset($this->instProbs) && !empty($this->instProbs)) {
 	</dl>
 </form>
 <?php
-include($this->loadTemplate('footer.tpl.php'));
+include($this->template('footer.tpl.php'));
 ?>

@@ -7,43 +7,52 @@
 class swInstall
 {
 	/** Stores the template class */
-	var $tpl;
+	private $tpl;
 
 	/** Stores the database class */
-	var $db;
+	private $db;
 
 	/** Installer problems */
-	var $problem = array();
+	private $problem = array();
 
 	/** Variables each database type requires */
-	var $dbRequires = array(
+	private $dbRequires = array(
 		'mysql' => array('hostname', 'database', 'username', 'password'),
 		'postgresql' => array('hostname', 'database', 'username', 'password')
 	);
 
 	/** Initialise */
-	function swInstall()
+	static public function main()
 	{
-		if (!include('config.inc.php')) {
-			exit('Configuration template must exist.');
-		}
+		require('config.inc.php');
 
-		define('PATH_INSTALL', PATH_BASE . '/install');
+		define('PATH_INSTALL', PATH_BASE . DIRECTORY_SEPARATOR . 'install');
 		define('URL_INSTALL', URL_BASE);
 
-		if (!(class_exists('Savant2') || include(PATH_SAVANT))) {
-			exit('Savant2 template system missing.');
-		}
-		$this->tpl = new Savant2();
-		$this->tpl->addPath('template', PATH_INSTALL . '/tpl');
+		require(PATH_SAVANT);
 
-		if (!(class_exists('swDatabase') ||
-		     @include(PATH_INC . '/swDatabase.class.php'))) {
-			exit('Database include missing.');
+		$tpl = new Savant3();
+		$tpl->addPath('template', PATH_INSTALL . DIRECTORY_SEPARATOR . 'tpl');
+
+		require(PATH_INC . DIRECTORY_SEPARATOR . 'swDatabase.class.php');
+
+		$db = new swDatabase;
+		
+		if (!(is_object($tpl) && is_object($db))) {
+			throw new Exception('Could not start template and database systems');
 		}
-		$this->db = new swDatabase;
 
 		session_start();
+
+		$page = new swInstall($tpl, $db);
+	}
+
+	private function __construct(Savant3 $tpl, swDatabase $db)
+	{
+		$this->tpl = $tpl;
+		$this->db = $db;
+
+		$this->process();
 	}
 
 	/** Process install */
@@ -506,7 +515,6 @@ class swInstall
 	}
 }
 
-$installer = new swInstall;
-$installer->process();
+swInstall::main();
 
 ?>
