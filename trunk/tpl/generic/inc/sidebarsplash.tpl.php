@@ -20,11 +20,11 @@ $this->eprint($this->url['base'] . '/servers.php');
 <?php
 if (isset($showLogin) && $showLogin) {
 ?>
-	<li id="loginSection"><h2>Login to server</h2>
+	<li id="loginSection"><h2>Back for more?</h2>
 	<form action="<?php
 $this->eprint($this->url['base'] . '/login.php');
 ?>" method="post"><dl>
-		<dt><label for="handle">Account name</label></dt>
+		<dt><label for="handle">Name</label></dt>
 		<dd><input type="text" name="handle" id="handle" class="text" /></dd>
 
 		<dt><label for="password">Password</label></dt>

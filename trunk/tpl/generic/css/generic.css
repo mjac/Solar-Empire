@@ -1,27 +1,23 @@
 html {
 	background: #000;
 	color: #F0F0F0;
-	font-family: Verdana, sans-serif;
-	font-size: 80%;
+	font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	line-height: 18px;
 }
 
 body {
 	margin: 0 auto;
-	width: 60em;
+	width: 680px;
 }
 
 a img {
 	border: none;
 }
 
-h1, h2, h3, h4, h5, h6 {
-	font-family: sans-serif;
-}
-
 
 a:link, a:visited {
 	text-decoration: none;
-	font-weight: bold;
 	color: #99B0FF;
 }
 a:link:hover, a:visited:hover {
@@ -42,10 +38,10 @@ textarea {
 	background: #121619;
 }
 input.text, textarea {
-	padding: 0.25em;
+	padding: 2px;
 	color: #FFF;
-	font-family: monospace;
-	font-size: 1.125em;
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
+	font-size: 14px;
 }
 input.button {
 	cursor: pointer;
@@ -53,7 +49,7 @@ input.button {
 	font-weight: bold;
 	text-decoration: none;
 	color: #000000;
-	padding: 0.25em;
+	padding: 2px;
 	border-left: 1px solid #CCCCFF;
 	border-top: 1px solid #CCCCFF;
 	border-right: 1px solid #666699;
@@ -72,7 +68,7 @@ input.text, textarea, input.button:active {
 
 /* Sidebar */
 #splashSidebar {
-	width: 14em;
+	width: 30%;
 	border-right: 1px solid #666666;
 	border-left: 1px solid #666666;
 	border-bottom: 1px solid #666666;
@@ -94,8 +90,9 @@ input.text, textarea, input.button:active {
 	padding: 0;
 }
 #loginSection h2 {
-	font-size: 120%;
-	margin: 0.25em 0em;
+	font-size: 16px;
+	line-height: 16px;
+	margin: 0 0 8px 0;
 }
 #loginSection dl {
 	margin: 0.25em;
@@ -125,22 +122,19 @@ input.text, textarea, input.button:active {
 }
 
 #splashContent {
-	margin-left: 16em;
-	padding-left: 1em;
-	border-left: 1px solid #333333;
-	text-align: justify;
+	margin-left: 35%;
+	width: 65%;
 }
 #splashContent h1 {
-	font-size: 193%;
+	font-size: 21px;
+	line-height: 21px;
 	font-weight: normal;
 }
 #splashContent h2 {
-	font-size: 131%;
-	border-bottom: 1px solid #CCCCCC;
-	padding: 0.125em 0;
+	font-size: 16px;
+	line-height: 16px;
 }
 #splashContent h3 {
-	font-size: 115%;
 }
 
 #splashContent dt {
