@@ -17,7 +17,7 @@ define('DB_PREFIX_GAME', 'DB_PREFIX_GAME=HERE');
 
 // SYSTEM DEFINITIONS
 defined('E_STRICT') || define('E_STRICT', 0x800);
-error_reporting(E_ALL & ~E_STRICT);
+error_reporting(E_ALL | E_STRICT);
 
 // PATHS
 define('PATH_BASE', realpath(dirname(__FILE__) . '/..'));
@@ -34,8 +34,5 @@ define('URL_BASE', rtrim(dirname(URL_SELF), '\\/'));
 define('URL_FULL', isset($_SERVER['HTTP_HOST']) ? 
  ('http://' . $_SERVER['HTTP_HOST'] . URL_BASE) : URL_BASE);
 define('URL_TPL', URL_BASE . '/tpl');
-
-// SEED
-mt_srand((double)microtime() * (double)0x7FFFFFFF);
 
 ?>
