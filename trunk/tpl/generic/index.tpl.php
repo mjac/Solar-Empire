@@ -1,11 +1,11 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 $this->pageName = 'Welcome';
 $this->title = 'Competitive, web based, space combat game';
 
 $showLogin = $showRegister = true;
-include($this->loadTemplate('inc/headersplash.tpl.php'));
+include($this->template('inc/headersplash.tpl.php'));
 
 ?><h1>Welcome to System Wars</h1>
 
@@ -18,6 +18,6 @@ include($this->loadTemplate('inc/headersplash.tpl.php'));
 <p>Visit the <a href="http://forum.syswars.com/">global forums</a> to learn more and help develop this open-source game.</p>
 <?php
 
-include($this->loadTemplate('inc/footersplash.tpl.php'));
+include($this->template('inc/footersplash.tpl.php'));
 
 ?>

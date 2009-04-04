@@ -1,10 +1,10 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 $this->pageName = 'Register';
 $this->title = 'Registration complete, account created';
 
-include($this->loadTemplate('inc/headersplash.tpl.php'));
+include($this->template('inc/headersplash.tpl.php'));
 
 ?><h1>Register an account</h1>
 <h2>Your account has been created</h2>
@@ -12,6 +12,6 @@ include($this->loadTemplate('inc/headersplash.tpl.php'));
 $this->eprint($this->url['base'] . '/index.php'); ?>">sign-in screen</a> to begin your adventure.</p>
 <?php
 
-include($this->loadTemplate('inc/footersplash.tpl.php'));
+include($this->template('inc/footersplash.tpl.php'));
 
 ?>

@@ -1,11 +1,11 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 $this->pageName = 'System map';
 $this->title = 'Map of the known universe';
 $this->description = '';
 
-include($this->loadTemplate('game/inc/header_game.tpl.php'));
+include($this->template('game/inc/header_game.tpl.php'));
 
 ?><h1>Star map</h1>
 <p><img src="<?php
@@ -31,6 +31,6 @@ if ($this->canSearch) {
 <?php
 }
 
-include($this->loadTemplate('game/inc/footer_game.tpl.php'));
+include($this->template('game/inc/footer_game.tpl.php'));
 
 ?>

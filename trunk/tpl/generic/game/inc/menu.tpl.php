@@ -1,16 +1,16 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 if (!function_exists('popupHelp')) {
-	require($this->loadTemplate('inc/popupHelp.inc.php'));
+	require($this->template('inc/popupHelp.inc.php'));
 }
 
 if (!function_exists('formatName')) {
-	require($this->loadTemplate('game/inc/formatNames.inc.php'));
+	require($this->template('game/inc/formatNames.inc.php'));
 }
 
 if (!function_exists('shipCargoReport')) {
-	require($this->loadTemplate('game/inc/formatShips.inc.php'));
+	require($this->template('game/inc/formatShips.inc.php'));
 }
 
 ?><h1><em><?php 

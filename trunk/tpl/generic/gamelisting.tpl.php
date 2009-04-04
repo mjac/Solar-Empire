@@ -1,11 +1,11 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 $this->pageName = 'Game listing';
 $this->title = 'Listing of games running on this server';
 
 $showLogout = true;
-include($this->loadTemplate('inc/headermember.tpl.php'));
+include($this->template('inc/headermember.tpl.php'));
 
 ?><h1>Game listing<?php
 if (isset($this->accountName)) {
@@ -45,6 +45,6 @@ echo $this->serverNews;
 <?php
 }
 
-include($this->loadTemplate('inc/footermember.tpl.php'));
+include($this->template('inc/footermember.tpl.php'));
 
 ?>

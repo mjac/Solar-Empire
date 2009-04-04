@@ -1,12 +1,12 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
-include($this->loadTemplate('inc/header.tpl.php'));
+include($this->template('inc/header.tpl.php'));
 
 ?><div id="gameMenu">
 <?php
 
-include($this->loadTemplate('game/inc/menu.tpl.php'));
+include($this->template('game/inc/menu.tpl.php'));
 
 ?>
 </div>

@@ -1,9 +1,9 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 ?></div>
 <?php
 
-include($this->loadTemplate('inc/footer.tpl.php'));
+include($this->template('inc/footer.tpl.php'));
 
 ?>

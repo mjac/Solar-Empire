@@ -1,5 +1,5 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 $this->pageName = 'Settings';
 $this->title = 'Modify game settings';
@@ -11,7 +11,7 @@ $status = array(
 	'running' => 'Running'
 );
 
-include($this->loadTemplate('game/inc/header_game.tpl.php'));
+include($this->template('game/inc/header_game.tpl.php'));
 
 ?><h1>Game settings</h1>
 
@@ -121,6 +121,6 @@ $this->eprint($this->gameDescription);
 </form>
 <?php
 
-include($this->loadTemplate('game/inc/footer_game.tpl.php'));
+include($this->template('game/inc/footer_game.tpl.php'));
 
 ?>

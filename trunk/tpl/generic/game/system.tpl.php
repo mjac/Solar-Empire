@@ -1,5 +1,5 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 $this->pageName = 'System';
 $this->title = 'The system does not exist';
@@ -12,9 +12,9 @@ $locAlerts = array(
 	'travelLinkTurns' => 'You do not have enough turns to travel to that system'
 );
 
-include($this->loadTemplate('game/inc/header_game.tpl.php'));
+include($this->template('game/inc/header_game.tpl.php'));
 
-include($this->loadTemplate('game/inc/location.tpl.php'));
+include($this->template('game/inc/location.tpl.php'));
 
 ?><div id="locInfo">
 <h1>Star system <?php $this->eprint($this->star['id']); ?></h1>
@@ -44,6 +44,6 @@ if (isset($this->locAlerts) && !empty($this->locAlerts)) {
 </div>
 <?php
 
-include($this->loadTemplate('game/inc/footer_game.tpl.php'));
+include($this->template('game/inc/footer_game.tpl.php'));
 
 ?>

@@ -1,10 +1,10 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 $this->pageName = 'Server list';
 $this->title = 'Actively updated list of current servers';
 
-include($this->loadTemplate('inc/headersplash.tpl.php'));
+include($this->template('inc/headersplash.tpl.php'));
 
 ?><h1>Server list</h1>
 <ul>
@@ -15,6 +15,6 @@ include($this->loadTemplate('inc/headersplash.tpl.php'));
 </ul>
 <?php
 
-include($this->loadTemplate('inc/footersplash.tpl.php'));
+include($this->template('inc/footersplash.tpl.php'));
 
 ?>

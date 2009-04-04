@@ -1,10 +1,10 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 $this->pageName = 'Game variables';
 $this->title = 'A list of options that affect this game';
 
-include($this->loadTemplate('inc/header.tpl.php'));
+include($this->template('inc/header.tpl.php'));
 
 if (!$this->gameExists) {
 ?><p>This game does not exist.</p>
@@ -34,6 +34,6 @@ if (!$this->gameExists) {
 <?php
 }
 
-include($this->loadTemplate('inc/footer.tpl.php'));
+include($this->template('inc/footer.tpl.php'));
 
 ?>

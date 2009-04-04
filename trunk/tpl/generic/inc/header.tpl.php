@@ -1,5 +1,5 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 header('Cache-control: no-cache');
 ob_start('ob_gzhandler');

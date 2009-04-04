@@ -1,11 +1,11 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 $this->pageName = 'Universe generator';
 $this->title = 'Create a new universe for this game';
 $this->description = '';
 
-include($this->loadTemplate('game/inc/header_game.tpl.php'));
+include($this->template('game/inc/header_game.tpl.php'));
 
 ?><h1>Generate universe</h1>
 
@@ -21,7 +21,7 @@ $this->eprint($this->url['self'] . '?action=maps');
 <?php
 
 if (!isset($this->action)) {
-	include($this->loadTemplate('game/inc/footer_game.tpl.php'));
+	include($this->template('game/inc/footer_game.tpl.php'));
 	return;
 }
 
@@ -92,6 +92,6 @@ if ($this->action === 'create') {
 <?php
 }
 
-include($this->loadTemplate('game/inc/footer_game.tpl.php'));
+include($this->template('game/inc/footer_game.tpl.php'));
 
 ?>

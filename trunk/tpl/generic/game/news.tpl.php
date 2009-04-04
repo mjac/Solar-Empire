@@ -1,11 +1,11 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 $this->pageName = 'News';
 $this->title = 'News and events';
 $this->description = '';
 
-include($this->loadTemplate('game/inc/header_game.tpl.php'));
+include($this->template('game/inc/header_game.tpl.php'));
 
 ?><h1>News and events</h1>
 
@@ -59,6 +59,6 @@ foreach ($this->articles as $article) {
 ?></table>
 <?php
 
-include($this->loadTemplate('game/inc/footer_game.tpl.php'));
+include($this->template('game/inc/footer_game.tpl.php'));
 
 ?>

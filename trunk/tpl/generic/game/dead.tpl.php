@@ -1,11 +1,11 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 $this->pageName = 'Game over';
 $this->title = 'All of your ships have been destroyed';
 $this->description = '';
 
-include($this->loadTemplate('game/inc/header_game.tpl.php'));
+include($this->template('game/inc/header_game.tpl.php'));
 
 ?><h1>Your ship has been destroyed</h1>
 
@@ -37,6 +37,6 @@ send/receive messages.</p>
 
 }
 
-include($this->loadTemplate('game/inc/footer_game.tpl.php'));
+include($this->template('game/inc/footer_game.tpl.php'));
 
 ?>

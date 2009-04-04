@@ -1,8 +1,8 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 if (!function_exists('formatName')) {
-	require($this->loadTemplate('game/inc/formatNames.inc.php'));
+	require($this->template('game/inc/formatNames.inc.php'));
 }
 
 ?><div id="locBar">

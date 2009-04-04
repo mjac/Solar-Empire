@@ -1,11 +1,11 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 $this->pageName = 'Administration';
 $this->title = 'Game administration panel';
 $this->description = '';
 
-include($this->loadTemplate('game/inc/header_game.tpl.php'));
+include($this->template('game/inc/header_game.tpl.php'));
 
 ?><h1>Administration</h1>
 
@@ -59,6 +59,6 @@ $this->eprint($this->url['base'] . '/admin.php?more_money=1');
 </ul>
 <?php
 
-include($this->loadTemplate('game/inc/footer_game.tpl.php'));
+include($this->template('game/inc/footer_game.tpl.php'));
 
 ?>

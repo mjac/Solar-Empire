@@ -1,15 +1,15 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 $this->pageName = 'Active users';
 $this->title = 'Players currently online';
 $this->description = '';
 
 if (!function_exists('formatName')) {
-	require($this->loadTemplate('game/inc/formatNames.inc.php'));
+	require($this->template('game/inc/formatNames.inc.php'));
 }
 
-include($this->loadTemplate('game/inc/header_game.tpl.php'));
+include($this->template('game/inc/header_game.tpl.php'));
 
 ?><h1>Active users</h1>
 
@@ -46,6 +46,6 @@ if (empty($this->playersOnline)) {
 <?php
 }
 
-include($this->loadTemplate('game/inc/footer_game.tpl.php'));
+include($this->template('game/inc/footer_game.tpl.php'));
 
 ?>

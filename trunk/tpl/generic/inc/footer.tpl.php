@@ -1,5 +1,5 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 ?></body>
 </html><?php

@@ -1,11 +1,11 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 $this->pageName = 'Register';
 $this->title = 'Create an account and start playing straight away';
 
 $showLogin = $showRegister = true;
-include($this->loadTemplate('inc/headersplash.tpl.php'));
+include($this->template('inc/headersplash.tpl.php'));
 
 ?><h1>Register an account</h1>
 
@@ -64,6 +64,6 @@ echo $this->serverRules;
 ?></div>
 <?php
 
-include($this->loadTemplate('inc/footersplash.tpl.php'));
+include($this->template('inc/footersplash.tpl.php'));
 
 ?>

@@ -1,19 +1,19 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 if (!function_exists('formatName')) {
-	require($this->loadTemplate('game/inc/formatNames.inc.php'));
+	require($this->template('game/inc/formatNames.inc.php'));
 }
 
 $this->pageName = 'Game information';
 $this->title = 'Detailed information about the game';
 
-include($this->loadTemplate('inc/header.tpl.php'));
+include($this->template('inc/header.tpl.php'));
 
 if (!$this->gameExists) {
 ?><p>This game does not exist.</p>
 <?php	
-	include($this->loadTemplate('inc/footer.tpl.php'));
+	include($this->template('inc/footer.tpl.php'));
 	return;
 }
 
@@ -221,6 +221,6 @@ if (!empty($this->topPlayers)) {
 
 }
 
-include($this->loadTemplate('inc/footer.tpl.php'));
+include($this->template('inc/footer.tpl.php'));
 
 ?>

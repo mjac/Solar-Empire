@@ -1,10 +1,10 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 
 $this->pageName = 'Join game';
 $this->title = 'Enter both your player and ship names to begin';
 
-include($this->loadTemplate('inc/headersplash.tpl.php'));
+include($this->template('inc/headersplash.tpl.php'));
 
 ?><h1>Join <?php $this->eprint($this->gameName); ?></h1>
 
@@ -25,6 +25,6 @@ $this->eprint($this->gameSelected); ?>" /></dt>
 </form>
 <?php
 
-include($this->loadTemplate('inc/footersplash.tpl.php'));
+include($this->template('inc/footersplash.tpl.php'));
 
 ?>

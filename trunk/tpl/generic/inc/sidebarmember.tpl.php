@@ -1,5 +1,5 @@
 <?php
-class_exists('Savant2') || exit;
+class_exists('Savant3') || exit;
 ?><ul id="splashSidebar">
 	<li><a href="<?php
 $this->eprint($this->url['base'] . '/credits.php');
