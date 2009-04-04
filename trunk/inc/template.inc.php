@@ -1,7 +1,7 @@
 <?php
 defined('PATH_SAVANT') || exit;
 
-if (!class_exists('Savant2')) {
+if (!class_exists('Savant3')) {
 	require(PATH_SAVANT);
 }
 
@@ -48,7 +48,7 @@ if (empty($styleDir)) {
 	exit;
 }
 
-$tpl =& new Savant2();
+$tpl = new Savant3();
 $tpl->addPath('template', PATH_TPL . '/' . $styleDir);
 $tpl->assign('url', array('full' => URL_FULL, 'self' => URL_SELF,
  'base' => URL_BASE, 'tpl' => URL_TPL . '/' . $styleDir));

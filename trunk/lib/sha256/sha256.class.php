@@ -129,9 +129,9 @@ class sha256
 class sha256_data
 {
 	private $buf = array();
-	private $hash = NULL;
+	public $hash = NULL;
 
-	private $chunks = NULL;
+	public $chunks = NULL;
 
 	public function __construct($str)
 	{

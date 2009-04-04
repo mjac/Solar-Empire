@@ -46,7 +46,7 @@ class input
 	// INPUT VALIDATION
 
 	/** Deduce whether an e-mail address confirms to ISO standards */
-	function isEmail($address)
+	static function isEmail($address)
 	{
 	    static $addrSpec = '';
 
@@ -79,7 +79,7 @@ class input
 	// INTERNAL INPUT
 
 	/** Generate a random string */
-	function randomStr($length,
+	static function randomStr($length,
 	 $charSrc = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
 	{
 		$charMax = strlen($charSrc) - 1;

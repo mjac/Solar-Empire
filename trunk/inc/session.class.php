@@ -85,12 +85,12 @@ class session
 		return $_SERVER['REMOTE_ADDR'];
 	}
 
-	function ipToUlong($ipStr)
+	static function ipToUlong($ipStr)
 	{
 		return (double)sprintf('%u', ip2long($ipStr));
 	}
 
-	function ipFromUlong($ipUlong)
+	static function ipFromUlong($ipUlong)
 	{
 		return long2ip((int)$ipUlong);
 	}
