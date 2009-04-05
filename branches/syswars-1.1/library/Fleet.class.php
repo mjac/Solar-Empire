@@ -7,6 +7,9 @@
  */
 class Fleet extends Point
 {
+	/** We are at this significant feature in space, Local object */
+	protected $local;
+
 	public function getShips()
 	{
 	
@@ -15,7 +18,12 @@ class Fleet extends Point
 	/** Batch move a lot of ships */
 	public function moveSystem(System $target)
 	{
-		return DataFleet::move($this, $target);
+		$moved = DataFleet::move($this, $target);
+		if ($moved) {
+			// update all local data with new positions...
+		}
+
+		return $moved;
 	}
 
 	/** Sum of Ship::$impulseEnergy, false if not possible */
@@ -32,7 +40,7 @@ class Fleet extends Point
 			$sum += $energy;
 		}
 
-		return $energy;
+		return $sum;
 	}
 
 	/** Sum of Ship::$hyperEnergy, false if not possible */
@@ -49,7 +57,7 @@ class Fleet extends Point
 			$sum += $energy;
 		}
 
-		return $energy;
+		return $sum;
 	}
 
 	/** Sum of Ship::$quantumEnergy, false if not possible */
@@ -66,7 +74,7 @@ class Fleet extends Point
 			$sum += $energy;
 		}
 
-		return $energy;
+		return $sum;
 	}
 }
 

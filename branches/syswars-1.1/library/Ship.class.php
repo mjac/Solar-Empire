@@ -6,11 +6,26 @@ class Ship extends Point
 	protected $weapons;
 	protected $contents;
 	protected $engine = NULL;
+	protected $dockedShips;
+
+	/** We are at this significant feature in space, Local object */
+	protected $local;
 
 	/** Called when this ship moves from one system to another */
 	public function moveSystem(System $target)
 	{
-		return DataShip::move($this, $target);
+		if (DataShip::move($this, $target)) {
+			$this->setSystem($target);
+			return true;
+		}
+
+		return false;
+	}
+
+	/** Change system */
+	public function setSystem(System $target)
+	{
+		
 	}
 
 	/**
