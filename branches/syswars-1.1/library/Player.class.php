@@ -1,9 +1,10 @@
 <?php
 
-/**  */
 class Player
 {
-	protected $energy;
+	/** Energy that the player can spend */
+	protected $energy = 0.0;
+	protected $activeShip;
 }
 
 ?>

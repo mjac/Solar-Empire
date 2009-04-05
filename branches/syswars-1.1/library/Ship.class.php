@@ -1,28 +1,34 @@
 <?php
 
 /** A vehicle that travels through space */
-class Ship extends SpaceObject
+class Ship extends Point
 {
 	protected $weapons;
 	protected $contents;
-	protected $engine;
+	protected $engine = NULL;
 
-	public function move()
+	/** Called when this ship moves from one system to another */
+	public function moveSystem(System $target)
 	{
-	
+		return DataShip::move($this, $target);
 	}
-
-
 
 	/**
 	 * Cost of using simple impulse drive to move a distance in space
 	 *
-	 * Using relativistic equations of motion
+	 * Fighters, with a tiny mass will make great system scouts!
 	 * @param $distance Distance in metres
 	 */
-	public function impulseEnergy($target)
+	public function impulseEnergy(Local $target)
 	{
-		return Universe::getVar('impulseconst') * (1.0 - 1.0 / $engine->getImpulseEffic()) * $this->distance($target);
+		$effic = $this->getEngine()->getImpulseEffic();
+		if ($effic === 0.0) {
+			return false;
+		}
+
+		return Universe::getVar('movement_impulse_const') *
+			(1.0 - 1.0 / $effic) *
+			$this->distance($target) * $this->mass;
 	}	
 
 	/**
@@ -34,7 +40,13 @@ class Ship extends SpaceObject
 	 */
 	public function hyperEnergy()
 	{
+		$effic = $this->getEngine()->getHyperEffic();
+		if ($effic === 0.0) {
+			return false;
+		}
 
+		return Universe::getVar('movement_hyper_const') *
+			(1.0 - 1.0 / $effic) * $this->mass;
 	}
 
 	/**
@@ -43,7 +55,29 @@ class Ship extends SpaceObject
 	 */
 	public function quantumEnergy()
 	{
+		$effic = $this->getEngine()->getImpulseEffic();
+		if ($effic === 0.0) {
+			return false;
+		}
 
+		return Universe::getVar('movement_quantum_const') *
+			(1.0 - 1.0 / $effic) * $this->mass;
+	}
+
+	/** Gets the associated engine or returns NULL */
+	public getEngine()
+	{
+		if ($this->engine instanceof ShipEngine) {
+			return $this->engine;
+		}
+
+		// load engine info from data store
+		$newEngine = DataShip::loadEngine($this);
+		if ($newEngine instanceof ShipEngine) {
+			$this->engine = $newEngine;
+		}
+
+		return $this->engine;
 	}
 }
 
@@ -65,7 +99,7 @@ class ShipEngine
 	protected $quantumEffic;
 }
 
-/** */
+/** Collection of weapons to use on ships */
 class ShipWeapons
 {
 	protected $weapons;
