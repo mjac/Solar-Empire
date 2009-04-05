@@ -18,12 +18,7 @@ class Fleet extends Point
 	/** Batch move a lot of ships */
 	public function moveSystem(System $target)
 	{
-		$moved = DataFleet::move($this, $target);
-		if ($moved) {
-			// update all local data with new positions...
-		}
-
-		return $moved;
+		return DataFleet::moveSystem($this, $target);
 	}
 
 	/** Sum of Ship::$impulseEnergy, false if not possible */

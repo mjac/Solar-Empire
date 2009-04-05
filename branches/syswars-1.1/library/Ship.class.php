@@ -14,18 +14,7 @@ class Ship extends Point
 	/** Called when this ship moves from one system to another */
 	public function moveSystem(System $target)
 	{
-		if (DataShip::move($this, $target)) {
-			$this->setSystem($target);
-			return true;
-		}
-
-		return false;
-	}
-
-	/** Change system */
-	public function setSystem(System $target)
-	{
-		
+		return DataShip::moveSystem($this, $target);
 	}
 
 	/**

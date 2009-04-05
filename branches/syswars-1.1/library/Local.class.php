@@ -3,7 +3,7 @@
 /** A significant point in space */
 abstract class Local extends Point
 {
-	/** A significant point in space */
+	/** Get the collection associated with this */
 	protected $system;
 }
 
