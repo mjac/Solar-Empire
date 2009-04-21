@@ -80,7 +80,7 @@ class session
 		 time(), $this->ipToUlong($this->ipAddress()), $this->data['account']);
 	}
 
-	function ipAddress()
+	static function ipAddress()
 	{
 		return $_SERVER['REMOTE_ADDR'];
 	}

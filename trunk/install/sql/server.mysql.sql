@@ -25,7 +25,7 @@ CREATE TABLE [server]forum (
   msg_sent datetime NOT NULL default 0,
   msg_sender_id varchar(32) NOT NULL default '',
   msg_sender_name varchar(32) NOT NULL default '',
-  msg_content text NOT NULL default '',
+  msg_content text NOT NULL,
   PRIMARY KEY (msg_id)
 ) TYPE=MyISAM;
 
@@ -36,7 +36,7 @@ CREATE TABLE [server]history (
   acc_id int unsigned NOT NULL,
   game_id tinyint unsigned NULL default NULL,
   hist_date datetime NOT NULL default 0,
-  hist_action text NOT NULL default '',
+  hist_action text NOT NULL,
   hist_ip varchar(16) NOT NULL default ''
 ) TYPE=MyISAM;
 
@@ -47,7 +47,7 @@ CREATE TABLE [server]poption (
   opt_name varchar(32) NOT NULL default '',
   opt_min int NOT NULL default 0,
   opt_max int NOT NULL default 0,
-  opt_desc text NOT NULL default '',
+  opt_desc text NOT NULL,
   opt_type tinyint unsigned NOT NULL default 1,
   PRIMARY KEY  (opt_name)
 ) TYPE=MyISAM;
@@ -57,7 +57,7 @@ DROP TABLE IF EXISTS [server]tip;
 
 CREATE TABLE [server]tip (
   tip_id smallint unsigned NOT NULL,
-  tip_content text NOT NULL default '',
+  tip_content text NOT NULL,
   PRIMARY KEY (tip_id)
 ) TYPE=MyISAM;
 
@@ -73,7 +73,7 @@ CREATE TABLE [game]auction (
   lot_code varchar(32) NOT NULL default '',
   lot_type int unsigned NOT NULL default 0,
   lot_date datetime NOT NULL default 0,
-  lot_desc text NOT NULL default '',
+  lot_desc text NOT NULL,
   PRIMARY KEY (game_id, lot_id)
 ) TYPE=MyISAM;
 
@@ -126,7 +126,7 @@ CREATE TABLE [game]msgclan (
   msg_sender int unsigned NULL default NULL,
   msg_sendername varchar(32) NULL default NULL,
   msg_sent datetime NOT NULL default 0,
-  msg_content text NOT NULL default '',
+  msg_content text NOT NULL,
   PRIMARY KEY (game_id, msg_id),
   KEY clan_id (game_id, clan_id),
   KEY msg_sent (game_id, msg_sent)
@@ -141,7 +141,7 @@ CREATE TABLE [game]msgforum (
   msg_sender int unsigned NULL default NULL,
   msg_sendername varchar(32) NULL default NULL,
   msg_sent datetime NOT NULL default 0,
-  msg_content text NOT NULL default '',
+  msg_content text NOT NULL,
   PRIMARY KEY (game_id, msg_id),
   KEY msg_sent (game_id, msg_sent)
 ) TYPE=MyISAM;
@@ -156,7 +156,7 @@ CREATE TABLE [game]msgplayer (
   msg_sender int unsigned NULL default NULL,
   msg_sendername varchar(32) NULL default NULL,
   msg_sent datetime NOT NULL default 0,
-  msg_content text NOT NULL default '',
+  msg_content text NOT NULL,
   PRIMARY KEY (game_id, msg_id),
   KEY acc_id (game_id, acc_id),
   KEY msg_sent (game_id, msg_sent)
@@ -171,7 +171,7 @@ CREATE TABLE [game]news (
   acc_id int unsigned NULL default NULL,
   news_sent datetime NOT NULL default 0,
   news_title varchar(255) NOT NULL,
-  news_content text NOT NULL default '',
+  news_content text NOT NULL,
   PRIMARY KEY  (game_id, news_id),
   KEY news_sent (game_id, news_sent)
 ) TYPE=MyISAM;
@@ -195,7 +195,7 @@ CREATE TABLE [game]optionlist (
   optn_default int NOT NULL default 0,
   optn_min int NOT NULL default 1,
   optn_max int NOT NULL default 1,
-  optn_desc text NOT NULL default '',
+  optn_desc text NOT NULL,
   PRIMARY KEY (optn_id)
 ) TYPE=MyISAM;
 
@@ -304,7 +304,7 @@ CREATE TABLE [game]shiptype (
   stype_id smallint unsigned NOT NULL,
   stype_name varchar(32) NOT NULL default '',
   stype_abbr varchar(8) NOT NULL default '',
-  stype_desc text NOT NULL default '',
+  stype_desc text NOT NULL,
   stype_credit int unsigned NOT NULL default 0,
   stype_fighter int unsigned NOT NULL default 0,
   stype_fightermax int unsigned NOT NULL default 0,
