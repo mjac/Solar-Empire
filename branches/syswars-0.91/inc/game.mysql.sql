@@ -37,12 +37,12 @@ CREATE TABLE gamename_clan_invites (
 DROP TABLE IF EXISTS gamename_db_vars;
 --
 CREATE TABLE gamename_db_vars (
-  'name' varchar(30) NOT NULL default '',
-  'value' int unsigned NOT NULL default 0,
+  `name` varchar(30) NOT NULL default '',
+  value int unsigned NOT NULL default 0,
   min int unsigned NOT NULL default 1,
   max int unsigned NOT NULL default 1,
   descript text NOT NULL,
-  PRIMARY KEY ('name')
+  PRIMARY KEY (`name`)
 ) TYPE=MyISAM;
 --
 INSERT INTO gamename_db_vars (name, value, min, max, descript) VALUES ('admin_var_show', 1, 0, 1, 'If 0, players cannot see the game vars, on the game_vars page.'),
@@ -123,11 +123,11 @@ DROP TABLE IF EXISTS gamename_diary;
 --
 CREATE TABLE gamename_diary (
   entry_id int unsigned NOT NULL,
-  'timestamp' int unsigned NOT NULL default 0,
+  `timestamp` int unsigned NOT NULL default 0,
   login_id int unsigned NOT NULL default 0,
   entry text NOT NULL,
   PRIMARY KEY (entry_id),
-  KEY 'timestamp' ('timestamp')
+  KEY `timestamp` (`timestamp`)
 ) TYPE=MyISAM;
 --
 DROP TABLE IF EXISTS gamename_messages;
@@ -137,23 +137,23 @@ CREATE TABLE gamename_messages (
   login_id int NOT NULL,
   sender_id int unsigned NULL default NULL,
   sender_name varchar(32) NULL default NULL,
-  'timestamp' int unsigned NOT NULL default 0,
-  'text' text NOT NULL,
+  `timestamp` int unsigned NOT NULL default 0,
+  `text` text NOT NULL,
   clan_id int unsigned NOT NULL default 0,
   PRIMARY KEY (message_id),
   KEY login_id (login_id),
-  KEY 'timestamp' ('timestamp')
+  KEY `timestamp` (`timestamp`)
 ) TYPE=MyISAM;
 --
 DROP TABLE IF EXISTS gamename_news;
 --
 CREATE TABLE gamename_news (
   news_id int unsigned NOT NULL,
-  'timestamp' int unsigned NOT NULL default 0,
+  `timestamp` int unsigned NOT NULL default 0,
   login_id int unsigned NOT NULL default 0,
   headline text NOT NULL,
   PRIMARY KEY  (news_id),
-  KEY 'timestamp' ('timestamp')
+  KEY `timestamp` (`timestamp`)
 ) TYPE=MyISAM;
 --
 DROP TABLE IF EXISTS gamename_planets;
@@ -205,9 +205,9 @@ DROP TABLE IF EXISTS gamename_ship_types;
 --
 CREATE TABLE gamename_ship_types (
   type_id smallint unsigned NOT NULL,
-  'name' varchar(32) NOT NULL default '',
+  `name` varchar(32) NOT NULL default '',
   abbr varchar(8) NOT NULL default '',
-  'type' varchar(16) NOT NULL default '',
+  `type` varchar(16) NOT NULL default '',
   cost int unsigned NOT NULL default 0,
   hull int unsigned NOT NULL default 100,
   max_hull int unsigned NOT NULL default 100,
@@ -364,4 +364,4 @@ CREATE TABLE gamename_users (
 --
 DELETE FROM se_games WHERE db_name = 'gamename';
 --
-INSERT INTO se_games (db_name, name, admin, 'status', description, intro_message, num_stars, difficulty, started, finishes, processed_cleanup, processed_turns, processed_systems, processed_ships, processed_planets, processed_government) VALUES ('gamename', 'gametitle', 1, 'paused', '', '', 150, 3, UNIX_TIMESTAMP(), UNIX_TIMESTAMP() + 1728000, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), UNIX_TIMESTAMP());
+INSERT INTO se_games (db_name, name, admin, status, description, intro_message, num_stars, difficulty, started, finishes, processed_cleanup, processed_turns, processed_systems, processed_ships, processed_planets, processed_government) VALUES ('gamename', 'gametitle', 1, 'paused', '', '', 150, 3, UNIX_TIMESTAMP(), UNIX_TIMESTAMP() + 1728000, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), UNIX_TIMESTAMP());
