@@ -148,7 +148,7 @@ mail("$_POST[name] <$_POST[email]>", "New account at $location", $message,
 print_header("New Account Created");
 
 ?>
-<p>Congratulations, your account has been set up.</p>
+<p>Congratulations, your account has been set up.  Please check your email for your password.</p>
 <p><a href="index.php">Return</a> to the login page.</p>
 
 <?php
