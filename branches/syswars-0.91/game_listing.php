@@ -267,7 +267,7 @@ print_header("Game Listings");
 
 if (IS_OWNER && isset($_REQUEST['newGame'])) {
 	$gametitle = $_GET['newGame'];
-	$gamename = str_replace(' ', '', $gametitle);
+	$gamename = preg_replace("/[^a-zA-Z0-9]/", "", $gametitle);
 	$find = array('gamename', 'gametitle');
 	$replace = array($gamename, $gametitle);
 	require_once('inc/generator.inc.php');
@@ -284,6 +284,8 @@ if (IS_OWNER && isset($_REQUEST['newGame'])) {
 	}
 	$db->query('%s', array(str_replace($find, $replace, $query)));
 	clearImages('img/' . $gamename . '_maps');
+	
+	echo 'Created game "'.$gametitle.'" and created tables as '.$gamename.'. Please join and create universe from admin options.';
 }
 
 if (IS_OWNER && isset($_REQUEST['deleteGame'])) {
@@ -410,6 +412,7 @@ if (empty($joined) && empty($unjoined)) {
 if (IS_OWNER) {
 ?>
 <h2>Add Game</h2>
+<p>This is the game title, please do not use speachmarks (") or apostrophes (') all punctuation is removed for database tables.</p>
 	<form action="<?php echo $self; ?>" method="get">
 		<input type="text" name="newGame" class="text" />
 		<input type="submit" class="button" value="Add game" />
@@ -419,7 +422,7 @@ if (IS_OWNER) {
 				$query = 'SELECT db_name, name FROM thetenthpl2.se_games ORDER BY `name`';
 				$result = mysql_query($query);
 				if(mysql_num_rows($result)!=0){
-					echo '<p>Please note this action is permanent!</p><form action="'.$self.'" method="get"><select name="deleteGame">';
+					echo '<p>Please note this action is permanent!</p><form action="'.$self.'" method="get"><select name="deleteGame"><option SELECTED VALUE="">------</option>';
 					while($row = mysql_fetch_row($result)) {
 						echo '<option value="' . $row[0] . '">' . $row[1] . '</option>';
 					}
