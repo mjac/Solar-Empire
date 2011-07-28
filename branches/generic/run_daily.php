@@ -8,7 +8,8 @@ $newTip = mysql_result($tips, 0);
 mysql_query('UPDATE `se_games` SET `todays_tip` = ' . $newTip);
 
 
-$games = mysql_query("SELECT `db_name` FROM `se_games` WHERE `status` >= 1 && `paused` != 1");
+$games = mysql_query("SELECT db_name FROM se_games WHERE status >= 1 && status != 'paused'");
+
 while (list($game) = mysql_fetch_row($games)) {
     print "- Game $game -\n";
 
@@ -59,8 +60,8 @@ while (list($game) = mysql_fetch_row($games)) {
 		 implode("\n\t", $removed) . "\n";
 	}
 
-
-	/* Resets political standing if politics is disabled */
+/*	print "Reset political standing... ";
+	Resets political standing if politics is disabled
 	$politics = (int)getVar($game, 'enable_politics');
 	if($politics === 0) {
 		mysql_query("DELETE FROM `{$game}_politics`");
@@ -74,18 +75,22 @@ while (list($game) = mysql_fetch_row($games)) {
 
 		mysql_query("UPDATE `{$game}_users` SET `politics` = 0");
 	}
-
-
+	print "done\n"; */
+	
+	print "Increasing Bounties... ";
 	/* Interest on bounties: 4% increase */
-	mysql_query("UPDATE `{$game}_users` SET `bounty` = `bounty` * 1.04");
+	mysql_query("UPDATE {$game}_users SET bounty = `bounty` * 1.04");
+	print "done\n";
 
-
+	print "Planet stuff... ";
 	/* Planet builds */
-	$planets = mysql_query("SELECT `planet_id`, `planet_name`, `p`.`login_id`, `tax_rate`, " .
-	 "`fuel`, `metal`, `elect`, `colon`, `alloc_fight`, `alloc_elect`, `alloc_organ`, " .
-	 "`u`.`planet_report` FROM `{$game}_planets` AS `p` LEFT JOIN `{$game}_user_options` " .
-	 "AS `u` ON `u`.`login_id` = `p`.`login_id` WHERE `p`.`planet_id` != 1") or die(mysql_error());
-
+	$planets = mysql_query("SELECT planet_id, planet_name, p.login_id, tax_rate, " .
+	 "fuel, metal, elect, colon, alloc_fight, alloc_elect, alloc_organ, " .
+	 "u.planet_report FROM {$game}_planets AS p LEFT JOIN {$game}_user_options " .
+	 "AS u ON u.login_id = p.login_id WHERE p.planet_id != 1") or die(mysql_error());
+	print "done\n";
+	 
+	 
 	while (list($id, $name, $ownerId, $tax, $fuel, $metal, $elect,
 	        $colonists, $allocFigs, $allocElect, $allocOrgan, $report) =
 	        mysql_fetch_row($planets)) {
@@ -377,12 +382,15 @@ sub explode_sn {
 */
 
 
-	mysql_query("OPTIMIZE TABLE `{$game}_bilkos`, `{$game}_clans`, `{$game}_diary`, " .
-	 "`{$game}_messages`, `{$game}_news`, `{$game}_planets`, `{$game}_ships`, " .
-	 "`{$game}_stars`, `{$game}_user_options`, `{$game}_users`");
-
-	mysql_query("INSERT INTO `{$game}_news` (`timestamp`, `headline`, `login_id`) values (" .
+	mysql_query("OPTIMIZE TABLE `{$game}_bilkos, {$game}_clans, {$game}_diary, " .
+	 "{$game}_messages, {$game}_news, {$game}_planets, {$game}_ships, " .
+	 "{$game}_stars, {$game}_user_options, {$game}_users");
+	 
+	print "Daily maintenance for $game is... ";
+	mysql_query("INSERT INTO {$game}_news (timestamp, headline, login_id) values (" .
 	 time() . ", '...Daily maintenance complete', 1)");
+	print "complete!\n";
+	print "------------\n\n";
 }
 
 mysql_close();

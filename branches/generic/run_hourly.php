@@ -5,8 +5,8 @@ require_once('inc/maint.inc.php');
 $startArr = explode(' ', microtime());
 $startTime = (double)$startArr[0] + (double)$startArr[1];
 
-$games = mysql_query("SELECT `db_name` FROM `se_games` WHERE `status` >= 1 && " .
- "`paused` != 1");
+$games = mysql_query("SELECT db_name FROM se_games WHERE status >= 1 && status != 'paused'");
+
 while (list($game) = mysql_fetch_row($games)) {
     print "- Game $game -\n";
 
@@ -232,8 +232,10 @@ while (list($game) = mysql_fetch_row($games)) {
 
 	//Mining Metal
 	print 'Mining metal... ';
-	$ships = mysql_query("select s.ship_id, s.location, `s`.`mine_rate_metal` as mine_rate, s.cargo_bays,s.metal,s.fuel,s.elect,s.organ,s.colon,star.metal AS star_metal from {$game}_stars star, {$game}_ships s, {$game}_users u where s.mine_mode = 1 && u.login_id = s.login_id&& star.star_id = s.location && s.location != 1 && star.metal > 0 && (s.cargo_bays - s.metal - s.fuel - s.elect - s.organ - s.colon) > 0 && `mine_rate_metal` > 0 group by s.ship_id");
+	
+	$ships = mysql_query("select s.ship_id, s.location, `s`.`mining_rate` as mine_rate, s.cargo_bays,s.metal,s.fuel,s.elect,s.organ,s.colon,star.metal AS star_metal from {$game}_stars star, {$game}_ships s, {$game}_users u where s.mining_mode = 'metal' && u.login_id = s.login_id&& star.star_id = s.location && s.location != 1 && star.metal > 0 && (s.cargo_bays - s.metal - s.fuel - s.elect - s.organ - s.colon) > 0 && `mining_rate` > 0 group by s.ship_id");
 
+	
 	$count = 0;
 
 	while ($ship = mysql_fetch_assoc($ships)) {
@@ -266,7 +268,7 @@ while (list($game) = mysql_fetch_row($games)) {
 
 	//Mining Fuel
 	print 'Mining fuel... ';
-	$ships = mysql_query("select s.ship_id,s.location,s.mine_rate_fuel as mine_rate,s.cargo_bays,s.metal,s.fuel,s.elect,s.organ,s.colon,star.fuel AS star_fuel from {$game}_stars star, {$game}_ships s, {$game}_users u where s.mine_mode =2 && u.login_id = s.login_id && star.star_id = s.location && star.fuel > 0 && (s.cargo_bays - s.metal - s.fuel - s.elect - s.organ - s.colon) > 0 && mine_rate_fuel > 0 group by s.ship_id");
+	$ships = mysql_query("select s.ship_id,s.location,s.mining_rate as mine_rate,s.cargo_bays,s.metal,s.fuel,s.elect,s.organ,s.colon,star.fuel AS star_fuel from {$game}_stars star, {$game}_ships s, {$game}_users u where s.mining_mode = 'fuel' && u.login_id = s.login_id && star.star_id = s.location && star.fuel > 0 && (s.cargo_bays - s.metal - s.fuel - s.elect - s.organ - s.colon) > 0 && mining_rate > 0 group by s.ship_id");
 
 	$count = 0;
 
@@ -303,21 +305,44 @@ while (list($game) = mysql_fetch_row($games)) {
 	mysql_query("update {$game}_stars set fuel = 0 where fuel < 0");
 	mysql_query("update {$game}_stars set metal = 0 where metal < 0");
 
-	$hourlyTurns = getVar($game, 'hourly_turns');
-	mysql_query("UPDATE `{$game}_users` SET `turns` = `turns` + $hourlyTurns");
+	$hourlyTurns1 = mysql_query("SELECT value from {$game}_db_vars WHERE name = 'increase_turns'");
+	$hourlyTurns2 = mysql_fetch_row($hourlyTurns1);
+	$hourlyTurns = $hourlyTurns2[0];
+	print "Increasing turns by $hourlyTurns... ";
+	mysql_query("UPDATE {$game}_users SET turns = turns + $hourlyTurns");
+	print "done\n";
 
-	$maxTurns = getVar($game, 'max_turns');
-	mysql_query("update `{$game}_users` SET `turns` = $maxTurns WHERE `turns` > $maxTurns");
-
+	
+	$maxTurns1 = mysql_query("SELECT value from {$game}_db_vars WHERE name = 'max_turns'");
+	$maxTurns2 = mysql_fetch_row($maxTurns1);
+	$maxTurns = $maxTurns2[0];
+	print "Checking max turns doesnt exceed $maxTurns... ";
+	mysql_query("update {$game}_users SET turns = $maxTurns WHERE turns > $maxTurns");
+	print "done\n";
 
 	#bilkos auction house:
-	mysql_query("delete from `{$game}_bilkos` where `timestamp` <= " . (time() - 172800) . " && bidder_id = 0 && active=1");
-	$bombsOn = getVar($game, 'flag_bomb');
+	print "- Bilkos Auction House -\n";
+	print "Deleting unsold items... ";
+	mysql_query("delete from {$game}_bilkos where timestamp <= " . (time() - 172800) . " && bidder_id = 0 && active=1");
+	print "done\n";
+	print "Checking if bombs are auctionable... ";
+	$bombsOn1 = mysql_query("SELECT value from {$game}_db_vars WHERE name = 'bomb_level_auction'");
+	$bombsOn2 = mysql_fetch_row($bombsOn1);
+	$bombsOn = $bombsOn2[0];
+	if ($bombsOn == 1){
+		print "Yes\n";
+	}Else if ($bombsOn == 0){
+		print "No\n";
+	}Else{
+		print "Error\n";
+	}
+	print "Giving Sold Items... ";
 	$db = mysql_query("select bidder_id,item_name,item_id from {$game}_bilkos where timestamp <= ".(time()-86400) ." && active = 1 && bidder_id > 0");
 	while($lots = mysql_fetch_assoc($db)){
 		mysql_query("insert into {$game}_messages (timestamp,sender_name,sender_id, login_id, text) values(".time().",'Bilkos','$lots[bidder_id]','$lots[bidder_id]','You have successfully won lot #<b>$lots[item_id]</b> (<b class=b1>$lots[item_name]</b>). <p>You should come to the Auction House in <b class=b1>Sol</b> to collect your goods.')");
 		mysql_query("update {$game}_bilkos set active=0 where item_id = '$lots[item_id]'");
 	}
+	print "done\n";
 
 
 #number generated is random. between 0 and 99.
@@ -604,9 +629,11 @@ if($politics == 1) {
 
 }
 */
-
+	print "Hourly maintenance for $game is... ";
 	/* Maintenance for game is complete */
-	mysql_query("INSERT INTO `{$game}_news` (`timestamp`, `headline`, `login_id`) values (" . time() . ",'Hourly Maintenance Run','1')");
+	mysql_query("INSERT INTO {$game}_news (timestamp, headline, login_id) values (" . time() . ",'Hourly Maintenance Run','1')");
+	print "complete!\n";
+	print "------------\n\n";
 }
 
 

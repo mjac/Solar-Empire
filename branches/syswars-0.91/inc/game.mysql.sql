@@ -148,7 +148,7 @@ CREATE TABLE gamename_messages (
 DROP TABLE IF EXISTS gamename_news;
 --
 CREATE TABLE gamename_news (
-  news_id int unsigned NOT NULL,
+  news_id int unsigned NOT NULL AUTO_INCREMENT,
   `timestamp` int unsigned NOT NULL default 0,
   login_id int unsigned NOT NULL default 0,
   headline text NOT NULL,

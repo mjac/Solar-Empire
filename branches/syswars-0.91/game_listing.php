@@ -282,7 +282,6 @@ if (IS_OWNER && isset($_REQUEST['newGame'])) {
 			$query .= $line;
 		}
 	}
-	$db->query('%s', array(str_replace($find, $replace, $query)));
 	clearImages('img/' . $gamename . '_maps');
 	
 	echo 'Created game "'.$gametitle.'" and created tables as '.$gamename.'. Please join and create universe from admin options.';
