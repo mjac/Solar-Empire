@@ -22,18 +22,9 @@ print esc($login_name); ?>" class="text" /></p>
 
 <h1>Welcome to Solar Empire</h1>
 
-<h2>Introduction</h2>
 <p>Solar Empire is a highly competitive, web based, space combat game.</p>
 <p>A quote from a player: <q>I sure wish work would quit cutting into my
 gaming time</q>.</p>
-
-<h2>Operational Servers</h2>
-<ul>
-	<li><a href="http://www.solar-empire.net/">Endless War</a></li>
-	<li><a href="http://se.purely.info/">Purely SE</a></li>
-	<li><a href="http://qse.tradelair.com/">Tradelair</a></li>
-	<li><a href="http://www.gegn.net/">Galactic Empire</a></li>
-</ul>
 
 <p><a href="http://sourceforge.net/projects/solar-empire/">Solar Empire</a> is
 an open source project -
