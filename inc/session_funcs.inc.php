@@ -53,7 +53,7 @@ function login_to_server()
 		echo "<blockquote>User <b>$login_name</b> does not exist on this Server.<br>
 		Either you typed in your user name wrong, or your account no longer exists.<p>
 		<p> <a href=signup_form.php>
-		Sign up</a> <p> <a href=\"".URL_PREFIX."/index.php\">Try to log in again.</a></b></blockquote>";
+		Sign up</a> <p> <a href=\"index.php\">Try to log in again.</a></b></blockquote>";
 		print_footer();
 		exit;
 
