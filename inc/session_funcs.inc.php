@@ -10,7 +10,7 @@ function login_to_server()
 	$login_name = mysql_escape_string($_POST['l_name']);
 
 	/********************** Admin Login *******************/
-	if($login_name == "Admin"){
+	if($login_name == "admin"){
 		db('select * from se_games where admin_pw = \'' .
 		 md5($_POST['passwd']) . '\'');
 		$games_info = dbr(1);

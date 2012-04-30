@@ -1,7 +1,3 @@
---
--- Table structure for table `gamename_bilkos`
---
-
 DROP TABLE IF EXISTS `gamename_bilkos`;
 CREATE TABLE `gamename_bilkos` (
   `item_id` int(4) NOT NULL auto_increment,
@@ -14,18 +10,7 @@ CREATE TABLE `gamename_bilkos` (
   `active` tinyint(4) NOT NULL default '0',
   `descr` text NOT NULL,
   PRIMARY KEY  (`item_id`)
-) TYPE=MyISAM;
-
---
--- Dumping data for table `gamename_bilkos`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `gamename_bmrkt`
---
+);
 
 DROP TABLE IF EXISTS `gamename_bmrkt`;
 CREATE TABLE `gamename_bmrkt` (
@@ -36,18 +21,7 @@ CREATE TABLE `gamename_bmrkt` (
   `bm_name` varchar(30) NOT NULL default '',
   PRIMARY KEY  (`bmrkt_id`),
   KEY `location` (`location`)
-) TYPE=MyISAM;
-
---
--- Dumping data for table `gamename_bmrkt`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `gamename_clans`
---
+);
 
 DROP TABLE IF EXISTS `gamename_clans`;
 CREATE TABLE `gamename_clans` (
@@ -62,18 +36,7 @@ CREATE TABLE `gamename_clans` (
   `fighter_kills` int(4) NOT NULL default '0',
   PRIMARY KEY  (`clan_id`),
   KEY `login_id` (`clan_id`,`clan_name`)
-) TYPE=MyISAM;
-
---
--- Dumping data for table `gamename_clans`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `gamename_db_vars`
---
+);
 
 DROP TABLE IF EXISTS `gamename_db_vars`;
 CREATE TABLE `gamename_db_vars` (
@@ -83,11 +46,7 @@ CREATE TABLE `gamename_db_vars` (
   `max` int(4) NOT NULL default '1',
   `descript` text NOT NULL,
   PRIMARY KEY  (`name`)
-) TYPE=MyISAM;
-
---
--- Dumping data for table `gamename_db_vars`
---
+);
 
 INSERT INTO `gamename_db_vars` (`name`, `value`, `min`, `max`, `descript`) VALUES ('admin_var_show', 1, 0, 1, 'If 0, players cannot see the game vars, on the game_vars page.'),
 ('allow_search_map', 1, 0, 1, 'Determines if users are allowed to run searches to try and find a system on the map (best left for the server admin to set).'),
@@ -167,14 +126,6 @@ INSERT INTO `gamename_db_vars` (`name`, `value`, `min`, `max`, `descript`) VALUE
 ('uv_universe_size', 500, 200, 1000, 'Size in pixels of the universe.'),
 ('wormholes', 1, 0, 2, 'Set to 0 disable Wormholes, 1 to have them in the game but not on the Map, and 2 to have them in the game & on the Map.');
 
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `gamename_diary`
---
-
 DROP TABLE IF EXISTS `gamename_diary`;
 CREATE TABLE `gamename_diary` (
   `entry_id` int(4) NOT NULL auto_increment,
@@ -185,18 +136,7 @@ CREATE TABLE `gamename_diary` (
   PRIMARY KEY  (`entry_id`),
   UNIQUE KEY `entry_id` (`entry_id`),
   KEY `entry_id_2` (`entry_id`,`timestamp`)
-) TYPE=MyISAM;
-
---
--- Dumping data for table `gamename_diary`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `gamename_messages`
---
+);
 
 DROP TABLE IF EXISTS `gamename_messages`;
 CREATE TABLE `gamename_messages` (
@@ -210,18 +150,7 @@ CREATE TABLE `gamename_messages` (
   PRIMARY KEY  (`message_id`),
   KEY `login_id` (`login_id`),
   KEY `timestamp` (`timestamp`)
-) TYPE=MyISAM;
-
---
--- Dumping data for table `gamename_messages`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `gamename_news`
---
+);
 
 DROP TABLE IF EXISTS `gamename_news`;
 CREATE TABLE `gamename_news` (
@@ -231,18 +160,7 @@ CREATE TABLE `gamename_news` (
   `headline` text NOT NULL,
   PRIMARY KEY  (`news_id`),
   KEY `timestamp` (`timestamp`)
-) TYPE=MyISAM;
-
---
--- Dumping data for table `gamename_news`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `gamename_planets`
---
+);
 
 DROP TABLE IF EXISTS `gamename_planets`;
 CREATE TABLE `gamename_planets` (
@@ -279,18 +197,7 @@ CREATE TABLE `gamename_planets` (
   KEY `planet_id` (`planet_id`),
   KEY `location` (`location`),
   KEY `login_id` (`login_id`)
-) TYPE=MyISAM;
-
---
--- Dumping data for table `gamename_planets`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `gamename_politics`
---
+);
 
 DROP TABLE IF EXISTS `gamename_politics`;
 CREATE TABLE `gamename_politics` (
@@ -301,11 +208,7 @@ CREATE TABLE `gamename_politics` (
   `timestamp` int(4) NOT NULL default '0',
   PRIMARY KEY  (`position_id`),
   UNIQUE KEY `position_id` (`position_id`)
-) TYPE=MyISAM;
-
---
--- Dumping data for table `gamename_politics`
---
+);
 
 INSERT INTO `gamename_politics` (`position_id`, `position_name`, `login_id`, `login_name`, `timestamp`) VALUES (1, 'Monarch', 0, '', 0),
 (2, 'Industry Senator', 0, '', 0),
@@ -315,12 +218,6 @@ INSERT INTO `gamename_politics` (`position_id`, `position_name`, `login_id`, `lo
 (6, 'War Senator', 0, '', 0),
 (7, 'Espionage Senator', 0, '', 0),
 (8, 'Research Senator', 0, '', 0);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `gamename_ports`
---
 
 DROP TABLE IF EXISTS `gamename_ports`;
 CREATE TABLE `gamename_ports` (
@@ -332,18 +229,7 @@ CREATE TABLE `gamename_ports` (
   PRIMARY KEY  (`port_id`),
   KEY `planet_id` (`port_id`),
   KEY `location` (`location`)
-) TYPE=MyISAM;
-
---
--- Dumping data for table `gamename_ports`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `gamename_ship_types`
---
+);
 
 DROP TABLE IF EXISTS `gamename_ship_types`;
 CREATE TABLE `gamename_ship_types` (
@@ -373,11 +259,7 @@ CREATE TABLE `gamename_ship_types` (
   `num_ew` int(4) NOT NULL default '0',
   PRIMARY KEY  (`type_id`),
   KEY `type_id` (`type_id`)
-) TYPE=MyISAM;
-
---
--- Dumping data for table `gamename_ship_types`
---
+);
 
 INSERT INTO `gamename_ship_types` (`type_id`, `name`, `type`, `class_abbr`, `cost`, `tcost`, `fighters`, `max_fighters`, `max_shields`, `cargo_bays`, `mine_rate_metal`, `mine_rate_fuel`, `descr`, `size`, `config`, `upgrades`, `auction`, `move_turn_cost`, `point_value`, `num_pc`, `num_ot`, `num_dt`, `num_sa`, `num_ew`) VALUES (1, 'Ship Destroyed', '', 'SDestroyed', 10000, 0, 0, 0, 0, 0, 0, 0, '', 0, '', 0, 0, 1, 0, 0, 0, 0, 0, 0),
 (2, 'Escape Pod', 'Escape Pod', 'EP', 10000, 0, 0, 10, 10, 10, 3, 0, 'If you''re in one of these, you''re pretty darn dead. So hurry up and get a proper ship.', 1, 'tw', 0, 0, 1, 5, 0, 0, 0, 0, 0),
@@ -402,12 +284,6 @@ INSERT INTO `gamename_ship_types` (`type_id`, `name`, `type`, `class_abbr`, `cos
 (303, 'GunShip', 'Battleship', 'GB', 65000, 350, 300, 2000, 150, 0, 0, 0, 'A lightly armed warship that uses 3 plasma cannons as its teeth, 2 Silicon Armour Modules for additional defense, and 2 electronic warfare modules to back those up.<br>This ship is ideal for taking out light enemy vessels. It also has light stealth and a scanner to assist in the task.', 3, 'sc:ls:bs:pc:sa:ew', 1, 0, 2, 35, 3, 0, 0, 2, 2),
 (304, 'Occultator', 'Carrier', 'EC', 500000, 500, 5, 125003, 1000, 0, 0, 0, 'Welcome to the newest craze in the galaxy!<br>A hollowed out asteroid with an Alien Battlestar''s engines nailed to its sides. <br>The cost of this ship reflects the enourmous amount of effort required to remove the asteroids contents and fill it with fighter bays.<br>Its gone from being a navigational hazard for ships, to a planet eliminator, and should you part with your cash, you are guaranteed hours of planet leveling fun.', 7, 'po', 5, 0, 7, 120, 0, 0, 0, 0, 0),
 (399, 'Alien Battlestar', 'Flagship', 'BStar', 1050000, 2000, 3000, 40000, 1000, 500, 0, 0, 'If you thought the Brobdingnagian was the Emperor of Space, think again. <br>This converted alien vessal was found derelict and is a true Flagship, armed to the teeth with an incredible 10 Plasma Cannons, 5 Silicon Armour Modules, 4 Electronic Warfare modules, Subspace Jump facilities (with wormhole stabiliser) (Note: Alien Technology allows this and shields to reside on the same ship!), and a scanner for good measure.<br>This ship will lead your fleet to battle in true style.', 8, 'oo:ws:sc:sj:pc:sa:ew', 0, 0, 7, 200, 10, 0, 0, 5, 4);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `gamename_ships`
---
 
 DROP TABLE IF EXISTS `gamename_ships`;
 CREATE TABLE `gamename_ships` (
@@ -452,18 +328,7 @@ CREATE TABLE `gamename_ships` (
   KEY `fighters` (`fighters`),
   KEY `towed_by` (`towed_by`),
   KEY `login_id` (`login_id`)
-) TYPE=MyISAM;
-
---
--- Dumping data for table `gamename_ships`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `gamename_stars`
---
+);
 
 DROP TABLE IF EXISTS `gamename_stars`;
 CREATE TABLE `gamename_stars` (
@@ -484,19 +349,9 @@ CREATE TABLE `gamename_stars` (
   `planetary_slots` int(4) NOT NULL default '0',
   PRIMARY KEY  (`star_id`),
   KEY `login_id` (`star_id`,`star_name`)
-) TYPE=MyISAM;
-
---
--- Dumping data for table `gamename_stars`
---
+);
 
 INSERT INTO `gamename_stars` (`star_id`, `star_name`, `x_loc`, `y_loc`, `link_1`, `link_2`, `link_3`, `link_4`, `link_5`, `link_6`, `metal`, `fuel`, `event_random`, `wormhole`, `planetary_slots`) VALUES (1, 'Sol', 250, 250, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `gamename_user_options`
---
 
 DROP TABLE IF EXISTS `gamename_user_options`;
 CREATE TABLE `gamename_user_options` (
@@ -520,19 +375,9 @@ CREATE TABLE `gamename_user_options` (
   `planet_report` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`login_id`),
   UNIQUE KEY `login_id` (`login_id`)
-) TYPE=MyISAM;
-
---
--- Dumping data for table `gamename_user_options`
---
+);
 
 INSERT INTO `gamename_user_options` (`login_id`, `color_scheme`, `news_back`, `forum_back`, `show_sigs`, `show_pics`, `show_minimap`, `tow_method`, `show_config`, `show_aim`, `show_icq`, `show_clan_ships`, `show_abbr_ship_class`, `show_rel_sym`, `attack_report`, `system_disp_method`, `cursing_filter`, `planet_report`) VALUES (1, 1, 100, 36, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 2, 1, 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `gamename_users`
---
 
 DROP TABLE IF EXISTS `gamename_users`;
 CREATE TABLE `gamename_users` (
@@ -582,20 +427,10 @@ CREATE TABLE `gamename_users` (
   KEY `login_name` (`login_name`),
   KEY `ships_killed` (`ships_killed`),
   KEY `turns_run` (`turns_run`)
-) TYPE=MyISAM;
-
---
--- Dumping data for table `gamename_users`
---
+);
 
 INSERT INTO `gamename_users` (`login_id`, `login_name`, `joined_game`, `game_login_count`, `turns`, `turns_run`, `location`, `ship_id`, `cash`, `tech`, `on_planet`, `last_attack`, `last_attack_by`, `ships_killed`, `ships_lost`, `ships_killed_points`, `ships_lost_points`, `show_enemy_ships`, `show_user_ships`, `genesis`, `terra_imploder`, `clan_id`, `clan_sym`, `clan_sym_color`, `fighters_killed`, `fighters_lost`, `bounty`, `score`, `alpha`, `gamma`, `delta`, `sn_effect`, `politics`, `sig`, `last_request`, `last_access_forum`, `last_access_clan_forum`, `banned_time`, `banned_reason`, `one_brob`, `second_scatter`)
-VALUES (1, 'Admin', 1, 1, 250, 0, 1, NULL, 1000000000, 1000, 0, 0, '', 0, 0, 0, 0, 0, 0, 1, 1, 0, '', '', 0, 0, 0, 0, 1, 1, 1, 1, 0, '', 1, 1, 1, 0, '', 0, 0);
-
-
-
---
--- Dumping data for table `se_games`
---
+VALUES (1, 'admin', 1, 1, 250, 0, 1, NULL, 1000000000, 1000, 0, 0, '', 0, 0, 0, 0, 0, 0, 1, 1, 0, '', '', 0, 0, 0, 0, 1, 1, 1, 1, 0, '', 1, 1, 1, 0, '', 0, 0);
 
 INSERT INTO `se_games` (`game_id`, `name`, `db_name`, `admin_name`, `admin_pw`, `admin_email`, `status`, `paused`, `description`, `intro_message`, `num_stars`, `todays_tip`, `difficulty`, `last_reset`, `session_id`, `session_exp`, `last_access_admin_forum`) VALUES (1, 'Test Game!', 'gamename', 'ChangeMe', 'd41d8cd98f00b204e9800998ecf8427e', 'you@uri.com', 1, 0, '', '', 150, 1, 3, 1124407424, '4CcRjlAeX97up2MQvITBcXQj1adXQeyK', 1124488318, 1124407143);
 

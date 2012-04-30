@@ -1,29 +1,22 @@
---
--- Table structure for table `daily_tips`
---
 
 DROP TABLE IF EXISTS `daily_tips`;
 CREATE TABLE `daily_tips` (
   `tip_id` int(4) NOT NULL auto_increment,
   `tip_content` text NOT NULL,
   PRIMARY KEY  (`tip_id`)
-) TYPE=MyISAM;
+);
 
---
--- Dumping data for table `daily_tips`
---
-
-INSERT INTO `daily_tips` (`tip_id`, `tip_content`) VALUES (1, 'To customise your SE experiance, try playing with some of the options on the <b class=b1>Options</b> Page.'),
+INSERT INTO `daily_tips` (`tip_id`, `tip_content`) VALUES (1, 'To customise your SE experience, try playing with some of the options on the <b class=b1>Options</b> Page.'),
 (2, 'You can change your colour scheme at any time from the options page.<br>There are plenty to choose from.'),
 (3, 'Rule Number One: The Admin Is Always Right.\r\n<br>Rule Number Two: If The Admin Is Wrong, See Rule Number One.\r\n<br>{starfox25, Dec 06 2000 - 14:26 }'),
-(5, 'Just because a ship is more expensive does not necassarily mean it is better.'),
+(5, 'Just because a ship is more expensive does not necessarily mean it is better.'),
 (6, 'The only source of knowledge is experience.\r\n<br>{Albert Einstein}'),
 (7, 'Do not repeat the tactics which have gained you one victory, but let your methods be regulated by the infinite variety of circumstances.\r\n<br>{Sun Tzu, The Art of War - 6:28, 300BC}'),
 (8, 'Nothing is foolproof to a sufficiently talented fool.\r\n<br>{CrymsonKyng, Apr 21 2001 - 05:56}'),
 (9, 'You can click on the Mini-map to get a complete picture of the universe.'),
 (10, 'Clicking a player''s name gives you information about that player.<br>This can also be done with your own name, and will reveal several new options.'),
-(13, 'If you find any bugs, report them to the admin, along with details as to what you where doing to get it.'),
-(14, 'Autowarp allows you to automatically find your way between A and B. It is not necassarily the shortest route though.'),
+(13, 'If you find any bugs, report them to the Admin, along with details as to what you where doing to get it.'),
+(14, 'Autowarp allows you to automatically find your way between A and B. It is not necessarily the shortest route though.'),
 (15, 'Wormholes offer a great way to get across the universe in only 1 turn (provided there are any around).'),
 (16, 'Its generally possible to get things on the cheap at Bilkos Auction house. As well as lots of things you can''t get anywhere else in the game.<br>You can get to it from any star-port, or Earth.'),
 (17, 'You should change all your password every few months.<br>You should also never give your password to other players. Ever!'),
@@ -38,12 +31,6 @@ INSERT INTO `daily_tips` (`tip_id`, `tip_content`) VALUES (1, 'To customise your
 (26, 'You must not fight too often with one enemy, or you will teach him all your art of war.<br>{Napoleon Bonaparte}'),
 (27, 'You should not use one password for all applications (i.e. e-mail, online games etc). Instead you should have a different password for each account.');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `option_list`
---
-
 DROP TABLE IF EXISTS `option_list`;
 CREATE TABLE `option_list` (
   `option_name` varchar(50) NOT NULL default '',
@@ -52,11 +39,7 @@ CREATE TABLE `option_list` (
   `option_desc` text NOT NULL,
   `option_type` tinyint(4) NOT NULL default '1',
   PRIMARY KEY  (`option_name`)
-) TYPE=MyISAM;
-
---
--- Dumping data for table `option_list`
---
+);
 
 INSERT INTO `option_list` (`option_name`, `option_min`, `option_max`, `option_desc`, `option_type`) VALUES ('news_back', 10, 700, 'Allows you to set how many hours of news will be shown per screen.', 2),
 ('forum_back', 1, 168, 'Allows you to choose how many hours the forum should list per screen.', 2),
@@ -75,12 +58,6 @@ INSERT INTO `option_list` (`option_name`, `option_min`, `option_max`, `option_de
 ('cursing_filter', 0, 2, 'Determines the cursing filter (default is low)\r\n &&& None\r\n &&& Low\r\n &&& High', 1),
 ('planet_report', 0, 2, 'Decides whether a production report is returned from a planet during the daily maintenance.\r\n &&& Nothing returned\r\n &&& A report will be returned, but only if the planet produces something\r\n &&& All planets will return a report, no matter what.', 1);
 
--- --------------------------------------------------------
-
---
--- Table structure for table `se_central_forum`
---
-
 DROP TABLE IF EXISTS `se_central_forum`;
 CREATE TABLE `se_central_forum` (
   `message_id` int(4) NOT NULL auto_increment,
@@ -90,18 +67,7 @@ CREATE TABLE `se_central_forum` (
   `sender_game_db` varchar(30) NOT NULL default '',
   `text` text NOT NULL,
   PRIMARY KEY  (`message_id`)
-) TYPE=MyISAM;
-
---
--- Dumping data for table `se_central_forum`
---
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `se_games`
---
+);
 
 DROP TABLE IF EXISTS `se_games`;
 CREATE TABLE `se_games` (
@@ -123,23 +89,12 @@ CREATE TABLE `se_games` (
   `session_exp` int(4) NOT NULL default '0',
   `last_access_admin_forum` int(4) NOT NULL default '0',
   PRIMARY KEY  (`game_id`)
-) TYPE=MyISAM;
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `se_svr_star_names`
---
+);
 
 DROP TABLE IF EXISTS `se_svr_star_names`;
 CREATE TABLE `se_svr_star_names` (
   `name` varchar(30) NOT NULL default ''
-) TYPE=MyISAM;
-
---
--- Dumping data for table `se_svr_star_names`
---
+);
 
 INSERT INTO `se_svr_star_names` (`name`) VALUES ('Acamar'),
 ('Achernar'),
@@ -676,13 +631,6 @@ INSERT INTO `se_svr_star_names` (`name`) VALUES ('Acamar'),
 ('Zuben Elakrab'),
 ('Zuben Elgenubi');
 
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user_accounts`
---
-
 DROP TABLE IF EXISTS `user_accounts`;
 CREATE TABLE `user_accounts` (
   `login_id` int(4) NOT NULL auto_increment,
@@ -705,20 +653,10 @@ CREATE TABLE `user_accounts` (
   PRIMARY KEY  (`login_id`),
   UNIQUE KEY `login_name` (`login_name`),
   UNIQUE KEY `email_address` (`email_address`)
-) TYPE=MyISAM;
-
---
--- Dumping data for table `user_accounts`
---
+);
 
 INSERT INTO `user_accounts` (`login_id`, `login_name`, `passwd`, `auth`, `session_exp`, `session_id`, `in_game`, `email_address`, `signed_up`, `last_login`, `login_count`, `last_ip`, `num_games_joined`, `page_views`, `real_name`, `total_score`, `default_color_scheme`) VALUES
-(1, 'Admin', 'not used', 0, 0, '', '', 'Tyrant of the Universe', 1, 1, 1, '', 0, 0, 'Game Administrator', 0, 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `user_history`
---
+(1, 'admin', 'not used', 0, 0, '', '', 'Tyrant of the Universe', 1, 1, 1, '', 0, 0, 'Game Administrator', 0, 1);
 
 DROP TABLE IF EXISTS `user_history`;
 CREATE TABLE `user_history` (
@@ -728,5 +666,5 @@ CREATE TABLE `user_history` (
   `action` text NOT NULL,
   `user_IP` varchar(16) NOT NULL default '',
   `other_info` text NOT NULL
-) TYPE=MyISAM
+)
 

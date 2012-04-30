@@ -4,13 +4,13 @@
 define("DATABASE_HOST", "localhost");
 
 //The name of the database within which SE resides
-define("DATABASE", "database name");
+define("DATABASE", "solarempire");
 
 //The username required to access the database
-define("DATABASE_USER", "database user");
+define("DATABASE_USER", "solarempire");
 
 //The password required to access the database.
-define("DATABASE_PASSWORD", "database password");
+define("DATABASE_PASSWORD", "solarempire");
 
 
 //Send the authorisation mail. Set to 1 to send, and 0 not to send.
@@ -40,7 +40,6 @@ define("ADMIN_ID", 1);
 define("OWNER_ID", 1);
 
 // PHP errors that will be reported when the script is run.
-defined('E_STRICT') or define('E_STRICT', 0x800);
 error_reporting(E_ALL & ~(E_NOTICE | E_STRICT));
 
 ?>
