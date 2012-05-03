@@ -18,18 +18,6 @@ extract($_POST);
 extract($_REQUEST);
 extract($_COOKIE);
 
-if(isset($_REQUEST['login_id'])){
-	$login_id = (int)$_REQUEST['login_id']; //set login_id
-} else {
-	$login_id = 0;
-}
-
-if(isset($_REQUEST['session_id'])){
-	$session_id = $_REQUEST['session_id']; //set session_id
-} else {
-	$session_id = 0;
-}
-
 //initial declarations for certain global vars
 //not particularly necessary, but just to make sure.
 $db_name = "";

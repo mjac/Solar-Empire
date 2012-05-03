@@ -188,14 +188,6 @@ if (isset($_REQUEST['game_selected'])) {
 ?>
 <div id="logo"><img src="img/se_logo.jpg" alt="Solar Empire" /></div>
 
-<div id="gameExtras">
-	<h2>Tip of the day</h2>
-	<p><?php print $tip_today['tip_content']; ?></p>
-
-	<h2>Recent news</h2>
-<?php require_once('inc/server_news.inc.html'); ?>
-</div>
-
 <h1>Game Listing for <?php print $p_user['login_name']; ?></h1>
 <p>To enter or join a game, click its name below:</p>
 <div id="gameList">
@@ -270,17 +262,17 @@ if (isset($_REQUEST['game_selected'])) {
 <h2>Options</h2>
 <ul>
 <?php if ($p_user['login_id'] != 1) { ?>
-	<li><a href=logout.php?logout_gamelist=1>Logout Completely</a></li>
+	<li><a href=logout.php?logout_gamelist=1>Logout</a></li>
 <?php } ?>
-	<li><a href="bugs_tracker.php">Bug Tracking</a></li>
 	<li><a href="credits.php" target="_blank">Credits</a></li>
 </ul>
 
-<h2>Places to go</h2>
-<ul>
-	<li><a href="http://home.solar-empire.net/" target="_blank">Home of Solar Empire</a></li>
-	<li><a href="http://forum.solar-empire.net/" target="_blank">Solar Empire forum</a></li>
-</ul>
+<h2>Tip of the day</h2>
+<p><?php print $tip_today['tip_content']; ?></p>
+
+<h2>Recent news</h2>
+<?php require_once('inc/server_news.inc.html'); ?>
+
 <?php
 	print_footer();
 }
