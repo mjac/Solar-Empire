@@ -674,8 +674,7 @@ if(isset($changepass)) {// change password
 	$error_str .= "<br><a href=clan.php?clan_info=1&target=$user[clan_id]>Clan Information</a><br><br>";
 
 	if($user['login_id'] == $clan['leader_id'] || $user['login_id'] == ADMIN_ID) {
-			$error_str .= "<a href=clan.php?changepass=1>Change Clan Password</a><br>";
-			$error_str .= "<a href=player_relations.php?relations=1>Enter Player Relations</a><br>";
+		$error_str .= "<a href=clan.php?changepass=1>Change Clan Password</a><br>";
 
 		if($clan['members'] >1) {
 			$error_str .= "<a href=clan.php?lead_change=1>Change Clan Leader</a><br>";

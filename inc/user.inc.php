@@ -202,13 +202,13 @@ function statusBar()
 	db("select count(message_id) from ${db_name}_messages where login_id = " . $user['login_id']);
 	list($counted) = dbr();
 
-	$menu .= "\t<li><a href=\"mpage.php\">$counted Msg(s)</a> - <a href=\"message.php\">Send</a></li>\n";
+	$menu .= "\t<li><a href=\"mpage.php\">$counted Message" . ($counted === 1 ? '' : 's') . "</a></li><li><a href=\"message.php\">Send Message</a></li>\n";
 
 	db("select count(message_id) as new_messages from ${db_name}_messages where timestamp > '$user[last_access_forum]' && login_id = -1 && sender_id != '$user[login_id]'");
 	$messg_count_forum = dbr();
 	$temp_forum_text = "";
 	if($messg_count_forum['new_messages'] > 0){
-		$temp_forum_text = " ($messg_count_forum[new_messages] <a href=forum.php?last_time=$user[last_access_forum]&find_last=1>new</a>)";
+		$temp_forum_text = " ($messg_count_forum[new_messages] <a href=\"forum.php?last_time=$user[last_access_forum]&find_last=1\">new</a>)";
 	}
 
 	$menu .= "\t<li><a href=\"forum.php\">Forum</a>$temp_forum_text</li>\n";
@@ -244,7 +244,7 @@ function statusBar()
 		 "</span> Forum</a>$temp_clan_forum_text_var</li>\n";
 	}
 
-	$menu .= "\t<li><a href=\"http://forum.solar-empire.net/\">Global Forum</a></li>\n</ul>\n<ul>\n";
+	$menu .= "\n\t</ul>\n</ul>\n";
 
 	//admin lower sidebar
 	if ($user['login_id'] == ADMIN_ID || $user['login_id'] == OWNER_ID) {
