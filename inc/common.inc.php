@@ -4,19 +4,10 @@ mt_srand((double)microtime() * 0x7FFFFFFF);
 
 require_once('config.inc.php');
 
-// magic quotes on. take slashes out
-if (get_magic_quotes_gpc() == 1) {
-	recursive_stripslashes($_GET);
-	recursive_stripslashes($_POST);
-	recursive_stripslashes($_COOKIE);
-	recursive_stripslashes($_REQUEST);
-}
-
-// emulate register globals :^(
-extract($_GET);
-extract($_POST);
-extract($_REQUEST);
-extract($_COOKIE);
+$inputArray = array_map(function($input) {
+	return str_replace(array('"', '\''), '', $input);
+}, array_merge($_GET, $_POST, $_REQUEST, $_COOKIE));
+extract($inputArray);
 
 //initial declarations for certain global vars
 //not particularly necessary, but just to make sure.
