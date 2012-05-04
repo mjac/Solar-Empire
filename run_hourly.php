@@ -233,12 +233,12 @@ while (list($game) = mysql_fetch_row($games)) {
 	//Mining Metal
 	print 'Mining metal... ';
 	
-	$ships = mysql_query("select s.ship_id, s.location, `s`.`mining_rate` as mine_rate, s.cargo_bays,s.metal,s.fuel,s.elect,s.organ,s.colon,star.metal AS star_metal from {$game}_stars star, {$game}_ships s, {$game}_users u where s.mining_mode = 'metal' && u.login_id = s.login_id&& star.star_id = s.location && s.location != 1 && star.metal > 0 && (s.cargo_bays - s.metal - s.fuel - s.elect - s.organ - s.colon) > 0 && `mining_rate` > 0 group by s.ship_id");
+	$ships = mysql_query("select s.ship_id, s.location, s.mine_rate_metal as mine_rate, s.cargo_bays,s.metal,s.fuel,s.elect,s.organ,s.colon,star.metal AS star_metal from {$game}_stars star, {$game}_ships s, {$game}_users u where s.mine_mode = 1 && u.login_id = s.login_id && star.star_id = s.location && s.location != 1 && star.metal > 0 && (s.cargo_bays - s.metal - s.fuel - s.elect - s.organ - s.colon) > 0 && mine_rate_metal > 0 group by s.ship_id");
 
-	
 	$count = 0;
 
 	while ($ship = mysql_fetch_assoc($ships)) {
+		var_dump($ship);
 		switch (mt_rand(0, 3)) {
 			case 0:
 				$mins_mined = $ship['mine_rate'] + 1;
@@ -268,7 +268,7 @@ while (list($game) = mysql_fetch_row($games)) {
 
 	//Mining Fuel
 	print 'Mining fuel... ';
-	$ships = mysql_query("select s.ship_id,s.location,s.mining_rate as mine_rate,s.cargo_bays,s.metal,s.fuel,s.elect,s.organ,s.colon,star.fuel AS star_fuel from {$game}_stars star, {$game}_ships s, {$game}_users u where s.mining_mode = 'fuel' && u.login_id = s.login_id && star.star_id = s.location && star.fuel > 0 && (s.cargo_bays - s.metal - s.fuel - s.elect - s.organ - s.colon) > 0 && mining_rate > 0 group by s.ship_id");
+	$ships = mysql_query("select s.ship_id,s.location,s.mine_rate_fuel as mine_rate,s.cargo_bays,s.metal,s.fuel,s.elect,s.organ,s.colon,star.fuel AS star_fuel from {$game}_stars star, {$game}_ships s, {$game}_users u where s.mine_mode = 2 && u.login_id = s.login_id && star.star_id = s.location && star.fuel > 0 && (s.cargo_bays - s.metal - s.fuel - s.elect - s.organ - s.colon) > 0 && mine_rate_fuel > 0 group by s.ship_id");
 
 	$count = 0;
 
@@ -305,7 +305,7 @@ while (list($game) = mysql_fetch_row($games)) {
 	mysql_query("update {$game}_stars set fuel = 0 where fuel < 0");
 	mysql_query("update {$game}_stars set metal = 0 where metal < 0");
 
-	$hourlyTurns1 = mysql_query("SELECT value from {$game}_db_vars WHERE name = 'increase_turns'");
+	$hourlyTurns1 = mysql_query("SELECT value from {$game}_db_vars WHERE name = 'hourly_turns'");
 	$hourlyTurns2 = mysql_fetch_row($hourlyTurns1);
 	$hourlyTurns = $hourlyTurns2[0];
 	print "Increasing turns by $hourlyTurns... ";
