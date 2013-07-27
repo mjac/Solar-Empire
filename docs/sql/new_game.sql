@@ -226,6 +226,7 @@ CREATE TABLE `gamename_ports` (
   `metal_bonus` int(4) NOT NULL default '0',
   `fuel_bonus` int(4) NOT NULL default '0',
   `elect_bonus` int(4) NOT NULL default '0',
+  `organ_bonus` int(4) NOT NULL default '0',  
   PRIMARY KEY  (`port_id`),
   KEY `planet_id` (`port_id`),
   KEY `location` (`location`)
