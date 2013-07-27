@@ -201,7 +201,7 @@ while (list($game) = mysql_fetch_row($games)) {
 	$fuelChanceMin = getVar($game, 'rr_fuel_chance_min');
 	$fuelChanceMax = getVar($game, 'rr_fuel_chance_max');
 
-	$stars = mysql_query("SELECT COUNT(*) FROM `{$game}_stars`");
+	$stars = mysql_query("SELECT COUNT(*) FROM `{$game}_stars` WHERE `star_id` <> 1");
 	$numStars = mysql_result($stars, 0);
 
 	mysql_query("UPDATE `{$game}_stars` SET `metal` = `metal` + (RAND() * " .
