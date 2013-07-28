@@ -206,11 +206,11 @@ while (list($game) = mysql_fetch_row($games)) {
 
 	mysql_query("UPDATE `{$game}_stars` SET `metal` = `metal` + (RAND() * " .
 	($metalChanceMax - $metalChanceMin) . ") + $metalChanceMin WHERE (RAND() * 100) " .
-	 "< $metalChance");
+	 "< $metalChance && `star_id` <> 1");
 
 	mysql_query("UPDATE `{$game}_stars` SET `fuel` = `fuel` + (RAND() * " .
-	($metalChanceMax - $metalChanceMin) . ") + $fuelChanceMin WHERE (RAND() * 100) " .
-	 "< $fuelChance");
+	($fuelChanceMax - $fuelChanceMin) . ") + $fuelChanceMin WHERE (RAND() * 100) " .
+	 "< $fuelChance && `star_id` <> 1");
 
 
 	/* Days left in game */

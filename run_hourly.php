@@ -233,7 +233,7 @@ while (list($game) = mysql_fetch_row($games)) {
 	//Mining Metal
 	print 'Mining metal... ';
 	
-	$ships = mysql_query("select s.ship_id, s.location, s.mine_rate_metal as mine_rate, s.cargo_bays,s.metal,s.fuel,s.elect,s.organ,s.colon,star.metal AS star_metal from {$game}_stars star, {$game}_ships s, {$game}_users u where s.mine_mode = 1 && u.login_id = s.login_id && star.star_id = s.location && s.location != 1 && star.metal > 0 && (s.cargo_bays - s.metal - s.fuel - s.elect - s.organ - s.colon) > 0 && mine_rate_metal > 0 group by s.ship_id");
+	$ships = mysql_query("select s.ship_id, s.location, s.mine_rate_metal as mine_rate, s.cargo_bays,s.metal,s.fuel,s.elect,s.organ,s.colon,star.metal AS star_metal from {$game}_stars star, {$game}_ships s, {$game}_users u where s.mine_mode = 1 && u.login_id = s.login_id && star.star_id = s.location && star.metal > 0 && (s.cargo_bays - s.metal - s.fuel - s.elect - s.organ - s.colon) > 0 && mine_rate_metal > 0 group by s.ship_id");
 
 	$count = 0;
 
