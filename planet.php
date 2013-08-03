@@ -1117,7 +1117,7 @@ if(isset($destroy)) {
 	}
 
 //assign colonists
-} elseif(isset($assinging)) {
+} elseif(isset($assigning)) {
 	#ensure all are rounded & valid
 	$num_pop_set_1 = round($num_pop_set_1);
 	settype($num_pop_set_1, "integer");
@@ -1152,7 +1152,7 @@ if(isset($destroy)) {
 		if($num_pop_set_3 > idle_colonists() + $planet['alloc_organ']){ #ensure user doesn't go over the limit.
 			$num_pop_set_3 = idle_colonists() + $planet['alloc_organ'];
 		}
-		$planet['alloc_organ'] = $num_pop_set_2;
+		$planet['alloc_organ'] = $num_pop_set_3;
 		dbn("update ${db_name}_planets set alloc_organ = $num_pop_set_3 where planet_id = $user[on_planet]");
 
 	}
@@ -1357,7 +1357,7 @@ if($has_pass == 1) {
 
 
 
-	$output_str .= "<tr><td>Colonist Allocation</tr></td><form name=pop_set_form method=post action=planet.php><input type=hidden name=planet_id value='$planet_id'><input type=hidden name=assinging value='1'>";
+	$output_str .= "<tr><td>Colonist Allocation</tr></td><form name=pop_set_form method=post action=planet.php><input type=hidden name=planet_id value='$planet_id'><input type=hidden name=assigning value='1'>";
 	$output_str .= quick_row("Tax Rate","<input type=text name=set_tax_rate value='$planet[tax_rate]' size=3>% (0 - 20%)");
 	$output_str .= quick_row("To produce Fighters","<input type=text name=num_pop_set_1 value='$planet[alloc_fight]' size=6>");
 	$output_str .= quick_row("To produce Electronics","<input type=text name=num_pop_set_2 value='$planet[alloc_elect]' size=6>");
